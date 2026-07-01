@@ -6,20 +6,13 @@
   <title>State OSHA Steel Erection Dashboard</title>
   <style>
     :root {
-      --bg: #070708;
-      --panel: rgba(255, 255, 255, 0.065);
-      --panel-strong: rgba(255, 255, 255, 0.105);
-      --text: #f7f1eb;
-      --muted: #b8b0ad;
-      --soft: #7e7777;
-      --line: rgba(255, 255, 255, 0.13);
-      --line-strong: rgba(255, 255, 255, 0.22);
-      --red: #8f1d24;
-      --red-hot: #db3038;
-      --red-dark: #36090d;
-      --gold: #d8b878;
-      --black: #050505;
-      --shadow: 0 26px 70px rgba(0, 0, 0, 0.48);
+      --cream: #F2EFEB;
+      --cloud: #CFCDCA;
+      --red: #9F1C1F;
+      --burgundy: #680C19;
+      --onyx: #111112;
+      --charcoal: #282828;
+      --steel: #5D5C5A;
       --radius: 8px;
     }
 
@@ -34,27 +27,12 @@
     body {
       min-height: 100vh;
       margin: 0;
-      color: var(--text);
+      color: var(--cream);
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
       line-height: 1.45;
       background:
-        radial-gradient(circle at 16% 5%, rgba(151, 28, 34, 0.42), transparent 34%),
-        radial-gradient(circle at 83% 24%, rgba(120, 17, 22, 0.26), transparent 35%),
-        linear-gradient(140deg, #120709 0%, #080808 48%, #171112 100%);
+        linear-gradient(140deg, var(--onyx) 0%, var(--charcoal) 52%, var(--burgundy) 100%);
       background-attachment: fixed;
-    }
-
-    body::before {
-      position: fixed;
-      inset: 0;
-      z-index: -1;
-      pointer-events: none;
-      content: "";
-      background:
-        linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
-        linear-gradient(rgba(255, 255, 255, 0.027) 1px, transparent 1px);
-      background-size: 72px 72px;
-      mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.52), transparent 70%);
     }
 
     a {
@@ -74,11 +52,8 @@
     }
 
     .hero {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) auto;
-      gap: 28px;
-      align-items: end;
-      margin-bottom: 26px;
+      max-width: 1080px;
+      margin-bottom: 28px;
     }
 
     .eyebrow {
@@ -86,7 +61,7 @@
       gap: 10px;
       align-items: center;
       margin-bottom: 14px;
-      color: var(--gold);
+      color: var(--cloud);
       font-size: 0.82rem;
       font-weight: 900;
       letter-spacing: 0.18em;
@@ -98,13 +73,14 @@
       width: 36px;
       height: 2px;
       content: "";
-      background: linear-gradient(90deg, var(--red-hot), var(--gold));
+      background: var(--red);
     }
 
     h1 {
       max-width: 980px;
       margin: 0;
-      font-size: clamp(2.25rem, 5vw, 5.35rem);
+      color: var(--cream);
+      font-size: clamp(2.35rem, 5vw, 5.35rem);
       line-height: 0.94;
       letter-spacing: 0;
       text-wrap: balance;
@@ -113,40 +89,8 @@
     .subtitle {
       max-width: 780px;
       margin: 18px 0 0;
-      color: var(--muted);
+      color: var(--cloud);
       font-size: clamp(1rem, 1.4vw, 1.23rem);
-    }
-
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(132px, 1fr));
-      gap: 12px;
-      min-width: min(490px, 100%);
-    }
-
-    .stat {
-      min-height: 104px;
-      padding: 18px;
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      background: linear-gradient(145deg, rgba(255, 255, 255, 0.11), rgba(255, 255, 255, 0.035));
-      box-shadow: var(--shadow);
-    }
-
-    .stat strong {
-      display: block;
-      font-size: clamp(1.7rem, 3vw, 2.55rem);
-      line-height: 1;
-    }
-
-    .stat span {
-      display: block;
-      margin-top: 8px;
-      color: var(--muted);
-      font-size: 0.82rem;
-      font-weight: 800;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
     }
 
     .toolbar {
@@ -156,22 +100,24 @@
       align-items: center;
       margin-bottom: 18px;
       padding: 12px;
-      border: 1px solid var(--line);
+      border: 1px solid var(--steel);
       border-radius: var(--radius);
-      background: rgba(0, 0, 0, 0.34);
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(18px);
+      background: var(--onyx);
     }
 
     .search-wrap {
       position: relative;
     }
 
-    .search-wrap span {
+    .search-label {
       position: absolute;
       top: 50%;
       left: 16px;
-      color: var(--soft);
+      color: var(--cloud);
+      font-size: 0.78rem;
+      font-weight: 900;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
       transform: translateY(-50%);
       pointer-events: none;
     }
@@ -179,47 +125,43 @@
     input[type="search"] {
       width: 100%;
       min-height: 50px;
-      padding: 12px 16px 12px 45px;
-      color: var(--text);
-      border: 1px solid var(--line);
+      padding: 12px 16px 12px 92px;
+      color: var(--cream);
+      border: 1px solid var(--steel);
       border-radius: var(--radius);
       outline: none;
-      background: rgba(255, 255, 255, 0.07);
+      background: var(--charcoal);
     }
 
     input[type="search"]::placeholder {
-      color: #8e8787;
+      color: var(--cloud);
     }
 
     input[type="search"]:focus {
-      border-color: rgba(216, 184, 120, 0.7);
-      box-shadow: 0 0 0 3px rgba(216, 184, 120, 0.12);
+      border-color: var(--red);
     }
 
     .clear-btn {
       min-height: 50px;
       padding: 0 20px;
-      color: var(--text);
+      color: var(--cream);
       font-weight: 900;
-      border: 1px solid rgba(255, 255, 255, 0.15);
+      border: 1px solid var(--steel);
       border-radius: var(--radius);
-      background: linear-gradient(145deg, rgba(143, 29, 36, 0.92), rgba(42, 7, 10, 0.96));
+      background: var(--burgundy);
       cursor: pointer;
     }
 
     .clear-btn:hover {
-      border-color: rgba(216, 184, 120, 0.42);
-      background: linear-gradient(145deg, rgba(200, 35, 45, 0.98), rgba(69, 9, 15, 0.98));
+      background: var(--red);
     }
 
     .state-index-panel {
       margin-bottom: 22px;
-      border: 1px solid var(--line);
+      border: 1px solid var(--steel);
       border-radius: var(--radius);
-      background: rgba(0, 0, 0, 0.32);
-      box-shadow: var(--shadow);
+      background: var(--onyx);
       overflow: hidden;
-      backdrop-filter: blur(18px);
     }
 
     .panel-head {
@@ -228,11 +170,13 @@
       align-items: center;
       justify-content: space-between;
       padding: 16px 18px;
-      border-bottom: 1px solid var(--line);
+      border-bottom: 1px solid var(--steel);
+      background: var(--charcoal);
     }
 
     .panel-head h2 {
       margin: 0;
+      color: var(--cream);
       font-size: 0.95rem;
       font-weight: 950;
       letter-spacing: 0.12em;
@@ -241,7 +185,7 @@
 
     .panel-head p {
       margin: 0;
-      color: var(--muted);
+      color: var(--cloud);
       font-size: 0.92rem;
     }
 
@@ -255,33 +199,31 @@
     .state-btn {
       min-height: 42px;
       padding: 10px 14px;
-      color: var(--text);
-      border: 1px solid var(--line);
+      color: var(--cream);
+      border: 1px solid var(--steel);
       border-radius: 999px;
-      background: rgba(255, 255, 255, 0.06);
+      background: var(--charcoal);
       cursor: pointer;
       font-size: 0.92rem;
       font-weight: 850;
       white-space: nowrap;
-      transition: transform 150ms ease, border-color 150ms ease, background 150ms ease;
+      transition: transform 150ms ease, background 150ms ease;
     }
 
     .state-btn:hover {
-      border-color: rgba(216, 184, 120, 0.42);
-      background: rgba(255, 255, 255, 0.1);
+      background: var(--steel);
       transform: translateY(-1px);
     }
 
     .state-btn.active {
-      color: #fff;
-      border-color: rgba(255, 255, 255, 0.22);
-      background: linear-gradient(135deg, #b6212b, #551116 68%, #1a0709);
-      box-shadow: 0 10px 28px rgba(168, 25, 35, 0.32);
+      color: var(--cream);
+      border-color: var(--red);
+      background: var(--red);
     }
 
     .state-btn small {
       margin-left: 6px;
-      color: rgba(255, 255, 255, 0.66);
+      color: var(--cloud);
       font-weight: 900;
     }
 
@@ -295,6 +237,7 @@
 
     .active-state h2 {
       margin: 0;
+      color: var(--cream);
       font-size: clamp(2rem, 4vw, 4.2rem);
       line-height: 0.95;
       letter-spacing: 0;
@@ -302,15 +245,15 @@
 
     .active-state p {
       margin: 10px 0 0;
-      color: var(--muted);
+      color: var(--cloud);
     }
 
     .active-badge {
       padding: 12px 16px;
-      border: 1px solid var(--line);
+      border: 1px solid var(--steel);
       border-radius: var(--radius);
-      background: rgba(255, 255, 255, 0.065);
-      color: var(--gold);
+      background: var(--charcoal);
+      color: var(--cream);
       font-weight: 950;
       letter-spacing: 0.1em;
       text-transform: uppercase;
@@ -330,12 +273,9 @@
       position: relative;
       overflow: hidden;
       padding: 24px;
-      border: 1px solid var(--line);
+      border: 1px solid var(--steel);
       border-radius: var(--radius);
-      background:
-        linear-gradient(145deg, rgba(255, 255, 255, 0.105), rgba(255, 255, 255, 0.035)),
-        linear-gradient(150deg, rgba(143, 29, 36, 0.14), transparent 55%);
-      box-shadow: var(--shadow);
+      background: linear-gradient(145deg, var(--charcoal) 0%, var(--onyx) 58%, var(--burgundy) 100%);
     }
 
     .requirement-card::before {
@@ -343,62 +283,60 @@
       top: 0;
       left: 0;
       width: 100%;
-      height: 3px;
+      height: 4px;
       content: "";
-      background: linear-gradient(90deg, var(--red-hot), var(--gold), transparent);
-    }
-
-    .card-top {
-      display: flex;
-      gap: 12px;
-      align-items: flex-start;
-      justify-content: space-between;
-      margin-bottom: 18px;
+      background: var(--red);
     }
 
     .card-number {
-      color: rgba(255, 255, 255, 0.36);
+      margin-bottom: 18px;
+      color: var(--cloud);
       font-size: 0.78rem;
       font-weight: 950;
       letter-spacing: 0.14em;
       text-transform: uppercase;
     }
 
-    .citation-pill {
-      max-width: 60%;
-      padding: 7px 10px;
-      color: #fff;
-      border: 1px solid rgba(216, 184, 120, 0.26);
-      border-radius: 999px;
-      background: rgba(216, 184, 120, 0.11);
-      font-size: 0.78rem;
-      font-weight: 850;
-      line-height: 1.25;
-      text-align: right;
-    }
-
     .requirement-text {
       margin: 0;
-      color: #f6efeb;
+      color: var(--cream);
       font-size: clamp(1.02rem, 1.2vw, 1.2rem);
       font-weight: 720;
     }
 
     .card-footer {
+      display: grid;
+      gap: 14px;
+      margin-top: auto;
+      padding-top: 24px;
+    }
+
+    .citation-row {
+      display: grid;
+      gap: 5px;
+      padding-top: 16px;
+      border-top: 1px solid var(--steel);
+    }
+
+    .label {
+      color: var(--cloud);
+      font-size: 0.75rem;
+      font-weight: 950;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .citation-text {
+      color: var(--cream);
+      font-size: 0.95rem;
+      font-weight: 800;
+    }
+
+    .source-row {
       display: flex;
       gap: 12px;
       align-items: center;
       justify-content: space-between;
-      margin-top: auto;
-      padding-top: 22px;
-    }
-
-    .card-footer span {
-      color: var(--soft);
-      font-size: 0.78rem;
-      font-weight: 950;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
     }
 
     .source-link {
@@ -407,29 +345,27 @@
       align-items: center;
       justify-content: center;
       padding: 10px 14px;
-      color: #fff;
-      border: 1px solid rgba(255, 255, 255, 0.16);
+      color: var(--cream);
+      border: 1px solid var(--steel);
       border-radius: var(--radius);
-      background: rgba(0, 0, 0, 0.34);
+      background: var(--burgundy);
       font-size: 0.9rem;
       font-weight: 950;
       white-space: nowrap;
     }
 
     .source-link:hover {
-      border-color: rgba(216, 184, 120, 0.44);
-      background: rgba(143, 29, 36, 0.44);
+      background: var(--red);
     }
 
     .empty,
     .status {
       margin: 0 0 18px;
       padding: 18px;
-      border: 1px solid var(--line);
+      border: 1px solid var(--steel);
       border-radius: var(--radius);
-      background: rgba(0, 0, 0, 0.34);
-      color: var(--muted);
-      box-shadow: var(--shadow);
+      background: var(--onyx);
+      color: var(--cloud);
     }
 
     .status {
@@ -441,9 +377,9 @@
     }
 
     .status.error {
-      color: #ffd5d5;
-      border-color: rgba(219, 48, 56, 0.35);
-      background: rgba(79, 7, 11, 0.42);
+      color: var(--cream);
+      border-color: var(--red);
+      background: var(--burgundy);
     }
 
     .empty {
@@ -457,19 +393,11 @@
 
     .footer-note {
       margin: 24px 0 0;
-      color: var(--soft);
+      color: var(--cloud);
       font-size: 0.92rem;
     }
 
     @media (max-width: 1180px) {
-      .hero {
-        grid-template-columns: 1fr;
-      }
-
-      .stats {
-        width: 100%;
-      }
-
       .cards {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
@@ -483,10 +411,6 @@
 
       .toolbar,
       .active-state {
-        grid-template-columns: 1fr;
-      }
-
-      .stats {
         grid-template-columns: 1fr;
       }
 
@@ -512,15 +436,8 @@
         min-height: 280px;
       }
 
-      .card-top {
-        display: block;
-      }
-
-      .citation-pill {
-        display: inline-block;
-        max-width: 100%;
-        margin-top: 10px;
-        text-align: left;
+      .source-row {
+        display: grid;
       }
     }
   </style>
@@ -528,31 +445,14 @@
 <body>
   <main class="shell">
     <section class="hero" aria-label="Dashboard summary">
-      <div>
-        <div class="eyebrow">Cooper Steel Field Safety</div>
-        <h1>State OSHA Steel Erection Requirements</h1>
-        <p class="subtitle">State-plan steel erection requirements that are more stringent than federal OSHA, arranged by state for fast field planning and bid review.</p>
-      </div>
-
-      <div class="stats" aria-live="polite">
-        <div class="stat">
-          <strong id="selectedCount">0</strong>
-          <span>Selected Rows</span>
-        </div>
-        <div class="stat">
-          <strong id="stateCount">0</strong>
-          <span>States</span>
-        </div>
-        <div class="stat">
-          <strong id="totalCount">0</strong>
-          <span>Total Rows</span>
-        </div>
-      </div>
+      <div class="eyebrow">Cooper Steel Field Safety</div>
+      <h1>State OSHA Steel Erection Requirements</h1>
+      <p class="subtitle">State-plan steel erection requirements that are more stringent than federal OSHA, arranged by state for fast field planning and bid review.</p>
     </section>
 
     <section class="toolbar" aria-label="Search controls">
       <div class="search-wrap">
-        <span aria-hidden="true">⌕</span>
+        <span class="search-label" aria-hidden="true">Search</span>
         <input id="searchInput" type="search" placeholder="Search within the selected state">
       </div>
       <button id="clearButton" class="clear-btn" type="button">Clear Search</button>
@@ -571,7 +471,7 @@
     <section class="active-state" aria-label="Selected state">
       <div>
         <h2 id="activeStateName">Select a state</h2>
-        <p id="activeStateSummary">The selected state’s requirements will appear below as review cards.</p>
+        <p id="activeStateSummary">The selected state's requirements will appear below as review cards.</p>
       </div>
       <div id="activeBadge" class="active-badge">0 cards</div>
     </section>
@@ -600,10 +500,7 @@
       clear: document.getElementById("clearButton"),
       activeStateName: document.getElementById("activeStateName"),
       activeStateSummary: document.getElementById("activeStateSummary"),
-      activeBadge: document.getElementById("activeBadge"),
-      selectedCount: document.getElementById("selectedCount"),
-      stateCount: document.getElementById("stateCount"),
-      totalCount: document.getElementById("totalCount")
+      activeBadge: document.getElementById("activeBadge")
     };
 
     let allRows = [];
@@ -697,6 +594,10 @@
         .replace(/'/g, "&#039;");
     }
 
+    function isUrl(value) {
+      return /^https?:\/\//i.test(String(value || "").trim());
+    }
+
     function countForState(state) {
       return allRows.filter((row) => row.state === state).length;
     }
@@ -707,17 +608,24 @@
       els.status.classList.toggle("error", isError);
     }
 
-    function sourceMarkup(source) {
-      const trimmed = String(source || "").trim();
+    function citationText(citation) {
+      const trimmed = String(citation || "").trim();
       if (!trimmed) {
-        return "<span>No source listed</span>";
+        return "Citation not listed";
+      }
+      return isUrl(trimmed) ? "See source document" : trimmed;
+    }
+
+    function sourceMarkup(source, fallback) {
+      const sourceValue = String(source || "").trim();
+      const fallbackValue = String(fallback || "").trim();
+      const link = isUrl(sourceValue) ? sourceValue : isUrl(fallbackValue) ? fallbackValue : "";
+
+      if (link) {
+        return `<a class="source-link" href="${escapeHtml(link)}" target="_blank" rel="noopener">Open Source</a>`;
       }
 
-      if (/^https?:\/\//i.test(trimmed)) {
-        return `<a class="source-link" href="${escapeHtml(trimmed)}" target="_blank" rel="noopener">Open Source</a>`;
-      }
-
-      return `<span>${escapeHtml(trimmed)}</span>`;
+      return `<span class="citation-text">${escapeHtml(sourceValue || "No source listed")}</span>`;
     }
 
     function buildStateIndex() {
@@ -739,7 +647,6 @@
         });
       });
 
-      els.stateCount.textContent = String(states.length);
       selectedState = states[0] || "";
     }
 
@@ -767,8 +674,6 @@
       const rows = filteredRows();
       const totalForState = countForState(selectedState);
 
-      els.totalCount.textContent = String(allRows.length);
-      els.selectedCount.textContent = String(rows.length);
       els.activeStateName.textContent = selectedState || "Select a state";
       els.activeStateSummary.textContent = selectedState
         ? `${totalForState} steel-erection-related row${totalForState === 1 ? "" : "s"} in the source matrix.`
@@ -778,14 +683,17 @@
 
       els.cards.innerHTML = rows.map((row, index) => `
         <article class="requirement-card">
-          <div class="card-top">
-            <div class="card-number">Requirement ${String(index + 1).padStart(2, "0")}</div>
-            <div class="citation-pill">${escapeHtml(row.citation || "Citation not listed")}</div>
-          </div>
+          <div class="card-number">Requirement ${String(index + 1).padStart(2, "0")}</div>
           <p class="requirement-text">${escapeHtml(row.requirement)}</p>
           <div class="card-footer">
-            <span>Source</span>
-            ${sourceMarkup(row.source)}
+            <div class="citation-row">
+              <span class="label">Citation</span>
+              <span class="citation-text">${escapeHtml(citationText(row.citation))}</span>
+            </div>
+            <div class="source-row">
+              <span class="label">Source</span>
+              ${sourceMarkup(row.source, row.citation)}
+            </div>
           </div>
         </article>
       `).join("");
