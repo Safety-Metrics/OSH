@@ -1,0 +1,591 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>State OSHA Steel Erection Matrix</title>
+  <style>
+    :root {
+      --bg: #f6f8fb;
+      --panel: #ffffff;
+      --text: #172033;
+      --muted: #5d6b82;
+      --line: #dbe2ec;
+      --blue: #1f4e78;
+      --blue-dark: #173b5c;
+      --chip: #e8eef6;
+      --danger: #a42121;
+      --shadow: 0 10px 28px rgba(23, 32, 51, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1.45;
+    }
+
+    a {
+      color: var(--blue);
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    a:hover {
+      color: var(--blue-dark);
+      text-decoration: underline;
+    }
+
+    .shell {
+      width: min(1480px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 28px 0 42px;
+    }
+
+    .topbar {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 20px;
+      align-items: end;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(1.7rem, 3vw, 2.4rem);
+      line-height: 1.12;
+      letter-spacing: 0;
+    }
+
+    .subtitle {
+      margin: 8px 0 0;
+      color: var(--muted);
+      max-width: 860px;
+    }
+
+    .stats {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .stat {
+      min-width: 112px;
+      padding: 10px 12px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      text-align: right;
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 1.35rem;
+      line-height: 1;
+    }
+
+    .stat span {
+      color: var(--muted);
+      font-size: 0.8rem;
+    }
+
+    .controls {
+      display: grid;
+      grid-template-columns: minmax(220px, 1fr) minmax(180px, 260px) auto;
+      gap: 12px;
+      margin-bottom: 16px;
+      padding: 14px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--muted);
+      font-size: 0.82rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    input,
+    select,
+    button {
+      width: 100%;
+      min-height: 42px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      font: inherit;
+    }
+
+    input,
+    select {
+      padding: 9px 11px;
+      background: #fff;
+      color: var(--text);
+    }
+
+    button {
+      align-self: end;
+      padding: 9px 16px;
+      background: var(--blue);
+      color: #fff;
+      border-color: var(--blue);
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: var(--blue-dark);
+      border-color: var(--blue-dark);
+    }
+
+    .status {
+      display: none;
+      margin: 0 0 14px;
+      padding: 12px 14px;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      background: var(--panel);
+      color: var(--muted);
+    }
+
+    .status.show {
+      display: block;
+    }
+
+    .status.error {
+      color: var(--danger);
+      border-color: #e8b7b7;
+      background: #fff5f5;
+    }
+
+    .table-wrap {
+      overflow: auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+    }
+
+    table {
+      width: 100%;
+      min-width: 980px;
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--line);
+      vertical-align: top;
+      text-align: left;
+    }
+
+    th {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      background: var(--blue);
+      color: #fff;
+      font-size: 0.84rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    tbody tr:hover {
+      background: #f9fbfe;
+    }
+
+    td.state-cell {
+      width: 180px;
+      font-weight: 700;
+      color: var(--blue-dark);
+    }
+
+    td.requirement-cell {
+      min-width: 440px;
+    }
+
+    td.citation-cell {
+      width: 240px;
+      font-weight: 700;
+    }
+
+    td.source-cell {
+      width: 160px;
+    }
+
+    .state-chip {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: var(--chip);
+      color: var(--blue-dark);
+      white-space: nowrap;
+    }
+
+    .empty {
+      padding: 34px 16px;
+      text-align: center;
+      color: var(--muted);
+    }
+
+    .footer-note {
+      margin: 16px 2px 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 840px) {
+      .shell {
+        width: min(100% - 20px, 1480px);
+        padding-top: 18px;
+      }
+
+      .topbar,
+      .controls {
+        grid-template-columns: 1fr;
+      }
+
+      .stats {
+        justify-content: stretch;
+      }
+
+      .stat {
+        flex: 1 1 130px;
+        text-align: left;
+      }
+
+      .table-wrap {
+        overflow: visible;
+        background: transparent;
+        border: 0;
+        box-shadow: none;
+      }
+
+      table,
+      thead,
+      tbody,
+      tr,
+      th,
+      td {
+        display: block;
+        min-width: 0;
+        width: 100%;
+      }
+
+      thead {
+        display: none;
+      }
+
+      tr {
+        margin-bottom: 12px;
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+
+      td {
+        border-bottom: 1px solid var(--line);
+      }
+
+      td:last-child {
+        border-bottom: 0;
+      }
+
+      td::before {
+        content: attr(data-label);
+        display: block;
+        margin-bottom: 4px;
+        color: var(--muted);
+        font-size: 0.76rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+      }
+
+      td.state-cell,
+      td.citation-cell,
+      td.source-cell {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <section class="topbar" aria-label="Dashboard summary">
+      <div>
+        <h1>State OSHA Steel Erection Requirements</h1>
+        <p class="subtitle">A live view of state-run OSHA requirements related to steel erection that are more stringent than federal OSHA, with citation and source links only.</p>
+      </div>
+      <div class="stats" aria-live="polite">
+        <div class="stat">
+          <strong id="visibleCount">0</strong>
+          <span>Visible rows</span>
+        </div>
+        <div class="stat">
+          <strong id="stateCount">0</strong>
+          <span>States</span>
+        </div>
+        <div class="stat">
+          <strong id="totalCount">0</strong>
+          <span>Total rows</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="controls" aria-label="Filters">
+      <div>
+        <label for="searchInput">Search</label>
+        <input id="searchInput" type="search" placeholder="Search requirement, citation, source, or state">
+      </div>
+      <div>
+        <label for="stateFilter">State</label>
+        <select id="stateFilter">
+          <option value="">All states</option>
+        </select>
+      </div>
+      <button id="clearButton" type="button">Clear Filters</button>
+    </section>
+
+    <p id="status" class="status show">Loading Google Sheet data...</p>
+
+    <section class="table-wrap" aria-label="Steel erection requirements table">
+      <table>
+        <thead>
+          <tr>
+            <th>State</th>
+            <th>Steel-Erection-Related More Stringent Requirement</th>
+            <th>Citation</th>
+            <th>Source</th>
+          </tr>
+        </thead>
+        <tbody id="rows"></tbody>
+      </table>
+      <div id="empty" class="empty" hidden>No matching rows.</div>
+    </section>
+
+    <p class="footer-note">Data source: published Google Sheet CSV. Update the sheet, republish if needed, and refresh this page.</p>
+  </main>
+
+  <script>
+    const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR8SxjBcpMRRNWaSO74ZmuI1vgrtKoj4Ktly45QpRHK1QLKFp492sLX79rfEGxLEXnq9CfvVklyw1MH/pub?gid=0&single=true&output=csv";
+    const expectedHeaders = [
+      "State",
+      "Steel-Erection-Related More Stringent Requirement",
+      "Citation",
+      "Source"
+    ];
+
+    const els = {
+      rows: document.getElementById("rows"),
+      empty: document.getElementById("empty"),
+      status: document.getElementById("status"),
+      search: document.getElementById("searchInput"),
+      state: document.getElementById("stateFilter"),
+      clear: document.getElementById("clearButton"),
+      visibleCount: document.getElementById("visibleCount"),
+      stateCount: document.getElementById("stateCount"),
+      totalCount: document.getElementById("totalCount")
+    };
+
+    let allRows = [];
+    let filteredRows = [];
+
+    function parseCsv(text) {
+      const rows = [];
+      let row = [];
+      let field = "";
+      let inQuotes = false;
+
+      for (let i = 0; i < text.length; i += 1) {
+        const char = text[i];
+        const next = text[i + 1];
+
+        if (char === "\"") {
+          if (inQuotes && next === "\"") {
+            field += "\"";
+            i += 1;
+          } else {
+            inQuotes = !inQuotes;
+          }
+          continue;
+        }
+
+        if (char === "," && !inQuotes) {
+          row.push(field);
+          field = "";
+          continue;
+        }
+
+        if ((char === "\n" || char === "\r") && !inQuotes) {
+          if (char === "\r" && next === "\n") {
+            i += 1;
+          }
+          row.push(field);
+          if (row.some((value) => value.trim() !== "")) {
+            rows.push(row);
+          }
+          row = [];
+          field = "";
+          continue;
+        }
+
+        field += char;
+      }
+
+      row.push(field);
+      if (row.some((value) => value.trim() !== "")) {
+        rows.push(row);
+      }
+
+      return rows;
+    }
+
+    function normalizeHeader(value) {
+      return String(value || "").trim().toLowerCase();
+    }
+
+    function rowsFromCsv(text) {
+      const parsed = parseCsv(text);
+      if (!parsed.length) {
+        return [];
+      }
+
+      const headers = parsed[0].map((header) => header.trim());
+      const headerMap = new Map(headers.map((header, index) => [normalizeHeader(header), index]));
+      const missing = expectedHeaders.filter((header) => !headerMap.has(normalizeHeader(header)));
+
+      if (missing.length) {
+        throw new Error("The published sheet is missing: " + missing.join(", "));
+      }
+
+      return parsed.slice(1)
+        .map((cells) => ({
+          state: (cells[headerMap.get(normalizeHeader("State"))] || "").trim(),
+          requirement: (cells[headerMap.get(normalizeHeader("Steel-Erection-Related More Stringent Requirement"))] || "").trim(),
+          citation: (cells[headerMap.get(normalizeHeader("Citation"))] || "").trim(),
+          source: (cells[headerMap.get(normalizeHeader("Source"))] || "").trim()
+        }))
+        .filter((item) => item.state || item.requirement || item.citation || item.source);
+    }
+
+    function sourceHtml(value) {
+      const trimmed = String(value || "").trim();
+      if (!trimmed) {
+        return "";
+      }
+
+      if (/^https?:\/\//i.test(trimmed)) {
+        const safeUrl = escapeHtml(trimmed);
+        return `<a href="${safeUrl}" target="_blank" rel="noopener">Open source</a>`;
+      }
+
+      return escapeHtml(trimmed);
+    }
+
+    function escapeHtml(value) {
+      return String(value || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function populateStates() {
+      const selected = els.state.value;
+      const states = [...new Set(allRows.map((row) => row.state).filter(Boolean))]
+        .sort((a, b) => a.localeCompare(b));
+
+      els.state.innerHTML = `<option value="">All states</option>` + states
+        .map((state) => `<option value="${escapeHtml(state)}">${escapeHtml(state)}</option>`)
+        .join("");
+
+      if (states.includes(selected)) {
+        els.state.value = selected;
+      }
+
+      els.stateCount.textContent = String(states.length);
+    }
+
+    function filterRows() {
+      const term = els.search.value.trim().toLowerCase();
+      const state = els.state.value;
+
+      filteredRows = allRows.filter((row) => {
+        const stateMatches = !state || row.state === state;
+        const haystack = `${row.state} ${row.requirement} ${row.citation} ${row.source}`.toLowerCase();
+        const searchMatches = !term || haystack.includes(term);
+        return stateMatches && searchMatches;
+      });
+
+      renderRows();
+    }
+
+    function renderRows() {
+      els.visibleCount.textContent = String(filteredRows.length);
+      els.totalCount.textContent = String(allRows.length);
+      els.empty.hidden = filteredRows.length !== 0;
+
+      els.rows.innerHTML = filteredRows.map((row) => `
+        <tr>
+          <td class="state-cell" data-label="State"><span class="state-chip">${escapeHtml(row.state)}</span></td>
+          <td class="requirement-cell" data-label="Requirement">${escapeHtml(row.requirement)}</td>
+          <td class="citation-cell" data-label="Citation">${escapeHtml(row.citation)}</td>
+          <td class="source-cell" data-label="Source">${sourceHtml(row.source)}</td>
+        </tr>
+      `).join("");
+    }
+
+    function setStatus(message, isError = false) {
+      els.status.textContent = message;
+      els.status.classList.toggle("show", Boolean(message));
+      els.status.classList.toggle("error", isError);
+    }
+
+    async function loadData() {
+      try {
+        const response = await fetch(CSV_URL, { cache: "no-store" });
+        if (!response.ok) {
+          throw new Error("Google Sheets returned HTTP " + response.status);
+        }
+
+        const text = await response.text();
+        allRows = rowsFromCsv(text);
+        populateStates();
+        filterRows();
+        setStatus("");
+      } catch (error) {
+        console.error(error);
+        setStatus("Could not load the published Google Sheet. Confirm the sheet is published to the web as CSV, then refresh this page.", true);
+      }
+    }
+
+    els.search.addEventListener("input", filterRows);
+    els.state.addEventListener("change", filterRows);
+    els.clear.addEventListener("click", () => {
+      els.search.value = "";
+      els.state.value = "";
+      filterRows();
+      els.search.focus();
+    });
+
+    loadData();
+  </script>
+</body>
+</html>
