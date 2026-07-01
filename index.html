@@ -3,161 +3,437 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>State OSHA Steel Erection Matrix</title>
+  <title>State OSHA Steel Erection Dashboard</title>
   <style>
     :root {
-      --bg: #f6f8fb;
-      --panel: #ffffff;
-      --text: #172033;
-      --muted: #5d6b82;
-      --line: #dbe2ec;
-      --blue: #1f4e78;
-      --blue-dark: #173b5c;
-      --chip: #e8eef6;
-      --danger: #a42121;
-      --shadow: 0 10px 28px rgba(23, 32, 51, 0.08);
+      --bg: #070708;
+      --panel: rgba(255, 255, 255, 0.065);
+      --panel-strong: rgba(255, 255, 255, 0.105);
+      --text: #f7f1eb;
+      --muted: #b8b0ad;
+      --soft: #7e7777;
+      --line: rgba(255, 255, 255, 0.13);
+      --line-strong: rgba(255, 255, 255, 0.22);
+      --red: #8f1d24;
+      --red-hot: #db3038;
+      --red-dark: #36090d;
+      --gold: #d8b878;
+      --black: #050505;
+      --shadow: 0 26px 70px rgba(0, 0, 0, 0.48);
+      --radius: 8px;
     }
 
     * {
       box-sizing: border-box;
     }
 
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
+      min-height: 100vh;
       margin: 0;
-      background: var(--bg);
       color: var(--text);
-      font-family: Arial, Helvetica, sans-serif;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
       line-height: 1.45;
+      background:
+        radial-gradient(circle at 16% 5%, rgba(151, 28, 34, 0.42), transparent 34%),
+        radial-gradient(circle at 83% 24%, rgba(120, 17, 22, 0.26), transparent 35%),
+        linear-gradient(140deg, #120709 0%, #080808 48%, #171112 100%);
+      background-attachment: fixed;
+    }
+
+    body::before {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      content: "";
+      background:
+        linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+        linear-gradient(rgba(255, 255, 255, 0.027) 1px, transparent 1px);
+      background-size: 72px 72px;
+      mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.52), transparent 70%);
     }
 
     a {
-      color: var(--blue);
-      font-weight: 700;
+      color: inherit;
       text-decoration: none;
     }
 
-    a:hover {
-      color: var(--blue-dark);
-      text-decoration: underline;
+    button,
+    input {
+      font: inherit;
     }
 
     .shell {
-      width: min(1480px, calc(100% - 32px));
+      width: min(1680px, calc(100% - 40px));
       margin: 0 auto;
-      padding: 28px 0 42px;
+      padding: 42px 0 54px;
     }
 
-    .topbar {
+    .hero {
       display: grid;
       grid-template-columns: minmax(0, 1fr) auto;
-      gap: 20px;
+      gap: 28px;
       align-items: end;
-      margin-bottom: 18px;
+      margin-bottom: 26px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 14px;
+      color: var(--gold);
+      font-size: 0.82rem;
+      font-weight: 900;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before {
+      display: inline-block;
+      width: 36px;
+      height: 2px;
+      content: "";
+      background: linear-gradient(90deg, var(--red-hot), var(--gold));
     }
 
     h1 {
+      max-width: 980px;
       margin: 0;
-      font-size: clamp(1.7rem, 3vw, 2.4rem);
-      line-height: 1.12;
+      font-size: clamp(2.25rem, 5vw, 5.35rem);
+      line-height: 0.94;
       letter-spacing: 0;
+      text-wrap: balance;
     }
 
     .subtitle {
-      margin: 8px 0 0;
+      max-width: 780px;
+      margin: 18px 0 0;
       color: var(--muted);
-      max-width: 860px;
+      font-size: clamp(1rem, 1.4vw, 1.23rem);
     }
 
     .stats {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      justify-content: flex-end;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(132px, 1fr));
+      gap: 12px;
+      min-width: min(490px, 100%);
     }
 
     .stat {
-      min-width: 112px;
-      padding: 10px 12px;
-      background: var(--panel);
+      min-height: 104px;
+      padding: 18px;
       border: 1px solid var(--line);
-      border-radius: 8px;
+      border-radius: var(--radius);
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.11), rgba(255, 255, 255, 0.035));
       box-shadow: var(--shadow);
-      text-align: right;
     }
 
     .stat strong {
       display: block;
-      font-size: 1.35rem;
+      font-size: clamp(1.7rem, 3vw, 2.55rem);
       line-height: 1;
     }
 
     .stat span {
-      color: var(--muted);
-      font-size: 0.8rem;
-    }
-
-    .controls {
-      display: grid;
-      grid-template-columns: minmax(220px, 1fr) minmax(180px, 260px) auto;
-      gap: 12px;
-      margin-bottom: 16px;
-      padding: 14px;
-      background: var(--panel);
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      box-shadow: var(--shadow);
-    }
-
-    label {
       display: block;
-      margin-bottom: 6px;
+      margin-top: 8px;
       color: var(--muted);
       font-size: 0.82rem;
-      font-weight: 700;
+      font-weight: 800;
+      letter-spacing: 0.08em;
       text-transform: uppercase;
-      letter-spacing: 0.04em;
     }
 
-    input,
-    select,
-    button {
-      width: 100%;
-      min-height: 42px;
+    .toolbar {
+      display: grid;
+      grid-template-columns: minmax(240px, 1fr) auto;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 18px;
+      padding: 12px;
       border: 1px solid var(--line);
-      border-radius: 8px;
-      font: inherit;
+      border-radius: var(--radius);
+      background: rgba(0, 0, 0, 0.34);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
     }
 
-    input,
-    select {
-      padding: 9px 11px;
-      background: #fff;
+    .search-wrap {
+      position: relative;
+    }
+
+    .search-wrap span {
+      position: absolute;
+      top: 50%;
+      left: 16px;
+      color: var(--soft);
+      transform: translateY(-50%);
+      pointer-events: none;
+    }
+
+    input[type="search"] {
+      width: 100%;
+      min-height: 50px;
+      padding: 12px 16px 12px 45px;
       color: var(--text);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      outline: none;
+      background: rgba(255, 255, 255, 0.07);
     }
 
-    button {
-      align-self: end;
-      padding: 9px 16px;
-      background: var(--blue);
-      color: #fff;
-      border-color: var(--blue);
-      font-weight: 700;
+    input[type="search"]::placeholder {
+      color: #8e8787;
+    }
+
+    input[type="search"]:focus {
+      border-color: rgba(216, 184, 120, 0.7);
+      box-shadow: 0 0 0 3px rgba(216, 184, 120, 0.12);
+    }
+
+    .clear-btn {
+      min-height: 50px;
+      padding: 0 20px;
+      color: var(--text);
+      font-weight: 900;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: var(--radius);
+      background: linear-gradient(145deg, rgba(143, 29, 36, 0.92), rgba(42, 7, 10, 0.96));
       cursor: pointer;
     }
 
-    button:hover {
-      background: var(--blue-dark);
-      border-color: var(--blue-dark);
+    .clear-btn:hover {
+      border-color: rgba(216, 184, 120, 0.42);
+      background: linear-gradient(145deg, rgba(200, 35, 45, 0.98), rgba(69, 9, 15, 0.98));
+    }
+
+    .state-index-panel {
+      margin-bottom: 22px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(0, 0, 0, 0.32);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      backdrop-filter: blur(18px);
+    }
+
+    .panel-head {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .panel-head h2 {
+      margin: 0;
+      font-size: 0.95rem;
+      font-weight: 950;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .panel-head p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .state-index {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding: 16px;
+    }
+
+    .state-btn {
+      min-height: 42px;
+      padding: 10px 14px;
+      color: var(--text);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.06);
+      cursor: pointer;
+      font-size: 0.92rem;
+      font-weight: 850;
+      white-space: nowrap;
+      transition: transform 150ms ease, border-color 150ms ease, background 150ms ease;
+    }
+
+    .state-btn:hover {
+      border-color: rgba(216, 184, 120, 0.42);
+      background: rgba(255, 255, 255, 0.1);
+      transform: translateY(-1px);
+    }
+
+    .state-btn.active {
+      color: #fff;
+      border-color: rgba(255, 255, 255, 0.22);
+      background: linear-gradient(135deg, #b6212b, #551116 68%, #1a0709);
+      box-shadow: 0 10px 28px rgba(168, 25, 35, 0.32);
+    }
+
+    .state-btn small {
+      margin-left: 6px;
+      color: rgba(255, 255, 255, 0.66);
+      font-weight: 900;
+    }
+
+    .active-state {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 18px;
+      align-items: end;
+      margin: 28px 0 18px;
+    }
+
+    .active-state h2 {
+      margin: 0;
+      font-size: clamp(2rem, 4vw, 4.2rem);
+      line-height: 0.95;
+      letter-spacing: 0;
+    }
+
+    .active-state p {
+      margin: 10px 0 0;
+      color: var(--muted);
+    }
+
+    .active-badge {
+      padding: 12px 16px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.065);
+      color: var(--gold);
+      font-weight: 950;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .requirement-card {
+      display: flex;
+      min-height: 318px;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+      padding: 24px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background:
+        linear-gradient(145deg, rgba(255, 255, 255, 0.105), rgba(255, 255, 255, 0.035)),
+        linear-gradient(150deg, rgba(143, 29, 36, 0.14), transparent 55%);
+      box-shadow: var(--shadow);
+    }
+
+    .requirement-card::before {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      content: "";
+      background: linear-gradient(90deg, var(--red-hot), var(--gold), transparent);
+    }
+
+    .card-top {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 18px;
+    }
+
+    .card-number {
+      color: rgba(255, 255, 255, 0.36);
+      font-size: 0.78rem;
+      font-weight: 950;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .citation-pill {
+      max-width: 60%;
+      padding: 7px 10px;
+      color: #fff;
+      border: 1px solid rgba(216, 184, 120, 0.26);
+      border-radius: 999px;
+      background: rgba(216, 184, 120, 0.11);
+      font-size: 0.78rem;
+      font-weight: 850;
+      line-height: 1.25;
+      text-align: right;
+    }
+
+    .requirement-text {
+      margin: 0;
+      color: #f6efeb;
+      font-size: clamp(1.02rem, 1.2vw, 1.2rem);
+      font-weight: 720;
+    }
+
+    .card-footer {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: auto;
+      padding-top: 22px;
+    }
+
+    .card-footer span {
+      color: var(--soft);
+      font-size: 0.78rem;
+      font-weight: 950;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .source-link {
+      display: inline-flex;
+      min-height: 42px;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 14px;
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: var(--radius);
+      background: rgba(0, 0, 0, 0.34);
+      font-size: 0.9rem;
+      font-weight: 950;
+      white-space: nowrap;
+    }
+
+    .source-link:hover {
+      border-color: rgba(216, 184, 120, 0.44);
+      background: rgba(143, 29, 36, 0.44);
+    }
+
+    .empty,
+    .status {
+      margin: 0 0 18px;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(0, 0, 0, 0.34);
+      color: var(--muted);
+      box-shadow: var(--shadow);
     }
 
     .status {
       display: none;
-      margin: 0 0 14px;
-      padding: 12px 14px;
-      border-radius: 8px;
-      border: 1px solid var(--line);
-      background: var(--panel);
-      color: var(--muted);
     }
 
     .status.show {
@@ -165,177 +441,103 @@
     }
 
     .status.error {
-      color: var(--danger);
-      border-color: #e8b7b7;
-      background: #fff5f5;
-    }
-
-    .table-wrap {
-      overflow: auto;
-      background: var(--panel);
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      box-shadow: var(--shadow);
-    }
-
-    table {
-      width: 100%;
-      min-width: 980px;
-      border-collapse: collapse;
-    }
-
-    th,
-    td {
-      padding: 12px 14px;
-      border-bottom: 1px solid var(--line);
-      vertical-align: top;
-      text-align: left;
-    }
-
-    th {
-      position: sticky;
-      top: 0;
-      z-index: 1;
-      background: var(--blue);
-      color: #fff;
-      font-size: 0.84rem;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-    }
-
-    tbody tr:hover {
-      background: #f9fbfe;
-    }
-
-    td.state-cell {
-      width: 180px;
-      font-weight: 700;
-      color: var(--blue-dark);
-    }
-
-    td.requirement-cell {
-      min-width: 440px;
-    }
-
-    td.citation-cell {
-      width: 240px;
-      font-weight: 700;
-    }
-
-    td.source-cell {
-      width: 160px;
-    }
-
-    .state-chip {
-      display: inline-block;
-      padding: 4px 8px;
-      border-radius: 999px;
-      background: var(--chip);
-      color: var(--blue-dark);
-      white-space: nowrap;
+      color: #ffd5d5;
+      border-color: rgba(219, 48, 56, 0.35);
+      background: rgba(79, 7, 11, 0.42);
     }
 
     .empty {
-      padding: 34px 16px;
+      display: none;
       text-align: center;
-      color: var(--muted);
+    }
+
+    .empty.show {
+      display: block;
     }
 
     .footer-note {
-      margin: 16px 2px 0;
-      color: var(--muted);
-      font-size: 0.9rem;
+      margin: 24px 0 0;
+      color: var(--soft);
+      font-size: 0.92rem;
     }
 
-    @media (max-width: 840px) {
-      .shell {
-        width: min(100% - 20px, 1480px);
-        padding-top: 18px;
-      }
-
-      .topbar,
-      .controls {
+    @media (max-width: 1180px) {
+      .hero {
         grid-template-columns: 1fr;
       }
 
       .stats {
-        justify-content: stretch;
+        width: 100%;
       }
 
-      .stat {
-        flex: 1 1 130px;
+      .cards {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 780px) {
+      .shell {
+        width: min(100% - 22px, 1680px);
+        padding-top: 24px;
+      }
+
+      .toolbar,
+      .active-state {
+        grid-template-columns: 1fr;
+      }
+
+      .stats {
+        grid-template-columns: 1fr;
+      }
+
+      .panel-head {
+        display: block;
+      }
+
+      .panel-head p {
+        margin-top: 8px;
+      }
+
+      .state-index {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        padding-bottom: 18px;
+      }
+
+      .cards {
+        grid-template-columns: 1fr;
+      }
+
+      .requirement-card {
+        min-height: 280px;
+      }
+
+      .card-top {
+        display: block;
+      }
+
+      .citation-pill {
+        display: inline-block;
+        max-width: 100%;
+        margin-top: 10px;
         text-align: left;
-      }
-
-      .table-wrap {
-        overflow: visible;
-        background: transparent;
-        border: 0;
-        box-shadow: none;
-      }
-
-      table,
-      thead,
-      tbody,
-      tr,
-      th,
-      td {
-        display: block;
-        min-width: 0;
-        width: 100%;
-      }
-
-      thead {
-        display: none;
-      }
-
-      tr {
-        margin-bottom: 12px;
-        background: var(--panel);
-        border: 1px solid var(--line);
-        border-radius: 8px;
-        box-shadow: var(--shadow);
-        overflow: hidden;
-      }
-
-      td {
-        border-bottom: 1px solid var(--line);
-      }
-
-      td:last-child {
-        border-bottom: 0;
-      }
-
-      td::before {
-        content: attr(data-label);
-        display: block;
-        margin-bottom: 4px;
-        color: var(--muted);
-        font-size: 0.76rem;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.04em;
-      }
-
-      td.state-cell,
-      td.citation-cell,
-      td.source-cell {
-        width: 100%;
       }
     }
   </style>
 </head>
 <body>
   <main class="shell">
-    <section class="topbar" aria-label="Dashboard summary">
+    <section class="hero" aria-label="Dashboard summary">
       <div>
+        <div class="eyebrow">Cooper Steel Field Safety</div>
         <h1>State OSHA Steel Erection Requirements</h1>
-        <p class="subtitle">A live view of state-run OSHA requirements related to steel erection that are more stringent than federal OSHA, with citation and source links only.</p>
+        <p class="subtitle">State-plan steel erection requirements that are more stringent than federal OSHA, arranged by state for fast field planning and bid review.</p>
       </div>
+
       <div class="stats" aria-live="polite">
         <div class="stat">
-          <strong id="visibleCount">0</strong>
-          <span>Visible rows</span>
+          <strong id="selectedCount">0</strong>
+          <span>Selected Rows</span>
         </div>
         <div class="stat">
           <strong id="stateCount">0</strong>
@@ -343,43 +545,41 @@
         </div>
         <div class="stat">
           <strong id="totalCount">0</strong>
-          <span>Total rows</span>
+          <span>Total Rows</span>
         </div>
       </div>
     </section>
 
-    <section class="controls" aria-label="Filters">
-      <div>
-        <label for="searchInput">Search</label>
-        <input id="searchInput" type="search" placeholder="Search requirement, citation, source, or state">
+    <section class="toolbar" aria-label="Search controls">
+      <div class="search-wrap">
+        <span aria-hidden="true">⌕</span>
+        <input id="searchInput" type="search" placeholder="Search within the selected state">
       </div>
-      <div>
-        <label for="stateFilter">State</label>
-        <select id="stateFilter">
-          <option value="">All states</option>
-        </select>
-      </div>
-      <button id="clearButton" type="button">Clear Filters</button>
+      <button id="clearButton" class="clear-btn" type="button">Clear Search</button>
     </section>
 
     <p id="status" class="status show">Loading Google Sheet data...</p>
 
-    <section class="table-wrap" aria-label="Steel erection requirements table">
-      <table>
-        <thead>
-          <tr>
-            <th>State</th>
-            <th>Steel-Erection-Related More Stringent Requirement</th>
-            <th>Citation</th>
-            <th>Source</th>
-          </tr>
-        </thead>
-        <tbody id="rows"></tbody>
-      </table>
-      <div id="empty" class="empty" hidden>No matching rows.</div>
+    <section class="state-index-panel" aria-label="State index">
+      <div class="panel-head">
+        <h2>State Index</h2>
+        <p>Click a state to load its steel erection cards.</p>
+      </div>
+      <div id="stateIndex" class="state-index"></div>
     </section>
 
-    <p class="footer-note">Data source: published Google Sheet CSV. Update the sheet, republish if needed, and refresh this page.</p>
+    <section class="active-state" aria-label="Selected state">
+      <div>
+        <h2 id="activeStateName">Select a state</h2>
+        <p id="activeStateSummary">The selected state’s requirements will appear below as review cards.</p>
+      </div>
+      <div id="activeBadge" class="active-badge">0 cards</div>
+    </section>
+
+    <div id="empty" class="empty">No matching cards for this state and search.</div>
+    <section id="cards" class="cards" aria-label="Requirement cards"></section>
+
+    <p class="footer-note">Live data source: published Google Sheet CSV. Update the sheet and refresh the page to pull the latest rows.</p>
   </main>
 
   <script>
@@ -392,19 +592,23 @@
     ];
 
     const els = {
-      rows: document.getElementById("rows"),
+      stateIndex: document.getElementById("stateIndex"),
+      cards: document.getElementById("cards"),
       empty: document.getElementById("empty"),
       status: document.getElementById("status"),
       search: document.getElementById("searchInput"),
-      state: document.getElementById("stateFilter"),
       clear: document.getElementById("clearButton"),
-      visibleCount: document.getElementById("visibleCount"),
+      activeStateName: document.getElementById("activeStateName"),
+      activeStateSummary: document.getElementById("activeStateSummary"),
+      activeBadge: document.getElementById("activeBadge"),
+      selectedCount: document.getElementById("selectedCount"),
       stateCount: document.getElementById("stateCount"),
       totalCount: document.getElementById("totalCount")
     };
 
     let allRows = [];
-    let filteredRows = [];
+    let states = [];
+    let selectedState = "";
 
     function parseCsv(text) {
       const rows = [];
@@ -484,20 +688,6 @@
         .filter((item) => item.state || item.requirement || item.citation || item.source);
     }
 
-    function sourceHtml(value) {
-      const trimmed = String(value || "").trim();
-      if (!trimmed) {
-        return "";
-      }
-
-      if (/^https?:\/\//i.test(trimmed)) {
-        const safeUrl = escapeHtml(trimmed);
-        return `<a href="${safeUrl}" target="_blank" rel="noopener">Open source</a>`;
-      }
-
-      return escapeHtml(trimmed);
-    }
-
     function escapeHtml(value) {
       return String(value || "")
         .replace(/&/g, "&amp;")
@@ -507,55 +697,98 @@
         .replace(/'/g, "&#039;");
     }
 
-    function populateStates() {
-      const selected = els.state.value;
-      const states = [...new Set(allRows.map((row) => row.state).filter(Boolean))]
-        .sort((a, b) => a.localeCompare(b));
-
-      els.state.innerHTML = `<option value="">All states</option>` + states
-        .map((state) => `<option value="${escapeHtml(state)}">${escapeHtml(state)}</option>`)
-        .join("");
-
-      if (states.includes(selected)) {
-        els.state.value = selected;
-      }
-
-      els.stateCount.textContent = String(states.length);
-    }
-
-    function filterRows() {
-      const term = els.search.value.trim().toLowerCase();
-      const state = els.state.value;
-
-      filteredRows = allRows.filter((row) => {
-        const stateMatches = !state || row.state === state;
-        const haystack = `${row.state} ${row.requirement} ${row.citation} ${row.source}`.toLowerCase();
-        const searchMatches = !term || haystack.includes(term);
-        return stateMatches && searchMatches;
-      });
-
-      renderRows();
-    }
-
-    function renderRows() {
-      els.visibleCount.textContent = String(filteredRows.length);
-      els.totalCount.textContent = String(allRows.length);
-      els.empty.hidden = filteredRows.length !== 0;
-
-      els.rows.innerHTML = filteredRows.map((row) => `
-        <tr>
-          <td class="state-cell" data-label="State"><span class="state-chip">${escapeHtml(row.state)}</span></td>
-          <td class="requirement-cell" data-label="Requirement">${escapeHtml(row.requirement)}</td>
-          <td class="citation-cell" data-label="Citation">${escapeHtml(row.citation)}</td>
-          <td class="source-cell" data-label="Source">${sourceHtml(row.source)}</td>
-        </tr>
-      `).join("");
+    function countForState(state) {
+      return allRows.filter((row) => row.state === state).length;
     }
 
     function setStatus(message, isError = false) {
       els.status.textContent = message;
       els.status.classList.toggle("show", Boolean(message));
       els.status.classList.toggle("error", isError);
+    }
+
+    function sourceMarkup(source) {
+      const trimmed = String(source || "").trim();
+      if (!trimmed) {
+        return "<span>No source listed</span>";
+      }
+
+      if (/^https?:\/\//i.test(trimmed)) {
+        return `<a class="source-link" href="${escapeHtml(trimmed)}" target="_blank" rel="noopener">Open Source</a>`;
+      }
+
+      return `<span>${escapeHtml(trimmed)}</span>`;
+    }
+
+    function buildStateIndex() {
+      states = [...new Set(allRows.map((row) => row.state).filter(Boolean))]
+        .sort((a, b) => a.localeCompare(b));
+
+      els.stateIndex.innerHTML = states.map((state) => `
+        <button class="state-btn" type="button" data-state="${escapeHtml(state)}">
+          ${escapeHtml(state)} <small>${countForState(state)}</small>
+        </button>
+      `).join("");
+
+      els.stateIndex.querySelectorAll(".state-btn").forEach((button) => {
+        button.addEventListener("click", () => {
+          selectedState = button.dataset.state;
+          els.search.value = "";
+          render();
+          document.querySelector(".active-state").scrollIntoView({ block: "start", behavior: "smooth" });
+        });
+      });
+
+      els.stateCount.textContent = String(states.length);
+      selectedState = states[0] || "";
+    }
+
+    function filteredRows() {
+      const term = els.search.value.trim().toLowerCase();
+      return allRows.filter((row) => {
+        if (row.state !== selectedState) {
+          return false;
+        }
+        if (!term) {
+          return true;
+        }
+        return `${row.requirement} ${row.citation} ${row.source}`.toLowerCase().includes(term);
+      });
+    }
+
+    function renderStateButtons() {
+      els.stateIndex.querySelectorAll(".state-btn").forEach((button) => {
+        button.classList.toggle("active", button.dataset.state === selectedState);
+      });
+    }
+
+    function render() {
+      renderStateButtons();
+      const rows = filteredRows();
+      const totalForState = countForState(selectedState);
+
+      els.totalCount.textContent = String(allRows.length);
+      els.selectedCount.textContent = String(rows.length);
+      els.activeStateName.textContent = selectedState || "Select a state";
+      els.activeStateSummary.textContent = selectedState
+        ? `${totalForState} steel-erection-related row${totalForState === 1 ? "" : "s"} in the source matrix.`
+        : "The selected state's requirements will appear below as review cards.";
+      els.activeBadge.textContent = `${rows.length} card${rows.length === 1 ? "" : "s"}`;
+      els.empty.classList.toggle("show", rows.length === 0);
+
+      els.cards.innerHTML = rows.map((row, index) => `
+        <article class="requirement-card">
+          <div class="card-top">
+            <div class="card-number">Requirement ${String(index + 1).padStart(2, "0")}</div>
+            <div class="citation-pill">${escapeHtml(row.citation || "Citation not listed")}</div>
+          </div>
+          <p class="requirement-text">${escapeHtml(row.requirement)}</p>
+          <div class="card-footer">
+            <span>Source</span>
+            ${sourceMarkup(row.source)}
+          </div>
+        </article>
+      `).join("");
     }
 
     async function loadData() {
@@ -567,8 +800,8 @@
 
         const text = await response.text();
         allRows = rowsFromCsv(text);
-        populateStates();
-        filterRows();
+        buildStateIndex();
+        render();
         setStatus("");
       } catch (error) {
         console.error(error);
@@ -576,12 +809,10 @@
       }
     }
 
-    els.search.addEventListener("input", filterRows);
-    els.state.addEventListener("change", filterRows);
+    els.search.addEventListener("input", render);
     els.clear.addEventListener("click", () => {
       els.search.value = "";
-      els.state.value = "";
-      filterRows();
+      render();
       els.search.focus();
     });
 
