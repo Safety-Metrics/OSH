@@ -1323,7 +1323,7 @@
       width: min(1180px, calc(100% - 44px));
       margin: 12px auto 26px;
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 12px;
       padding: 8px;
       border: 1px solid rgba(93,92,90,.72);
@@ -1361,6 +1361,51 @@
 
     .dashboard-view.active{
       display: block;
+    }
+
+    .construction-view{
+      width: min(1180px, calc(100% - 44px));
+      margin: 0 auto 80px;
+      padding: clamp(44px, 8vw, 94px) 22px;
+      border: 1px solid rgba(93,92,90,.72);
+      border-radius: var(--radius-lg);
+      background:
+        radial-gradient(700px 300px at 10% 0%, rgba(159,28,31,.26), transparent 62%),
+        linear-gradient(145deg, rgba(40,40,40,.96), rgba(17,17,18,.96) 62%, rgba(104,12,25,.72));
+      box-shadow: var(--card-shadow);
+      text-align: center;
+    }
+
+    .construction-kicker{
+      margin-bottom: 14px;
+      color: var(--cloud);
+      font-family: var(--font-condensed);
+      font-size: 13px;
+      font-weight: 950;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+    }
+
+    .construction-title{
+      margin: 0;
+      color: var(--cream);
+      font-family: var(--font-display);
+      font-size: clamp(48px, 7vw, 92px);
+      line-height: .92;
+    }
+
+    .construction-subtitle{
+      max-width: 620px;
+      margin: 16px auto 0;
+      color: rgba(242,239,235,.72);
+      font-size: 15px;
+      line-height: 1.55;
+    }
+
+    @media (max-width: 960px){
+      .dashboard-tabs{
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
     }
 
     @media (max-width: 680px){
@@ -1825,6 +1870,8 @@
   <nav class="dashboard-tabs" aria-label="Dashboard tabs">
     <button class="tab-btn active" type="button" data-view="safetyView" aria-selected="true">Safety Metrics</button>
     <button class="tab-btn" type="button" data-view="oshaView" aria-selected="false">State OSHA</button>
+    <button class="tab-btn" type="button" data-view="gcView" aria-selected="false">General Contractor Requirements</button>
+    <button class="tab-btn" type="button" data-view="ownerView" aria-selected="false">Owner Requirements</button>
   </nav>
 
 
@@ -2082,7 +2129,7 @@
     <section class="osh-toolbar" aria-label="State OSHA search controls">
       <div class="osh-search-wrap">
         <span class="osh-search-label" aria-hidden="true">Search</span>
-        <input id="oshSearchInput" class="osh-search" type="search" placeholder="Search within the selected state">
+        <input id="oshSearchInput" class="osh-search" type="search" placeholder="Search all states by keyword, e.g. CDZ or fall protection">
       </div>
       <button id="oshClearButton" class="osh-clear-btn" type="button">Clear Search</button>
     </section>
@@ -2109,6 +2156,18 @@
     <section id="oshCards" class="osh-cards" aria-label="Requirement cards"></section>
 
     <p class="osh-footer-note">Live data source: published Google Sheet CSV. Update the source Google Sheet and refresh this page to pull the latest rows.</p>
+  </section>
+
+  <section id="gcView" class="dashboard-view construction-view" aria-label="General contractor requirements">
+    <div class="construction-kicker">General Contractor Requirements</div>
+    <h1 class="construction-title">Under Construction</h1>
+    <p class="construction-subtitle">This tab is staged for future GC-specific requirements, contract rules, and project controls.</p>
+  </section>
+
+  <section id="ownerView" class="dashboard-view construction-view" aria-label="Owner requirements">
+    <div class="construction-kicker">Owner Requirements</div>
+    <h1 class="construction-title">Under Construction</h1>
+    <p class="construction-subtitle">This tab is staged for owner-specific requirements, site rules, and client-driven safety controls.</p>
   </section>
 
   </div>
@@ -3606,37 +3665,47 @@ function computeTelemetryWindow(incNorm, subsAll, window){
       function filteredRows() {
         const term = els.search.value.trim().toLowerCase();
         return allRows.filter((row) => {
-          if (row.state !== selectedState) {
-            return false;
+          const haystack = `${row.state} ${row.requirement} ${row.citation} ${row.source}`.toLowerCase();
+
+          if (term) {
+            return haystack.includes(term);
           }
-          if (!term) {
-            return true;
-          }
-          return `${row.requirement} ${row.citation} ${row.source}`.toLowerCase().includes(term);
+
+          return row.state === selectedState;
         });
       }
 
       function renderStateButtons() {
+        const hasSearch = Boolean(els.search.value.trim());
         els.stateIndex.querySelectorAll(".osh-state-btn").forEach((button) => {
-          button.classList.toggle("active", button.dataset.state === selectedState);
+          button.classList.toggle("active", !hasSearch && button.dataset.state === selectedState);
         });
       }
 
       function render() {
         renderStateButtons();
         const rows = filteredRows();
+        const term = els.search.value.trim();
         const totalForState = countForState(selectedState);
+        const matchedStates = [...new Set(rows.map((row) => row.state).filter(Boolean))];
 
-        els.activeStateName.textContent = selectedState || "Select a state";
-        els.activeStateSummary.textContent = selectedState
-          ? `${totalForState} steel-erection-related row${totalForState === 1 ? "" : "s"} in the source matrix.`
-          : "The selected state's requirements will appear below as review cards.";
-        els.activeBadge.textContent = `${rows.length} card${rows.length === 1 ? "" : "s"}`;
+        if (term) {
+          els.activeStateName.textContent = "Search Results";
+          els.activeStateSummary.textContent = `${rows.length} matching row${rows.length === 1 ? "" : "s"} across ${matchedStates.length} state${matchedStates.length === 1 ? "" : "s"} for "${term}".`;
+          els.activeBadge.textContent = `${matchedStates.length} state${matchedStates.length === 1 ? "" : "s"}`;
+        } else {
+          els.activeStateName.textContent = selectedState || "Select a state";
+          els.activeStateSummary.textContent = selectedState
+            ? `${totalForState} steel-erection-related row${totalForState === 1 ? "" : "s"} in the source matrix.`
+            : "The selected state's requirements will appear below as review cards.";
+          els.activeBadge.textContent = `${rows.length} card${rows.length === 1 ? "" : "s"}`;
+        }
+
         els.empty.classList.toggle("show", rows.length === 0);
 
         els.cards.innerHTML = rows.map((row, index) => `
           <article class="osh-requirement-card">
-            <div class="osh-card-number">Requirement ${String(index + 1).padStart(2, "0")}</div>
+            <div class="osh-card-number">${term ? escapeHtml(row.state) + " / " : ""}Requirement ${String(index + 1).padStart(2, "0")}</div>
             <p class="osh-requirement-text">${escapeHtml(row.requirement)}</p>
             <div class="osh-card-footer">
               <div class="osh-citation-row">
