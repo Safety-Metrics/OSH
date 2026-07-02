@@ -4224,7 +4224,7 @@ function computeTelemetryWindow(incNorm, subsAll, window){
       // Optional: after the WT PDF is hosted, paste its public URL here.
       // Example: "Whiting-Turner": "https://example.com/docs/Whiting-Turner-Trade-Partner-Safety-Manual-2026.pdf"
       const GC_SOURCE_PDF_URLS = {
-        "Whiting-Turner": ""
+        "Whiting-Turner": "Whiting-Turner_Trade_Partner_Safety_Manual_2026.pdf"
       };
 
       const requiredHeaders = [
@@ -4322,6 +4322,11 @@ function computeTelemetryWindow(incNorm, subsAll, window){
         return /^https?:\/\//i.test(String(value || "").trim());
       }
 
+      function isSourceLink(value) {
+        const trimmed = String(value || "").trim();
+        return isUrl(trimmed) || /\.pdf(?:$|#|\?)/i.test(trimmed);
+      }
+
       function firstAvailableCell(cells, headerMap, aliases) {
         for (const alias of aliases) {
           const index = headerMap.get(normalizeHeader(alias));
@@ -4400,25 +4405,25 @@ function computeTelemetryWindow(incNorm, subsAll, window){
       }
 
       function sourcePageNumber(sourceReference) {
-        const match = String(sourceReference || "").match(/\b(?:p\.?|page)\s*(\d+)\b/i);
+        const match = String(sourceReference || "").match(/\b(?:p{1,2}\.?|pages?)\s*(\d+)\b/i);
         return match ? match[1] : "";
       }
 
       function sourceLink(row) {
         const direct = String(row.sourceUrl || "").trim();
-        if (isUrl(direct)) {
+        if (isSourceLink(direct)) {
           return direct;
         }
 
         const reference = String(row.sourceReference || "").trim();
-        if (isUrl(reference)) {
+        if (isSourceLink(reference)) {
           return reference;
         }
 
         const basePdf = String(GC_SOURCE_PDF_URLS[row.gc] || "").trim();
         const page = sourcePageNumber(reference);
-        if (isUrl(basePdf) && page) {
-          return basePdf.split("#")[0] + "#page=" + encodeURIComponent(page);
+        if (isSourceLink(basePdf) && page) {
+          return encodeURI(basePdf.split("#")[0]) + "#page=" + encodeURIComponent(page);
         }
 
         return "";
