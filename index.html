@@ -1886,7 +1886,7 @@
     .gc-toolbar{
       width: min(1180px, calc(100% - 44px));
       display: grid;
-      grid-template-columns: minmax(260px, 1fr) repeat(3, minmax(150px, 190px)) auto;
+      grid-template-columns: minmax(260px, 1fr) repeat(2, minmax(150px, 190px)) auto;
       gap: 12px;
       align-items: center;
       margin: 0 auto 18px;
@@ -1957,6 +1957,115 @@
 
     .gc-clear-btn:hover{
       background: var(--cooper-red);
+    }
+
+    .gc-index-panel{
+      width: min(1180px, calc(100% - 44px));
+      margin: 0 auto 22px;
+      border: 1px solid rgba(93,92,90,.72);
+      border-radius: var(--radius-lg);
+      background: rgba(17,17,18,.78);
+      box-shadow: var(--soft-shadow);
+      overflow: hidden;
+    }
+
+    .gc-panel-head{
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 18px;
+      border-bottom: 1px solid rgba(93,92,90,.72);
+      background: rgba(40,40,40,.72);
+    }
+
+    .gc-panel-head h2{
+      margin: 0;
+      color: var(--cream);
+      font-family: var(--font-condensed);
+      font-size: 16px;
+      font-weight: 950;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    .gc-panel-head p{
+      margin: 0;
+      color: rgba(242,239,235,.72);
+      font-size: 13px;
+    }
+
+    .gc-index{
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding: 16px;
+    }
+
+    .gc-contractor-btn{
+      min-height: 42px;
+      padding: 10px 14px;
+      color: var(--cream);
+      border: 1px solid rgba(93,92,90,.9);
+      border-radius: 999px;
+      background: rgba(40,40,40,.9);
+      cursor: pointer;
+      font-family: var(--font-bold);
+      font-size: 14px;
+      font-weight: 950;
+      white-space: nowrap;
+      transition: transform 150ms ease, background 150ms ease;
+    }
+
+    .gc-contractor-btn:hover{
+      background: rgba(93,92,90,.82);
+      transform: translateY(-1px);
+    }
+
+    .gc-contractor-btn.active{
+      border-color: var(--cooper-red);
+      background: var(--cooper-red);
+    }
+
+    .gc-contractor-btn small{
+      margin-left: 6px;
+      color: var(--cloud);
+      font-weight: 950;
+    }
+
+    .gc-active-contractor{
+      width: min(1180px, calc(100% - 44px));
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 18px;
+      align-items: end;
+      margin: 28px auto 18px;
+    }
+
+    .gc-active-contractor h2{
+      margin: 0;
+      color: var(--cream);
+      font-family: var(--font-display);
+      font-size: clamp(42px, 5vw, 76px);
+      line-height: .92;
+    }
+
+    .gc-active-contractor p{
+      margin: 10px 0 0;
+      color: rgba(242,239,235,.72);
+    }
+
+    .gc-active-badge{
+      padding: 12px 16px;
+      border: 1px solid rgba(93,92,90,.9);
+      border-radius: 14px;
+      background: rgba(40,40,40,.9);
+      color: var(--cream);
+      font-family: var(--font-condensed);
+      font-weight: 950;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      white-space: nowrap;
     }
 
     .gc-summary{
@@ -2235,6 +2344,8 @@
     @media (max-width: 780px){
       #gcView,
       .gc-toolbar,
+      .gc-index-panel,
+      .gc-active-contractor,
       .gc-summary,
       .gc-cards,
       .gc-status,
@@ -2244,8 +2355,23 @@
       }
 
       .gc-toolbar,
+      .gc-active-contractor,
       .gc-summary{
         grid-template-columns: 1fr;
+      }
+
+      .gc-panel-head{
+        display: block;
+      }
+
+      .gc-panel-head p{
+        margin-top: 8px;
+      }
+
+      .gc-index{
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        padding-bottom: 18px;
       }
 
       .gc-cards{
@@ -2596,9 +2722,6 @@
         <span class="gc-search-label" aria-hidden="true">Search</span>
         <input id="gcSearchInput" class="gc-search" type="search" placeholder="Search GC requirements by keyword, e.g. CDZ, lift plan, hot work">
       </div>
-      <select id="gcOwnerFilter" class="gc-filter" aria-label="Filter by general contractor">
-        <option value="">All GCs</option>
-      </select>
       <select id="gcCategoryFilter" class="gc-filter" aria-label="Filter by category">
         <option value="">All Categories</option>
       </select>
@@ -2606,6 +2729,14 @@
         <option value="">All Priorities</option>
       </select>
       <button id="gcClearButton" class="gc-clear-btn" type="button">Clear Filters</button>
+    </section>
+
+    <section class="gc-index-panel" aria-label="General contractor index">
+      <div class="gc-panel-head">
+        <h2>GC Index</h2>
+        <p>Click a contractor to load its extra requirements.</p>
+      </div>
+      <div id="gcContractorIndex" class="gc-index"></div>
     </section>
 
     <section class="gc-summary" aria-label="General contractor requirements totals">
@@ -2628,6 +2759,13 @@
     </section>
 
     <p id="gcStatus" class="gc-status show">Loading General Contractor requirement data...</p>
+    <section class="gc-active-contractor" aria-label="Selected general contractor">
+      <div>
+        <h2 id="gcActiveName">Select a GC</h2>
+        <p id="gcActiveSummary">The selected contractor's extra requirements will appear below as review cards.</p>
+      </div>
+      <div id="gcActiveBadge" class="gc-active-badge">0 cards</div>
+    </section>
     <div id="gcEmpty" class="gc-empty">No GC requirements match the current filters.</div>
     <section id="gcCards" class="gc-cards" aria-label="General contractor requirement cards"></section>
     <p class="gc-footer-note">Source links become clickable when the sheet includes a Source URL column or when a hosted PDF base URL is configured in the code.</p>
@@ -4240,20 +4378,25 @@ function computeTelemetryWindow(incNorm, subsAll, window){
 
       const els = {
         cards: document.getElementById("gcCards"),
+        contractorIndex: document.getElementById("gcContractorIndex"),
         empty: document.getElementById("gcEmpty"),
         status: document.getElementById("gcStatus"),
         search: document.getElementById("gcSearchInput"),
-        owner: document.getElementById("gcOwnerFilter"),
         category: document.getElementById("gcCategoryFilter"),
         priority: document.getElementById("gcPriorityFilter"),
         clear: document.getElementById("gcClearButton"),
         total: document.getElementById("gcTotalCount"),
         critical: document.getElementById("gcCriticalCount"),
         high: document.getElementById("gcHighCount"),
-        activeFilters: document.getElementById("gcActiveFilters")
+        activeFilters: document.getElementById("gcActiveFilters"),
+        activeName: document.getElementById("gcActiveName"),
+        activeSummary: document.getElementById("gcActiveSummary"),
+        activeBadge: document.getElementById("gcActiveBadge")
       };
 
       let allRows = [];
+      let contractors = [];
+      let selectedGc = "";
 
       function parseCsv(text) {
         const rows = [];
@@ -4389,9 +4532,33 @@ function computeTelemetryWindow(incNorm, subsAll, window){
       }
 
       function buildFilters() {
-        populateSelect(els.owner, uniqueSorted(allRows.map((row) => row.gc)), "All GCs");
         populateSelect(els.category, uniqueSorted(allRows.map((row) => row.category)), "All Categories");
         populateSelect(els.priority, uniqueSorted(allRows.map((row) => row.priority)), "All Priorities");
+      }
+
+      function countForGc(gc) {
+        return allRows.filter((row) => row.gc === gc).length;
+      }
+
+      function buildContractorIndex() {
+        contractors = uniqueSorted(allRows.map((row) => row.gc));
+
+        els.contractorIndex.innerHTML = contractors.map((gc) => `
+          <button class="gc-contractor-btn" type="button" data-gc="${escapeHtml(gc)}">
+            ${escapeHtml(gc)} <small>${countForGc(gc)}</small>
+          </button>
+        `).join("");
+
+        els.contractorIndex.querySelectorAll(".gc-contractor-btn").forEach((button) => {
+          button.addEventListener("click", () => {
+            selectedGc = button.dataset.gc;
+            els.search.value = "";
+            render();
+            document.querySelector(".gc-active-contractor").scrollIntoView({ block: "start", behavior: "smooth" });
+          });
+        });
+
+        selectedGc = contractors[0] || "";
       }
 
       function setGcStatus(message, isError = false) {
@@ -4447,7 +4614,6 @@ function computeTelemetryWindow(incNorm, subsAll, window){
 
       function filteredRows() {
         const term = els.search.value.trim().toLowerCase();
-        const owner = els.owner.value;
         const category = els.category.value;
         const priority = els.priority.value;
 
@@ -4466,7 +4632,7 @@ function computeTelemetryWindow(incNorm, subsAll, window){
           ].join(" ").toLowerCase();
 
           return (!term || haystack.includes(term))
-            && (!owner || row.gc === owner)
+            && (term || !selectedGc || row.gc === selectedGc)
             && (!category || row.category === category)
             && (!priority || row.priority === priority);
         });
@@ -4475,7 +4641,6 @@ function computeTelemetryWindow(incNorm, subsAll, window){
       function activeFilterCount() {
         return [
           els.search.value.trim(),
-          els.owner.value,
           els.category.value,
           els.priority.value
         ].filter(Boolean).length;
@@ -4488,10 +4653,34 @@ function computeTelemetryWindow(incNorm, subsAll, window){
         els.activeFilters.textContent = activeFilterCount();
       }
 
+      function renderContractorButtons() {
+        const hasSearch = Boolean(els.search.value.trim());
+        els.contractorIndex.querySelectorAll(".gc-contractor-btn").forEach((button) => {
+          button.classList.toggle("active", !hasSearch && button.dataset.gc === selectedGc);
+        });
+      }
+
       function render() {
+        renderContractorButtons();
         const rows = filteredRows();
+        const term = els.search.value.trim();
+        const totalForGc = countForGc(selectedGc);
+        const matchedContractors = uniqueSorted(rows.map((row) => row.gc));
+
         renderSummary(rows);
         els.empty.classList.toggle("show", rows.length === 0);
+
+        if (term) {
+          els.activeName.textContent = "Search Results";
+          els.activeSummary.textContent = `${rows.length} matching row${rows.length === 1 ? "" : "s"} across ${matchedContractors.length} GC${matchedContractors.length === 1 ? "" : "s"} for "${term}".`;
+          els.activeBadge.textContent = `${matchedContractors.length} GC${matchedContractors.length === 1 ? "" : "s"}`;
+        } else {
+          els.activeName.textContent = selectedGc || "Select a GC";
+          els.activeSummary.textContent = selectedGc
+            ? `${totalForGc} extra requirement row${totalForGc === 1 ? "" : "s"} in the source matrix.`
+            : "The selected contractor's extra requirements will appear below as review cards.";
+          els.activeBadge.textContent = `${rows.length} card${rows.length === 1 ? "" : "s"}`;
+        }
 
         els.cards.innerHTML = rows.map((row, index) => {
           const priorityClass = normalizedPriority(row.priority) || "low";
@@ -4543,6 +4732,7 @@ function computeTelemetryWindow(incNorm, subsAll, window){
           const text = await response.text();
           allRows = rowsFromCsv(text);
           buildFilters();
+          buildContractorIndex();
           render();
           setGcStatus("");
         } catch (error) {
@@ -4551,14 +4741,13 @@ function computeTelemetryWindow(incNorm, subsAll, window){
         }
       }
 
-      [els.search, els.owner, els.category, els.priority].forEach((control) => {
+      [els.search, els.category, els.priority].forEach((control) => {
         control.addEventListener("input", render);
         control.addEventListener("change", render);
       });
 
       els.clear.addEventListener("click", () => {
         els.search.value = "";
-        els.owner.value = "";
         els.category.value = "";
         els.priority.value = "";
         render();
