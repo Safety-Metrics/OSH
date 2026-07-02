@@ -1833,7 +1833,8 @@
     }
 
     /* ---------- General Contractor Requirements Tab ---------- */
-    #gcView{
+    #gcView,
+    #ownerView{
       width: min(1680px, calc(100% - 40px));
       margin: 0 auto;
       padding: 0 0 80px;
@@ -2343,6 +2344,7 @@
 
     @media (max-width: 780px){
       #gcView,
+      #ownerView,
       .gc-toolbar,
       .gc-index-panel,
       .gc-active-contractor,
@@ -2771,10 +2773,65 @@
     <p class="gc-footer-note">Source links become clickable when the sheet includes a Source URL column or when a hosted PDF base URL is configured in the code.</p>
   </section>
 
-  <section id="ownerView" class="dashboard-view construction-view" aria-label="Owner requirements">
-    <div class="construction-kicker">Owner Requirements</div>
-    <h1 class="construction-title">Under Construction</h1>
-    <p class="construction-subtitle">This tab is staged for owner-specific requirements, site rules, and client-driven safety controls.</p>
+  <section id="ownerView" class="dashboard-view" aria-label="Owner requirements dashboard">
+    <section class="gc-hero" aria-label="Owner requirements summary">
+      <div class="gc-eyebrow">Cooper Steel Field Safety</div>
+      <h1 class="gc-title">Owner Extra Requirements</h1>
+      <p class="gc-subtitle">A focused list of owner-specific requirements that go beyond Cooper Steel's subcontractor safety baseline.</p>
+    </section>
+
+    <section class="gc-toolbar" aria-label="Owner requirements filters">
+      <div class="gc-search-wrap">
+        <span class="gc-search-label" aria-hidden="true">Search</span>
+        <input id="ownerSearchInput" class="gc-search" type="search" placeholder="Search owner requirements by keyword, e.g. LOTO, Procore, Live Space">
+      </div>
+      <select id="ownerCategoryFilter" class="gc-filter" aria-label="Filter by category">
+        <option value="">All Categories</option>
+      </select>
+      <select id="ownerPriorityFilter" class="gc-filter" aria-label="Filter by priority">
+        <option value="">All Priorities</option>
+      </select>
+      <button id="ownerClearButton" class="gc-clear-btn" type="button">Clear Filters</button>
+    </section>
+
+    <section class="gc-index-panel" aria-label="Owner index">
+      <div class="gc-panel-head">
+        <h2>Owner Index</h2>
+        <p>Click an owner to load its extra requirements.</p>
+      </div>
+      <div id="ownerIndex" class="gc-index"></div>
+    </section>
+
+    <section class="gc-summary" aria-label="Owner requirements totals">
+      <div class="gc-summary-card">
+        <div id="ownerTotalCount" class="gc-summary-value">0</div>
+        <div class="gc-summary-label">Visible Requirements</div>
+      </div>
+      <div class="gc-summary-card">
+        <div id="ownerCriticalCount" class="gc-summary-value">0</div>
+        <div class="gc-summary-label">Critical</div>
+      </div>
+      <div class="gc-summary-card">
+        <div id="ownerHighCount" class="gc-summary-value">0</div>
+        <div class="gc-summary-label">High</div>
+      </div>
+      <div class="gc-summary-card">
+        <div id="ownerActiveFilters" class="gc-summary-value">0</div>
+        <div class="gc-summary-label">Active Filters</div>
+      </div>
+    </section>
+
+    <p id="ownerStatus" class="gc-status show">Loading Owner requirement data...</p>
+    <section class="gc-active-contractor" aria-label="Selected owner">
+      <div>
+        <h2 id="ownerActiveName">Select an Owner</h2>
+        <p id="ownerActiveSummary">The selected owner's extra requirements will appear below as review cards.</p>
+      </div>
+      <div id="ownerActiveBadge" class="gc-active-badge">0 cards</div>
+    </section>
+    <div id="ownerEmpty" class="gc-empty">No owner requirements match the current filters.</div>
+    <section id="ownerCards" class="gc-cards" aria-label="Owner requirement cards"></section>
+    <p class="gc-footer-note">Source links become clickable when the sheet includes a Source URL column or when a hosted PDF base URL is configured in the code.</p>
   </section>
 
   </div>
@@ -4738,6 +4795,409 @@ function computeTelemetryWindow(incNorm, subsAll, window){
         } catch (error) {
           console.error(error);
           setGcStatus("Could not load the published General Contractor requirements sheet. Confirm the sheet is published to the web as CSV, then refresh this page.", true);
+        }
+      }
+
+      [els.search, els.category, els.priority].forEach((control) => {
+        control.addEventListener("input", render);
+        control.addEventListener("change", render);
+      });
+
+      els.clear.addEventListener("click", () => {
+        els.search.value = "";
+        els.category.value = "";
+        els.priority.value = "";
+        render();
+        els.search.focus();
+      });
+
+      loadData();
+    })();
+
+    (function initOwnerRequirementsDashboard(){
+      const OWNER_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR8SxjBcpMRRNWaSO74ZmuI1vgrtKoj4Ktly45QpRHK1QLKFp492sLX79rfEGxLEXnq9CfvVklyw1MH/pub?gid=1090818101&single=true&output=csv";
+
+      const OWNER_SOURCE_PDF_URLS = {
+        "Amazon": "Amazon_Global_Minimum_Requirements_2026_v3_0.pdf"
+      };
+
+      const requiredHeaders = [
+        ["Owner", "GC / Owner", "GC"],
+        ["Category"],
+        ["Requirement / Topic", "Topic", "Requirement Topic"],
+        ["Extra Requirement", "Requirement"],
+        ["Required Field Action", "Field Action", "Dashboard Action"],
+        ["Priority"],
+        ["Source Reference", "Source"],
+        ["Tags"]
+      ];
+
+      const els = {
+        cards: document.getElementById("ownerCards"),
+        ownerIndex: document.getElementById("ownerIndex"),
+        empty: document.getElementById("ownerEmpty"),
+        status: document.getElementById("ownerStatus"),
+        search: document.getElementById("ownerSearchInput"),
+        category: document.getElementById("ownerCategoryFilter"),
+        priority: document.getElementById("ownerPriorityFilter"),
+        clear: document.getElementById("ownerClearButton"),
+        total: document.getElementById("ownerTotalCount"),
+        critical: document.getElementById("ownerCriticalCount"),
+        high: document.getElementById("ownerHighCount"),
+        activeFilters: document.getElementById("ownerActiveFilters"),
+        activeName: document.getElementById("ownerActiveName"),
+        activeSummary: document.getElementById("ownerActiveSummary"),
+        activeBadge: document.getElementById("ownerActiveBadge")
+      };
+
+      if (!els.cards || !els.ownerIndex) {
+        return;
+      }
+
+      let allRows = [];
+      let owners = [];
+      let selectedOwner = "";
+
+      function parseCsv(text) {
+        const rows = [];
+        let row = [];
+        let field = "";
+        let inQuotes = false;
+
+        for (let i = 0; i < text.length; i += 1) {
+          const char = text[i];
+          const next = text[i + 1];
+
+          if (char === "\"") {
+            if (inQuotes && next === "\"") {
+              field += "\"";
+              i += 1;
+            } else {
+              inQuotes = !inQuotes;
+            }
+            continue;
+          }
+
+          if (char === "," && !inQuotes) {
+            row.push(field);
+            field = "";
+            continue;
+          }
+
+          if ((char === "\n" || char === "\r") && !inQuotes) {
+            if (char === "\r" && next === "\n") {
+              i += 1;
+            }
+            row.push(field);
+            if (row.some((value) => value.trim() !== "")) {
+              rows.push(row);
+            }
+            row = [];
+            field = "";
+            continue;
+          }
+
+          field += char;
+        }
+
+        row.push(field);
+        if (row.some((value) => value.trim() !== "")) {
+          rows.push(row);
+        }
+
+        return rows;
+      }
+
+      function normalizeHeader(value) {
+        return String(value || "").trim().toLowerCase();
+      }
+
+      function escapeHtml(value) {
+        return String(value || "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#039;");
+      }
+
+      function isUrl(value) {
+        return /^https?:\/\//i.test(String(value || "").trim());
+      }
+
+      function isSourceLink(value) {
+        const trimmed = String(value || "").trim();
+        return isUrl(trimmed) || /\.pdf(?:$|#|\?)/i.test(trimmed);
+      }
+
+      function firstAvailableCell(cells, headerMap, aliases) {
+        for (const alias of aliases) {
+          const index = headerMap.get(normalizeHeader(alias));
+          if (index !== undefined) {
+            return (cells[index] || "").trim();
+          }
+        }
+        return "";
+      }
+
+      function rowsFromCsv(text) {
+        const parsed = parseCsv(text);
+        if (!parsed.length) {
+          return [];
+        }
+
+        const headers = parsed[0].map((header) => header.trim());
+        const headerMap = new Map(headers.map((header, index) => [normalizeHeader(header), index]));
+        const missing = requiredHeaders
+          .filter((aliases) => !aliases.some((alias) => headerMap.has(normalizeHeader(alias))))
+          .map((aliases) => aliases[0]);
+
+        if (missing.length) {
+          throw new Error("The published Owner sheet is missing: " + missing.join(", "));
+        }
+
+        return parsed.slice(1)
+          .map((cells) => ({
+            owner: firstAvailableCell(cells, headerMap, ["Owner", "GC / Owner", "GC"]),
+            id: firstAvailableCell(cells, headerMap, ["Requirement ID", "ID"]),
+            category: firstAvailableCell(cells, headerMap, ["Category"]),
+            topic: firstAvailableCell(cells, headerMap, ["Requirement / Topic", "Topic", "Requirement Topic"]),
+            requirement: firstAvailableCell(cells, headerMap, ["Extra Requirement", "Requirement"]),
+            action: firstAvailableCell(cells, headerMap, ["Required Field Action", "Field Action", "Dashboard Action"]),
+            priority: firstAvailableCell(cells, headerMap, ["Priority"]),
+            trigger: firstAvailableCell(cells, headerMap, ["Applies / Trigger", "Trigger", "Applies"]),
+            sourceReference: firstAvailableCell(cells, headerMap, ["Source Reference", "Source"]),
+            sourceUrl: firstAvailableCell(cells, headerMap, ["Source URL", "Source Link", "PDF URL", "URL"]),
+            status: firstAvailableCell(cells, headerMap, ["Status"]),
+            tags: firstAvailableCell(cells, headerMap, ["Tags"])
+          }))
+          .filter((item) => item.owner || item.topic || item.requirement)
+          .filter((item) => item.status.toLowerCase() !== "exclude");
+      }
+
+      function uniqueSorted(values) {
+        return [...new Set(values.filter(Boolean))]
+          .sort((a, b) => a.localeCompare(b));
+      }
+
+      function populateSelect(select, values, allLabel) {
+        const current = select.value;
+        select.innerHTML = `<option value="">${escapeHtml(allLabel)}</option>` + values.map((value) => (
+          `<option value="${escapeHtml(value)}">${escapeHtml(value)}</option>`
+        )).join("");
+
+        if (values.includes(current)) {
+          select.value = current;
+        }
+      }
+
+      function buildFilters() {
+        populateSelect(els.category, uniqueSorted(allRows.map((row) => row.category)), "All Categories");
+        populateSelect(els.priority, uniqueSorted(allRows.map((row) => row.priority)), "All Priorities");
+      }
+
+      function countForOwner(owner) {
+        return allRows.filter((row) => row.owner === owner).length;
+      }
+
+      function buildOwnerIndex() {
+        owners = uniqueSorted(allRows.map((row) => row.owner));
+
+        els.ownerIndex.innerHTML = owners.map((owner) => `
+          <button class="gc-contractor-btn owner-btn" type="button" data-owner="${escapeHtml(owner)}">
+            ${escapeHtml(owner)} <small>${countForOwner(owner)}</small>
+          </button>
+        `).join("");
+
+        els.ownerIndex.querySelectorAll(".owner-btn").forEach((button) => {
+          button.addEventListener("click", () => {
+            selectedOwner = button.dataset.owner;
+            els.search.value = "";
+            render();
+            document.querySelector("#ownerView .gc-active-contractor").scrollIntoView({ block: "start", behavior: "smooth" });
+          });
+        });
+
+        selectedOwner = owners[0] || "";
+      }
+
+      function setOwnerStatus(message, isError = false) {
+        els.status.textContent = message;
+        els.status.classList.toggle("show", Boolean(message));
+        els.status.classList.toggle("error", isError);
+      }
+
+      function normalizedPriority(priority) {
+        return String(priority || "").trim().toLowerCase();
+      }
+
+      function sourcePageNumber(sourceReference) {
+        const match = String(sourceReference || "").match(/\b(?:p{1,2}\.?|pages?)\s*(\d+)\b/i);
+        return match ? match[1] : "";
+      }
+
+      function sourceLink(row) {
+        const direct = String(row.sourceUrl || "").trim();
+        if (isSourceLink(direct)) {
+          return direct;
+        }
+
+        const reference = String(row.sourceReference || "").trim();
+        if (isSourceLink(reference)) {
+          return reference;
+        }
+
+        const basePdf = String(OWNER_SOURCE_PDF_URLS[row.owner] || "").trim();
+        const page = sourcePageNumber(reference);
+        if (isSourceLink(basePdf) && page) {
+          return encodeURI(basePdf.split("#")[0]) + "#page=" + encodeURIComponent(page);
+        }
+
+        return "";
+      }
+
+      function sourceMarkup(row) {
+        const reference = row.sourceReference || "Source reference not listed";
+        const link = sourceLink(row);
+
+        if (link) {
+          return `
+            <div class="gc-source-row">
+              <span class="gc-source-reference">${escapeHtml(reference)}</span>
+              <a class="gc-source-link" href="${escapeHtml(link)}" target="_blank" rel="noopener">Open Source</a>
+            </div>
+          `;
+        }
+
+        return `<span class="gc-source-reference">${escapeHtml(reference)}</span>`;
+      }
+
+      function filteredRows() {
+        const term = els.search.value.trim().toLowerCase();
+        const category = els.category.value;
+        const priority = els.priority.value;
+
+        return allRows.filter((row) => {
+          const haystack = [
+            row.owner,
+            row.id,
+            row.category,
+            row.topic,
+            row.requirement,
+            row.action,
+            row.priority,
+            row.trigger,
+            row.sourceReference,
+            row.tags
+          ].join(" ").toLowerCase();
+
+          return (!term || haystack.includes(term))
+            && (term || !selectedOwner || row.owner === selectedOwner)
+            && (!category || row.category === category)
+            && (!priority || row.priority === priority);
+        });
+      }
+
+      function activeFilterCount() {
+        return [
+          els.search.value.trim(),
+          els.category.value,
+          els.priority.value
+        ].filter(Boolean).length;
+      }
+
+      function renderSummary(rows) {
+        els.total.textContent = rows.length;
+        els.critical.textContent = rows.filter((row) => normalizedPriority(row.priority) === "critical").length;
+        els.high.textContent = rows.filter((row) => normalizedPriority(row.priority) === "high").length;
+        els.activeFilters.textContent = activeFilterCount();
+      }
+
+      function renderOwnerButtons() {
+        const hasSearch = Boolean(els.search.value.trim());
+        els.ownerIndex.querySelectorAll(".owner-btn").forEach((button) => {
+          button.classList.toggle("active", !hasSearch && button.dataset.owner === selectedOwner);
+        });
+      }
+
+      function render() {
+        renderOwnerButtons();
+        const rows = filteredRows();
+        const term = els.search.value.trim();
+        const totalForOwner = countForOwner(selectedOwner);
+        const matchedOwners = uniqueSorted(rows.map((row) => row.owner));
+
+        renderSummary(rows);
+        els.empty.classList.toggle("show", rows.length === 0 && allRows.length > 0);
+
+        if (term) {
+          els.activeName.textContent = "Search Results";
+          els.activeSummary.textContent = `${rows.length} matching row${rows.length === 1 ? "" : "s"} across ${matchedOwners.length} owner${matchedOwners.length === 1 ? "" : "s"} for "${term}".`;
+          els.activeBadge.textContent = `${matchedOwners.length} owner${matchedOwners.length === 1 ? "" : "s"}`;
+        } else {
+          els.activeName.textContent = selectedOwner || "Select an Owner";
+          els.activeSummary.textContent = selectedOwner
+            ? `${totalForOwner} extra requirement row${totalForOwner === 1 ? "" : "s"} in the source matrix.`
+            : "The selected owner's extra requirements will appear below as review cards.";
+          els.activeBadge.textContent = `${rows.length} card${rows.length === 1 ? "" : "s"}`;
+        }
+
+        els.cards.innerHTML = rows.map((row, index) => {
+          const priorityClass = normalizedPriority(row.priority) || "low";
+          const priorityText = row.priority || "Unrated";
+
+          return `
+            <article class="gc-requirement-card">
+              <div class="gc-card-top">
+                <div class="gc-card-number">${escapeHtml(row.owner || "Owner")} ${row.id ? " / " + escapeHtml(row.id) : ""} / ${String(index + 1).padStart(2, "0")}</div>
+                <span class="gc-priority ${escapeHtml(priorityClass)}">${escapeHtml(priorityText)}</span>
+              </div>
+              <h2 class="gc-card-title">${escapeHtml(row.topic || "Requirement")}</h2>
+              <div class="gc-card-meta">
+                ${row.category ? `<span class="gc-chip">${escapeHtml(row.category)}</span>` : ""}
+                ${row.trigger ? `<span class="gc-chip">${escapeHtml(row.trigger)}</span>` : ""}
+              </div>
+              <div class="gc-section">
+                <span class="gc-label">Extra Requirement</span>
+                <p class="gc-text">${escapeHtml(row.requirement || "No requirement text listed.")}</p>
+              </div>
+              <div class="gc-section">
+                <span class="gc-label">Required Field Action</span>
+                <p class="gc-text">${escapeHtml(row.action || "No field action listed.")}</p>
+              </div>
+              <div class="gc-card-footer">
+                <div class="gc-section">
+                  <span class="gc-label">Source Reference</span>
+                  ${sourceMarkup(row)}
+                </div>
+                ${row.tags ? `
+                  <div class="gc-section">
+                    <span class="gc-label">Tags</span>
+                    <p class="gc-text">${escapeHtml(row.tags)}</p>
+                  </div>
+                ` : ""}
+              </div>
+            </article>
+          `;
+        }).join("");
+      }
+
+      async function loadData() {
+        try {
+          const response = await fetch(OWNER_CSV_URL, { cache: "no-store" });
+          if (!response.ok) {
+            throw new Error("Owner CSV returned HTTP " + response.status);
+          }
+
+          const text = await response.text();
+          allRows = rowsFromCsv(text);
+          buildFilters();
+          buildOwnerIndex();
+          render();
+          setOwnerStatus("");
+        } catch (error) {
+          console.error(error);
+          setOwnerStatus("Could not load the Owner requirements CSV. Upload Owner_Extra_Requirements_Dashboard_Upload.csv beside this HTML or replace OWNER_CSV_URL with the published Google Sheets CSV link.", true);
         }
       }
 
