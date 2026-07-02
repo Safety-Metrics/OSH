@@ -1,4 +1,4 @@
-# State OSHA Steel Erection Dashboard
+# State OSHA Steel Erection Dashboard.
 
 This dashboard is a single static `index.html` file that reads the published Google Sheet CSV directly in the browser.
 
