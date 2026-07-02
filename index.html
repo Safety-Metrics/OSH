@@ -1,10 +1,14 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>State OSHA Steel Erection Dashboard</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Cooper Steel Safety Dashboard</title>
+  <link rel="icon" href="data:;base64,=">
+
   <style>
+
+
     @font-face {
       font-family: "DharmaGothicE-Bold";
       src: local("DharmaGothicE-Bold");
@@ -29,743 +33,3653 @@
       font-display: swap;
     }
 
-    :root {
-      --cream: #F2EFEB;
-      --cloud: #CFCDCA;
-      --red: #9F1C1F;
-      --burgundy: #680C19;
-      --onyx: #111112;
-      --charcoal: #282828;
-      --steel: #5D5C5A;
+    :root{
       --font-display: "DharmaGothicE-Bold", Impact, "Arial Narrow", sans-serif;
       --font-body: "TradeGothicLTStd", Arial, Helvetica, sans-serif;
       --font-bold: "TradeGothicLTStd-Bd2", Arial, Helvetica, sans-serif;
       --font-condensed: "TradeGothicLTStd-BdCn20", "Arial Narrow", Arial, sans-serif;
-      --radius: 8px;
     }
 
-    * {
-      box-sizing: border-box;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
-
-    body {
-      min-height: 100vh;
-      margin: 0;
-      color: var(--cream);
+    body,
+    input,
+    select,
+    button{
       font-family: var(--font-body);
-      line-height: 1.45;
-      background:
-        linear-gradient(140deg, var(--onyx) 0%, var(--charcoal) 52%, var(--burgundy) 100%);
-      background-attachment: fixed;
     }
 
-    a {
-      color: inherit;
+    h1,
+    .auth-title,
+    .osh-title{
+      font-family: var(--font-display);
+      letter-spacing: 0;
+    }
+
+    h2,
+    h3,
+    .kpi .lab,
+    .ioi-card-h .k,
+    .mini th,
+    .small,
+    .tab-btn,
+    .osh-eyebrow,
+    .osh-panel-head h2,
+    .osh-card-number,
+    .osh-label,
+    .osh-active-badge{
+      font-family: var(--font-condensed);
+    }
+
+    .kpi .val,
+    .value,
+    .v,
+    .auth-btn,
+    .logout-btn,
+    .export-actions button,
+    .win-btn,
+    .source-link,
+    .osh-clear-btn,
+    .osh-state-btn,
+    .osh-source-link{
+      font-family: var(--font-bold);
+    }
+
+
+    /* ==============================
+      COOPER STEEL – 2026 DASHBOARD
+      Executive / Premium Theme (CLEAN)
+      Badge OFF
+      + IOI TICKER (stock tape)
+    ============================== */
+
+    :root{
+      --cream: #F2EFEB;
+      --cloud: #CFCDCA;
+      --cooper-red: #9F1C1F;
+      --burgundy: #680C19;
+      --onyx: #111112;
+      --charcoal: #282828;
+      --steel-gray: #5D5C5A;
+
+      --radius-lg: 20px;
+      --radius-md: 16px;
+      --radius-sm: 12px;
+
+      --card-shadow: 0 18px 40px rgba(0,0,0,.45);
+      --soft-shadow: 0 10px 28px rgba(0,0,0,.28);
+    }
+
+    *{ box-sizing: border-box; }
+
+    body{
+      margin:0;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      background:
+        radial-gradient(1200px 600px at 20% 10%, rgba(159,28,31,.32), transparent 60%),
+        radial-gradient(900px 500px at 80% 20%, rgba(104,12,25,.38), transparent 65%),
+        linear-gradient(180deg, #0c0c0d 0%, #141414 100%);
+      color: var(--cream);
+    }
+
+    /* ---------- Top Logo Header (Badge OFF) ---------- */
+    header.brand-header{
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      padding: 26px 16px 6px;
+    }
+
+    /* Single source of truth for logo sizing */
+    .brand-logo{
+  height: clamp(110px, 10vw, 175px);
+  width: auto;
+  display:block;
+
+  filter:
+    drop-shadow(0 2px 3px rgba(255,255,255,.25))   /* edge clarity */
+    drop-shadow(0 0 22px rgba(159,28,31,.55))      /* Cooper red glow */
+    drop-shadow(0 0 44px rgba(159,28,31,.25))      /* feathered bleed */
+    drop-shadow(0 16px 34px rgba(0,0,0,.45));
+
+  animation: brandFloat 4.2s ease-in-out infinite;
+}
+
+
+    @keyframes brandFloat{
+      0%,100% { transform: translateY(0) scale(1); }
+      50%     { transform: translateY(-2px) scale(1.01); }
+    }
+
+    @media (prefers-reduced-motion: reduce){
+      .brand-logo{ animation:none; }
+    }
+
+    /* ---------- Shell / Container ---------- */
+    .shell{ width: 100%; }
+    .container{
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 0 22px 80px;
+    }
+
+    /* ---------- Headings ---------- */
+    h1{
+      margin: 10px 0 6px;
+      font-size: 36px;
+      letter-spacing: -.02em;
+      color: var(--cream);
+    }
+
+    .subhead{
+      font-size: 14px;
+      color: #d6d3cf;
+      margin-bottom: 18px;
+    }
+
+    /* ---------- KPI Row ---------- */
+    .kpi-row{
+      display:grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 14px;
+      margin: 18px 0 14px;
+    }
+
+    .kpi{
+      background: rgba(0,0,0,.45);
+      border-radius: 14px;
+      padding: 16px 16px 14px;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.06);
+      min-width: 0;
+    }
+
+    .kpi .val{
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--cream);
+      letter-spacing: -.01em;
+      line-height: 1.15;
+    }
+
+    .kpi .lab{
+      margin-top: 6px;
+      font-size: 12px;
+      color: #bfbab5;
+      letter-spacing: .02em;
+      text-transform: uppercase;
+    }
+
+    @media (max-width: 980px){
+      .kpi-row{ grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 560px){
+      .kpi-row{ grid-template-columns: 1fr; }
+    }
+
+    /* ===========================
+       IOI TICKER (Stock Tape)
+    =========================== */
+
+    .ioi-wrap{
+      margin: 10px 0 26px;
+    }
+
+    .ioi-title{
+      display:flex;
+      align-items:baseline;
+      justify-content: space-between;
+      gap: 10px;
+      margin: 10px 2px 10px;
+    }
+
+    .ioi-title h3{
+      margin:0;
+      font-size: 13px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: #d8d4cf;
+      opacity: .95;
+    }
+
+    .ioi-title .ioi-sub{
+      font-size: 12px;
+      color: rgba(214,211,207,.75);
+    }
+
+    /* ---------- IOI Explainer (Panel/Modal) ---------- */
+    .ioi-actions{
+      display:flex;
+      align-items:center;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .ioi-info-btn{
+      display:inline-flex;
+      align-items:center;
+      gap: 8px;
+      border-radius: 999px;
+      padding: 6px 10px;
+      background: rgba(255,255,255,.06);
+      color: #f1efec;
+      font-weight: 800;
+      letter-spacing: .02em;
+      font-size: 12px;
+      cursor: pointer;
+      border: 1px solid rgba(255,255,255,.10);
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,.12);
+      user-select: none;
+      white-space: nowrap;
+    }
+
+    .ioi-info-btn:hover{ background: rgba(255,255,255,.09); }
+    .ioi-info-btn:active{ transform: translateY(1px); }
+    .ioi-info-btn .dot{
+      width: 18px;
+      height: 18px;
+      border-radius: 999px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      background: rgba(159,28,31,.18);
+      color: #ffd7d7;
+      font-size: 12px;
+      font-weight: 900;
+      box-shadow: inset 0 0 0 1px rgba(159,28,31,.28);
+    }
+
+    .ioi-backdrop{
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.62);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      z-index: 9998;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .18s ease;
+    }
+
+    .ioi-backdrop.open{
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* Side panel (executive-friendly, mobile-safe) */
+    .ioi-panel{
+      position: fixed;
+      top: 0;
+      right: 0;
+      height: 100%;
+      width: min(520px, 92vw);
+      background:
+        radial-gradient(900px 600px at 15% 10%, rgba(159,28,31,.18), transparent 55%),
+        radial-gradient(700px 420px at 80% 20%, rgba(104,12,25,.18), transparent 60%),
+        linear-gradient(180deg, rgba(14,14,15,1) 0%, rgba(10,10,11,1) 100%);
+      color: var(--cream);
+      border-left: 1px solid rgba(255,255,255,.10);
+      box-shadow: -18px 0 44px rgba(0,0,0,.55);
+      z-index: 9999;
+      transform: translateX(102%);
+      transition: transform .22s ease;
+      display:flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .ioi-panel.open{ transform: translateX(0); }
+
+    .ioi-panel header{
+      padding: 18px 18px 12px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      display:flex;
+      align-items:flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .ioi-panel .ph{
+      min-width: 0;
+    }
+
+    .ioi-panel .ptitle{
+      font-size: 15px;
+      font-weight: 900;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      margin: 0;
+      color: #efece8;
+    }
+
+    .ioi-panel .psub{
+      margin-top: 6px;
+      font-size: 12px;
+      color: rgba(214,211,207,.78);
+      line-height: 1.35;
+    }
+
+    .ioi-panel .close{
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.06);
+      color: #f3f0ec;
+      border-radius: 12px;
+      padding: 8px 10px;
+      cursor:pointer;
+      font-weight: 900;
+      letter-spacing: .02em;
+      min-height: 38px;
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,.12);
+    }
+    .ioi-panel .close:hover{ background: rgba(255,255,255,.09); }
+    .ioi-panel .close:active{ transform: translateY(1px); }
+
+    .ioi-panel .body{
+      padding: 14px 18px 18px;
+      overflow:auto;
+    }
+
+    .ioi-note{
+      border-radius: 14px;
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.08);
+      padding: 12px 12px;
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,.10);
+      margin-bottom: 14px;
+      font-size: 12px;
+      line-height: 1.45;
+      color: rgba(241,239,236,.92);
+    }
+
+    .ioi-note strong{ color: #fff; }
+
+    .ioi-metric{
+      border-radius: 16px;
+      background: rgba(0,0,0,.28);
+      border: 1px solid rgba(255,255,255,.08);
+      padding: 14px 14px 12px;
+      margin-bottom: 12px;
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,.12);
+    }
+
+    .ioi-metric h4{
+      margin: 0 0 8px;
+      font-size: 13px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: #f1efec;
+      display:flex;
+      gap: 10px;
+      align-items:center;
+      flex-wrap: wrap;
+    }
+
+    .ioi-tag{
+      font-size: 11px;
+      font-weight: 900;
+      border-radius: 999px;
+      padding: 4px 10px;
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.08);
+      color: rgba(241,239,236,.92);
+      letter-spacing: .02em;
+      text-transform:none;
+    }
+
+    .ioi-tag.good{ color:#20c997; background: rgba(32,201,151,.12); border-color: rgba(32,201,151,.22); }
+    .ioi-tag.bad { color:#ff5c5c; background: rgba(255,92,92,.12); border-color: rgba(255,92,92,.22); }
+    .ioi-tag.neutral{ color:#c7c4bf; background: rgba(199,196,191,.10); border-color: rgba(199,196,191,.18); }
+
+    .ioi-lines{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+      font-size: 12px;
+      line-height: 1.45;
+      color: rgba(241,239,236,.90);
+    }
+
+    .ioi-lines .k{
+      color: rgba(214,211,207,.82);
+      font-weight: 800;
+      letter-spacing: .02em;
+    }
+
+    .ioi-lines code{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 11px;
+      background: rgba(0,0,0,.30);
+      border: 1px solid rgba(255,255,255,.10);
+      padding: 2px 6px;
+      border-radius: 10px;
+      color: rgba(241,239,236,.92);
+      white-space: nowrap;
+    }
+
+    .ioi-gates{
+      margin-top: 10px;
+      border-top: 1px dashed rgba(255,255,255,.12);
+      padding-top: 10px;
+      display:grid;
+      gap: 6px;
+      font-size: 12px;
+      color: rgba(241,239,236,.90);
+    }
+
+    .ioi-gates .gate{
+      display:flex;
+      align-items:flex-start;
+      gap: 10px;
+    }
+
+    .ioi-gates .b{
+      font-weight: 900;
+      letter-spacing: .02em;
+      border-radius: 999px;
+      padding: 4px 10px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.06);
+      min-width: 76px;
+      text-align:center;
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,.10);
+    }
+    .ioi-gates .b.warn{ color:#ffd27b; background: rgba(246,193,70,.12); border-color: rgba(246,193,70,.24); }
+    .ioi-gates .b.alert{ color:#ffb3b3; background: rgba(255,92,92,.14); border-color: rgba(255,92,92,.26); }
+
+    @media (max-width: 520px){
+      .ioi-title{
+        align-items:flex-start;
+      }
+      .ioi-actions{
+        width: 100%;
+        justify-content: flex-start;
+      }
+    }
+
+    .ticker{
+      position: relative;
+      overflow: hidden;
+      border-radius: 14px;
+      background: rgba(0,0,0,.42);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.06);
+      padding: 10px 0;
+    }
+
+    /* subtle top/bottom fade so ends aren’t harsh */
+    .ticker:before,
+    .ticker:after{
+      content:"";
+      position:absolute;
+      top:0;
+      width: 80px;
+      height: 100%;
+      z-index: 2;
+      pointer-events:none;
+    }
+
+    .ticker:before{
+      left:0;
+      background: linear-gradient(90deg, rgba(12,12,13,1) 0%, rgba(12,12,13,0) 100%);
+      opacity:.35;
+    }
+    .ticker:after{
+      right:0;
+      background: linear-gradient(270deg, rgba(12,12,13,1) 0%, rgba(12,12,13,0) 100%);
+      opacity:.35;
+    }
+
+    .ticker-track{
+      display:flex;
+      gap: 18px;
+      white-space: nowrap;
+      will-change: transform;
+      animation: tickerMove 26s linear infinite;
+      padding-left: 16px;
+    }
+
+    /* Pause on hover (your requirement) */
+    .ticker:hover .ticker-track{
+      animation-play-state: paused;
+    }
+
+    @keyframes tickerMove{
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    .tick{
+      display:flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.05);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.05);
+      font-size: 13px;
+      color: #e9e6e2;
+    }
+
+    .tick .sym{
+      font-weight: 900;
+      letter-spacing: .02em;
+      color: #f1efec;
+      opacity: .95;
+    }
+
+    .tick .val{
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .tick .chg{
+      font-weight: 900;
+      letter-spacing: .01em;
+      display:flex;
+      align-items:center;
+      gap: 6px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.08);
+    }
+
+    .chg.up{
+      color: #20c997;
+      background: rgba(32,201,151,.12);
+    }
+    .chg.down{
+      color: #ff5c5c;
+      background: rgba(255,92,92,.12);
+    }
+    .chg.flat{
+      color: #c7c4bf;
+      background: rgba(199,196,191,.10);
+    }
+
+    /* ---------- Section cards ---------- */
+    .section{
+      background: var(--cream);
+      color: var(--onyx);
+      border-radius: var(--radius-lg);
+      padding: 26px;
+      margin-bottom: 34px;
+      box-shadow: var(--card-shadow);
+    }
+
+    .section h2{
+      margin:0 0 6px;
+      font-size: 20px;
+      color: var(--onyx);
+    }
+
+    .section p{
+      margin:0 0 18px;
+      font-size: 13px;
+      color: #444;
+    }
+
+    /* ---------- Form row / controls ---------- */
+    .row{
+      display:flex;
+      align-items:center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .small{
+      font-size: 12px;
+      color: #555;
+    }
+
+    label.small{
+      font-weight: 600;
+      color: #333;
+    }
+
+    .input, input, select{
+      font-family: inherit;
+      font-size: 14px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid #ddd;
+      background: #fff;
+      color: #111;
+      outline: none;
+      min-height: 40px;
+    }
+
+    input.input{
+      flex: 1 1 320px;
+    }
+
+    select{
+      min-width: 160px;
+    }
+
+    button, .btn{
+      font-family: inherit;
+      border: none;
+      border-radius: 12px;
+      padding: 10px 14px;
+      background: #111;
+      color: #fff;
+      cursor: pointer;
+      min-height: 40px;
+      box-shadow: 0 10px 22px rgba(0,0,0,.18);
+    }
+    button:hover, .btn:hover{ filter: brightness(1.05); }
+    button:active, .btn:active{ transform: translateY(1px); }
+
+    /* ---------- Panels ---------- */
+    .panel{
+      background: #f7f5f2;
+      border-radius: var(--radius-md);
+      padding: 16px;
+      box-shadow: var(--soft-shadow);
+      border: 1px solid rgba(0,0,0,.06);
+    }
+
+    .panel-head{
+      display:flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .title{
+      font-weight: 800;
+      letter-spacing: -.01em;
+      color: #111;
+    }
+
+    .hint{
+      font-size: 12px;
+      color: #666;
+      margin-top: 3px;
+    }
+
+    /* ---------- Key/Value grid ---------- */
+    .kv{
+      display:grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px 12px;
+      margin-top: 12px;
+      font-size: 13px;
+    }
+
+    .kv .k{ color: #444; }
+    .kv .v{
+      font-weight: 700;
+      color: #111;
+      text-align:right;
+      white-space: nowrap;
+    }
+
+    /* ---------- Subcontractor Cards Grid ---------- */
+    .grid-3{
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+    @media (max-width: 980px){
+      .grid-3{ grid-template-columns: 1fr; }
+    }
+
+    .card{
+      background: #f5f3f0;
+      border-radius: var(--radius-md);
+      padding: 18px;
+      box-shadow: var(--soft-shadow);
+      transition: transform .25s ease, box-shadow .25s ease;
+      border: 1px solid rgba(0,0,0,.05);
+    }
+
+    .card:hover{
+      transform: translateY(-2px);
+      box-shadow: 0 22px 50px rgba(0,0,0,.25);
+    }
+
+    .card h3{
+      margin:0 0 6px;
+      font-size: 16px;
+      color: var(--onyx);
+    }
+
+    .meta{
+      font-size: 12px;
+      color: #666;
+      margin-bottom: 10px;
+    }
+
+    .card.clickable{ cursor: pointer; }
+
+    .card.active{
+      box-shadow:
+        0 0 0 2px var(--burgundy),
+        0 22px 50px rgba(0,0,0,.28);
+    }
+
+    /* ---------- Incidents ---------- */
+    .inc-list{ margin-top: 10px; }
+
+    .inc-row{
+      display:grid;
+      grid-template-columns: 1fr 1.2fr auto;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(0,0,0,.10);
+      align-items:center;
+    }
+    @media (max-width: 760px){
+      .inc-row{ grid-template-columns: 1fr; }
+    }
+
+    .link{
+      color: var(--burgundy);
+      font-weight: 700;
       text-decoration: none;
     }
+    .link:hover{ text-decoration: underline; }
 
-    button,
-    input {
-      font: inherit;
+    .pill{
+      display:inline-block;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 800;
+      margin-left: 8px;
+      vertical-align: middle;
+    }
+    .pill.high{ background:#f8d7da; color:#842029; }
+    .pill.mod { background:#fff3cd; color:#856404; }
+    .pill.low { background:#e7f5ec; color:#146c43; }
+
+    /* ---------- Status ---------- */
+    .status{
+      margin-top: 14px;
+      font-size: 12px;
+      color: #6b6b6b;
+    }
+    .status.danger{
+      color: #b42318;
+      font-weight: 700;
+    }
+  
+    /* ==============================
+       IOI INSIGHTS (Neutral Telemetry)
+    ============================== */
+    .ioi-insights{
+      margin-top: 14px;
+      padding: 0 2px 6px;
+    }
+    .ioi-insight-grid{
+      display:grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+    }
+    @media (max-width: 1100px){
+      .ioi-insight-grid{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 640px){
+      .ioi-insight-grid{ grid-template-columns: 1fr; }
+    }
+    .ioi-card{
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border: 1px solid rgba(255,255,255,.09);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--soft-shadow);
+      overflow:hidden;
+      min-height: 210px;
+      display:flex;
+      flex-direction:column;
+    }
+    .ioi-card-h{
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      padding: 14px 16px 10px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      gap: 10px;
+    }
+    .ioi-card-h .k{
+      font-weight: 800;
+      letter-spacing:.4px;
+      font-size: 14px;
+      text-transform: uppercase;
+    }
+    .ioi-card-h .meta{
+      font-size: 12px;
+      color: rgba(242,239,235,.75);
+      white-space: nowrap;
+    }
+    .ioi-card-b{
+      padding: 12px 16px 10px;
+      display:flex;
+      flex-direction:column;
+      gap: 8px;
+      flex:1;
+    }
+    .ioi-card-b .row{
+      display:flex;
+      justify-content:space-between;
+      gap: 10px;
+      align-items:baseline;
+    }
+    .ioi-card-b .row.slim{
+      margin-top: 2px;
+      opacity: .92;
+    }
+    .ioi-card-b .label{
+      font-size: 12px;
+      color: rgba(242,239,235,.68);
+      max-width: 55%;
+    }
+    .ioi-card-b .value{
+      font-size: 14px;
+      font-weight: 700;
+      text-align:right;
+      max-width: 45%;
+      overflow:hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; }
+    .ioi-card-f{
+      padding: 10px 16px 14px;
+      border-top: 1px solid rgba(255,255,255,.08);
+      display:flex;
+      gap: 10px;
+      align-items:center;
     }
 
-    .shell {
+    /* ---------- IOI mini tables ---------- */
+    .mini-table{ width:100%; }
+    table.mini{
+      width:100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+    table.mini th, table.mini td{
+      padding: 6px 6px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      vertical-align: top;
+    }
+    table.mini thead th{
+      color: rgba(255,255,255,.75);
+      font-weight: 700;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+    }
+    table.mini tbody td{
+      color: rgba(255,255,255,.9);
+    }
+    table.mini tbody tr:hover td{
+      background: rgba(255,255,255,.04);
+    }
+    .mini-btn{
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.14);
+      color: var(--cream);
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-weight: 700;
+      font-size: 12px;
+      cursor:pointer;
+      transition: .18s ease;
+      white-space: nowrap;
+    }
+    .mini-btn:hover{ transform: translateY(-1px); border-color: rgba(255,255,255,.22); }
+    .ioi-card-f .hint{
+      font-size: 12px;
+      color: rgba(242,239,235,.68);
+      overflow:hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      flex:1;
+      min-width: 0;
+    }
+
+    /* Modal */
+    .ioi-modal-backdrop{
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.64);
+      backdrop-filter: blur(6px);
+      z-index: 60;
+      display:none;
+    }
+    .ioi-modal{
+      position: fixed;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: min(980px, calc(100vw - 28px));
+      max-height: min(80vh, 720px);
+      background: rgba(17,17,18,.96);
+      border: 1px solid rgba(255,255,255,.14);
+      border-radius: 22px;
+      box-shadow: 0 30px 80px rgba(0,0,0,.6);
+      z-index: 61;
+      display:none;
+      overflow:hidden;
+    }
+    .ioi-modal-h{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      padding: 14px 16px;
+      border-bottom: 1px solid rgba(255,255,255,.12);
+    }
+    .ioi-modal-h .title{
+      font-weight: 900;
+      letter-spacing:.4px;
+      text-transform: uppercase;
+      font-size: 13px;
+    }
+    .ioi-modal-h .close{
+      width: 36px;
+      height: 36px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      color: var(--cream);
+      cursor:pointer;
+      font-size: 20px;
+      line-height: 1;
+    }
+    .ioi-modal-b{
+      padding: 14px 16px 18px;
+    }
+    .ioi-modal-sub{
+      font-weight: 800;
+      font-size: 14px;
+      margin-bottom: 6px;
+    }
+    .ioi-modal-note{
+      color: rgba(242,239,235,.68);
+      font-size: 12px;
+      margin-bottom: 12px;
+    }
+    .ioi-table-wrap{
+      overflow:auto;
+      border: 1px solid rgba(255,255,255,.10);
+      border-radius: 16px;
+    }
+    table.ioi-table{
+      width:100%;
+      border-collapse: collapse;
+      min-width: 760px;
+    }
+    .ioi-table th, .ioi-table td{
+      padding: 10px 12px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      font-size: 12px;
+      vertical-align: top;
+    }
+    .ioi-table th{
+      text-align:left;
+      color: rgba(242,239,235,.78);
+      font-weight: 900;
+      letter-spacing:.3px;
+      text-transform: uppercase;
+      background: rgba(255,255,255,.03);
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+    .ioi-table td.num, .ioi-table th.num{ text-align:right; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; }
+    .ioi-badge{
+      display:inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      font-size: 11px;
+      margin-right: 6px;
+    }
+
+
+    /* ===========================
+       TIME WINDOW TOGGLE
+    =========================== */
+    .window-toggle{
+      display:flex;
+      align-items:center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin: 12px 0 12px;
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: rgba(0,0,0,.35);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.06);
+    }
+    .win-btn{
+      appearance:none;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.06);
+      color: var(--cream);
+      font-weight: 900;
+      letter-spacing: .06em;
+      font-size: 12px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      cursor:pointer;
+      user-select:none;
+      text-transform: uppercase;
+    }
+    .win-btn:hover{ background: rgba(255,255,255,.10); }
+    .win-btn.active{
+      background: rgba(159,28,31,.22);
+      border-color: rgba(159,28,31,.35);
+      box-shadow: inset 0 0 0 1px rgba(159,28,31,.18);
+    }
+    .win-meta{
+      margin-left:auto;
+      font-size: 12px;
+      color: rgba(214,211,207,.78);
+      white-space: nowrap;
+    }
+
+    /* ---------- Injury Analytics ---------- */
+    .injury-section{
+      margin: 26px 0 34px;
+    }
+    .injury-section-head{
+      margin: 0 0 14px;
+      padding: 0 2px;
+    }
+    .injury-section-head h2{
+      margin:0 0 6px;
+      font-size:20px;
+      color: var(--cream);
+    }
+    .injury-section-head p{
+      margin:0;
+      font-size:13px;
+      color: rgba(242,239,235,.78);
+    }
+    .injury-grid{
+      margin-top: 10px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    .injury-card{
+      min-height: 320px;
+    }
+    @media (max-width: 1100px){
+      .injury-grid{
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+    @media (max-width: 720px){
+      .injury-grid{
+        grid-template-columns: 1fr;
+      }
+    }
+    .injury-card .ioi-card-b{
+      padding-top: 10px;
+    }
+    .injury-footnote{
+      margin-top: 12px;
+      padding: 0 2px;
+      font-size: 12px;
+      color: rgba(242,239,235,.72);
+    }
+    .dim-empty{
+      color: rgba(242,239,235,.72);
+      font-size:12px;
+      padding-top: 8px;
+    }
+
+
+    /* ==============================
+       SIMPLE LOGIN GATE (CLIENT-SIDE)
+       NOTE: This is NOT real security.
+    ============================== */
+    .auth-overlay{
+      position: fixed;
+      inset: 0;
+      z-index: 100000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0,0,0,.72);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      padding: 18px;
+    }
+    .auth-overlay.show{ display:flex; }
+
+    .auth-card{
+      width: min(520px, 92vw);
+      border-radius: 22px;
+      padding: 18px 18px 16px;
+      background:
+        radial-gradient(900px 600px at 15% 10%, rgba(159,28,31,.18), transparent 55%),
+        radial-gradient(700px 420px at 80% 20%, rgba(104,12,25,.18), transparent 60%),
+        linear-gradient(180deg, rgba(14,14,15,1) 0%, rgba(10,10,11,1) 100%);
+      border: 1px solid rgba(255,255,255,.12);
+      box-shadow: 0 30px 90px rgba(0,0,0,.65);
+      color: var(--cream);
+    }
+    .auth-title{
+      font-weight: 900;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      font-size: 14px;
+      margin: 0 0 8px;
+    }
+    .auth-sub{
+      margin: 0 0 14px;
+      color: rgba(214,211,207,.78);
+      font-size: 12px;
+      line-height: 1.4;
+    }
+    .auth-row{
+      display:flex;
+      gap: 10px;
+      align-items:center;
+      flex-wrap: wrap;
+    }
+    .auth-input{
+      flex: 1 1 260px;
+      font-family: inherit;
+      font-size: 14px;
+      padding: 12px 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      color: var(--cream);
+      outline:none;
+      min-height: 44px;
+    }
+    .auth-input::placeholder{ color: rgba(242,239,235,.55); }
+    .auth-btn{
+      min-height: 44px;
+      border-radius: 14px;
+      padding: 12px 14px;
+      font-weight: 900;
+      letter-spacing:.04em;
+      text-transform: uppercase;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(159,28,31,.26);
+      color: var(--cream);
+      cursor:pointer;
+      box-shadow: inset 0 0 0 1px rgba(159,28,31,.18);
+    }
+    .auth-btn:hover{ filter: brightness(1.06); }
+    .auth-btn:active{ transform: translateY(1px); }
+
+    .auth-err{
+      margin-top: 10px;
+      color: #ffb3b3;
+      font-size: 12px;
+      font-weight: 700;
+      display:none;
+    }
+    .auth-err.show{ display:block; }
+
+    /* Hide app until unlocked */
+    .protected.hide{ display:none !important; }
+
+    /* Tiny logout button (optional) */
+    .logout-btn{
+      position: fixed;
+      right: 14px;
+      bottom: 14px;
+      z-index: 99999;
+      border-radius: 999px;
+      padding: 8px 12px;
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.14);
+      color: rgba(242,239,235,.9);
+      font-weight: 800;
+      letter-spacing:.02em;
+      cursor:pointer;
+      display:none;
+    }
+    .logout-btn:hover{ background: rgba(255,255,255,.10); }
+
+
+
+
+    /* ---------- Export Controls ---------- */
+    .export-actions{
+      display:flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin: 10px 0 18px;
+    }
+
+    @media print{
+      .export-actions,
+      .logout-btn,
+      .auth-overlay{
+        display:none !important;
+      }
+    }
+
+
+    /* ---------- Emerging Risk Signals ---------- */
+    .alert-stack{
+      display:grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap:14px;
+      align-items: stretch;
+    }
+    #ioiCardEmergingRisk{
+      grid-column: 1 / -1;
+      min-height: 0;
+    }
+    #ioiCardEmergingRisk .ioi-card-b{
+      padding-top: 14px;
+    }
+    @media (max-width: 640px){
+      #ioiCardEmergingRisk{ grid-column: auto; }
+    }
+    .alert-card{
+      border-radius: 18px;
+      padding: 16px 16px 14px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.02);
+    }
+    .alert-card.stable{
+      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+      border-color: rgba(255,255,255,.12);
+    }
+    .alert-card.elevated,
+    .alert-card.critical{
+      background:
+        radial-gradient(600px 240px at 10% 10%, rgba(159,28,31,.16), transparent 55%),
+        linear-gradient(180deg, rgba(159,28,31,.14), rgba(104,12,25,.10));
+      border-color: rgba(159,28,31,.42);
+      box-shadow: inset 0 0 0 1px rgba(159,28,31,.18), 0 14px 34px rgba(0,0,0,.20);
+    }
+    .alert-kicker{
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: #ffd3d3;
+      margin-bottom: 8px;
+    }
+    .alert-title{
+      font-size: 14px;
+      font-weight: 800;
+      line-height: 1.45;
+      color: var(--cream);
+      margin-bottom: 8px;
+    }
+    .alert-detail{
+      font-size: 12px;
+      line-height: 1.45;
+      color: rgba(242,239,235,.78);
+    }
+
+  
+
+
+    /* ---------- Dashboard Tabs ---------- */
+    .dashboard-tabs{
+      width: min(1180px, calc(100% - 44px));
+      margin: 12px auto 26px;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      padding: 8px;
+      border: 1px solid rgba(93,92,90,.72);
+      border-radius: var(--radius-md);
+      background: rgba(17,17,18,.82);
+      box-shadow: var(--soft-shadow);
+    }
+
+    .tab-btn{
+      min-height: 52px;
+      border: 1px solid rgba(93,92,90,.9);
+      border-radius: 14px;
+      background: rgba(40,40,40,.88);
+      color: var(--cream);
+      cursor: pointer;
+      font-size: 15px;
+      font-weight: 950;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .tab-btn:hover{
+      background: rgba(93,92,90,.78);
+    }
+
+    .tab-btn.active{
+      background: linear-gradient(135deg, var(--cooper-red), var(--burgundy));
+      border-color: rgba(242,239,235,.18);
+      box-shadow: inset 0 0 0 1px rgba(242,239,235,.06), 0 14px 28px rgba(0,0,0,.32);
+    }
+
+    .dashboard-view{
+      display: none;
+    }
+
+    .dashboard-view.active{
+      display: block;
+    }
+
+    @media (max-width: 680px){
+      .dashboard-tabs{
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ---------- State OSHA Tab ---------- */
+    #oshaView{
       width: min(1680px, calc(100% - 40px));
       margin: 0 auto;
-      padding: 42px 0 54px;
+      padding: 0 0 80px;
     }
 
-    .hero {
-      max-width: 1080px;
-      margin-bottom: 28px;
+    .osh-hero{
+      max-width: 1180px;
+      margin: 0 auto 26px;
+      padding: 0 22px;
     }
 
-    .eyebrow {
+    .osh-eyebrow{
       display: inline-flex;
       gap: 10px;
       align-items: center;
       margin-bottom: 14px;
       color: var(--cloud);
-      font-family: var(--font-condensed);
-      font-size: 0.82rem;
-      font-weight: 900;
-      letter-spacing: 0.18em;
+      font-size: 13px;
+      font-weight: 950;
+      letter-spacing: .18em;
       text-transform: uppercase;
     }
 
-    .eyebrow::before {
+    .osh-eyebrow::before{
       display: inline-block;
       width: 36px;
       height: 2px;
       content: "";
-      background: var(--red);
+      background: var(--cooper-red);
     }
 
-    h1 {
+    .osh-title{
       max-width: 980px;
       margin: 0;
       color: var(--cream);
-      font-family: var(--font-display);
-      font-size: clamp(2.35rem, 5vw, 5.35rem);
-      line-height: 0.94;
-      letter-spacing: 0;
-      text-wrap: balance;
+      font-size: clamp(44px, 6vw, 88px);
+      line-height: .92;
     }
 
-    .subtitle {
-      max-width: 780px;
-      margin: 18px 0 0;
-      color: var(--cloud);
-      font-family: var(--font-body);
-      font-size: clamp(1rem, 1.4vw, 1.23rem);
+    .osh-subtitle{
+      max-width: 860px;
+      margin: 16px 0 0;
+      color: rgba(242,239,235,.78);
+      font-size: 15px;
+      line-height: 1.55;
     }
 
-    .toolbar {
+    .osh-toolbar{
+      width: min(1180px, calc(100% - 44px));
       display: grid;
       grid-template-columns: minmax(240px, 1fr) auto;
       gap: 12px;
       align-items: center;
-      margin-bottom: 18px;
+      margin: 0 auto 18px;
       padding: 12px;
-      border: 1px solid var(--steel);
-      border-radius: var(--radius);
-      background: var(--onyx);
+      border: 1px solid rgba(93,92,90,.72);
+      border-radius: var(--radius-md);
+      background: rgba(17,17,18,.82);
+      box-shadow: var(--soft-shadow);
     }
 
-    .search-wrap {
+    .osh-search-wrap{
       position: relative;
     }
 
-    .search-label {
+    .osh-search-label{
       position: absolute;
       top: 50%;
       left: 16px;
       color: var(--cloud);
       font-family: var(--font-condensed);
-      font-size: 0.78rem;
-      font-weight: 900;
-      letter-spacing: 0.1em;
+      font-size: 12px;
+      font-weight: 950;
+      letter-spacing: .12em;
       text-transform: uppercase;
       transform: translateY(-50%);
       pointer-events: none;
     }
 
-    input[type="search"] {
+    .osh-search{
       width: 100%;
-      min-height: 50px;
+      min-height: 52px;
       padding: 12px 16px 12px 92px;
       color: var(--cream);
-      border: 1px solid var(--steel);
-      border-radius: var(--radius);
+      border: 1px solid rgba(93,92,90,.9);
+      border-radius: 14px;
       outline: none;
-      background: var(--charcoal);
+      background: rgba(40,40,40,.92);
     }
 
-    input[type="search"]::placeholder {
-      color: var(--cloud);
+    .osh-search::placeholder{
+      color: rgba(207,205,202,.82);
     }
 
-    input[type="search"]:focus {
-      border-color: var(--red);
+    .osh-search:focus{
+      border-color: var(--cooper-red);
     }
 
-    .clear-btn {
-      min-height: 50px;
-      padding: 0 20px;
+    .osh-clear-btn{
+      min-height: 52px;
+      padding: 0 18px;
       color: var(--cream);
-      font-family: var(--font-bold);
-      font-weight: 900;
-      border: 1px solid var(--steel);
-      border-radius: var(--radius);
+      font-weight: 950;
+      border: 1px solid rgba(93,92,90,.9);
+      border-radius: 14px;
       background: var(--burgundy);
       cursor: pointer;
     }
 
-    .clear-btn:hover {
-      background: var(--red);
+    .osh-clear-btn:hover{
+      background: var(--cooper-red);
     }
 
-    .state-index-panel {
-      margin-bottom: 22px;
-      border: 1px solid var(--steel);
-      border-radius: var(--radius);
-      background: var(--onyx);
+    .osh-state-index-panel{
+      width: min(1180px, calc(100% - 44px));
+      margin: 0 auto 22px;
+      border: 1px solid rgba(93,92,90,.72);
+      border-radius: var(--radius-lg);
+      background: rgba(17,17,18,.78);
+      box-shadow: var(--soft-shadow);
       overflow: hidden;
     }
 
-    .panel-head {
+    .osh-panel-head{
       display: flex;
       gap: 14px;
       align-items: center;
       justify-content: space-between;
       padding: 16px 18px;
-      border-bottom: 1px solid var(--steel);
-      background: var(--charcoal);
+      border-bottom: 1px solid rgba(93,92,90,.72);
+      background: rgba(40,40,40,.72);
     }
 
-    .panel-head h2 {
+    .osh-panel-head h2{
       margin: 0;
       color: var(--cream);
-      font-family: var(--font-condensed);
-      font-size: 0.95rem;
+      font-size: 16px;
       font-weight: 950;
-      letter-spacing: 0.12em;
+      letter-spacing: .12em;
       text-transform: uppercase;
     }
 
-    .panel-head p {
+    .osh-panel-head p{
       margin: 0;
-      color: var(--cloud);
-      font-size: 0.92rem;
+      color: rgba(242,239,235,.72);
+      font-size: 13px;
     }
 
-    .state-index {
+    .osh-state-index{
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
       padding: 16px;
     }
 
-    .state-btn {
+    .osh-state-btn{
       min-height: 42px;
       padding: 10px 14px;
       color: var(--cream);
-      font-family: var(--font-bold);
-      border: 1px solid var(--steel);
+      border: 1px solid rgba(93,92,90,.9);
       border-radius: 999px;
-      background: var(--charcoal);
+      background: rgba(40,40,40,.9);
       cursor: pointer;
-      font-size: 0.92rem;
-      font-weight: 850;
+      font-size: 14px;
+      font-weight: 950;
       white-space: nowrap;
       transition: transform 150ms ease, background 150ms ease;
     }
 
-    .state-btn:hover {
-      background: var(--steel);
+    .osh-state-btn:hover{
+      background: rgba(93,92,90,.82);
       transform: translateY(-1px);
     }
 
-    .state-btn.active {
-      color: var(--cream);
-      border-color: var(--red);
-      background: var(--red);
+    .osh-state-btn.active{
+      border-color: var(--cooper-red);
+      background: var(--cooper-red);
     }
 
-    .state-btn small {
+    .osh-state-btn small{
       margin-left: 6px;
       color: var(--cloud);
-      font-family: var(--font-bold);
-      font-weight: 900;
+      font-weight: 950;
     }
 
-    .active-state {
+    .osh-active-state{
+      width: min(1180px, calc(100% - 44px));
       display: grid;
       grid-template-columns: minmax(0, 1fr) auto;
       gap: 18px;
       align-items: end;
-      margin: 28px 0 18px;
+      margin: 28px auto 18px;
     }
 
-    .active-state h2 {
+    .osh-active-state h2{
       margin: 0;
       color: var(--cream);
       font-family: var(--font-display);
-      font-size: clamp(2rem, 4vw, 4.2rem);
-      line-height: 0.95;
-      letter-spacing: 0;
+      font-size: clamp(42px, 5vw, 76px);
+      line-height: .92;
     }
 
-    .active-state p {
+    .osh-active-state p{
       margin: 10px 0 0;
-      color: var(--cloud);
+      color: rgba(242,239,235,.72);
     }
 
-    .active-badge {
+    .osh-active-badge{
       padding: 12px 16px;
-      border: 1px solid var(--steel);
-      border-radius: var(--radius);
-      background: var(--charcoal);
+      border: 1px solid rgba(93,92,90,.9);
+      border-radius: 14px;
+      background: rgba(40,40,40,.9);
       color: var(--cream);
-      font-family: var(--font-condensed);
       font-weight: 950;
-      letter-spacing: 0.1em;
+      letter-spacing: .1em;
       text-transform: uppercase;
       white-space: nowrap;
     }
 
-    .cards {
+    .osh-cards{
+      width: min(1680px, calc(100% - 44px));
+      margin: 0 auto;
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 18px;
     }
 
-    .requirement-card {
+    .osh-requirement-card{
       display: flex;
       min-height: 318px;
       flex-direction: column;
       position: relative;
       overflow: hidden;
       padding: 24px;
-      border: 1px solid var(--steel);
-      border-radius: var(--radius);
-      background: linear-gradient(145deg, var(--charcoal) 0%, var(--onyx) 58%, var(--burgundy) 100%);
+      border: 1px solid rgba(93,92,90,.74);
+      border-radius: var(--radius-lg);
+      background:
+        radial-gradient(650px 260px at 8% 0%, rgba(159,28,31,.24), transparent 62%),
+        linear-gradient(145deg, rgba(40,40,40,.96), rgba(17,17,18,.96) 56%, rgba(104,12,25,.72));
+      box-shadow: var(--card-shadow);
     }
 
-    .requirement-card::before {
+    .osh-requirement-card::before{
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 4px;
       content: "";
-      background: var(--red);
+      background: var(--cooper-red);
     }
 
-    .card-number {
+    .osh-card-number{
       margin-bottom: 18px;
-      color: var(--cloud);
-      font-family: var(--font-condensed);
-      font-size: 0.78rem;
+      color: rgba(207,205,202,.82);
+      font-size: 13px;
       font-weight: 950;
-      letter-spacing: 0.14em;
+      letter-spacing: .14em;
       text-transform: uppercase;
     }
 
-    .requirement-text {
+    .osh-requirement-text{
       margin: 0;
       color: var(--cream);
-      font-family: var(--font-body);
-      font-size: clamp(1.02rem, 1.2vw, 1.2rem);
-      font-weight: 720;
+      font-size: 16px;
+      font-weight: 650;
+      line-height: 1.45;
     }
 
-    .card-footer {
+    .osh-card-footer{
       display: grid;
       gap: 14px;
       margin-top: auto;
       padding-top: 24px;
     }
 
-    .citation-row {
+    .osh-citation-row{
       display: grid;
       gap: 5px;
       padding-top: 16px;
-      border-top: 1px solid var(--steel);
+      border-top: 1px solid rgba(93,92,90,.74);
     }
 
-    .label {
+    .osh-label{
       color: var(--cloud);
-      font-family: var(--font-condensed);
-      font-size: 0.75rem;
+      font-size: 12px;
       font-weight: 950;
-      letter-spacing: 0.12em;
+      letter-spacing: .12em;
       text-transform: uppercase;
     }
 
-    .citation-text {
+    .osh-citation-text{
       color: var(--cream);
       font-family: var(--font-bold);
-      font-size: 0.95rem;
-      font-weight: 800;
+      font-size: 14px;
+      font-weight: 850;
+      line-height: 1.35;
     }
 
-    .source-row {
+    .osh-source-row{
       display: flex;
       gap: 12px;
       align-items: center;
       justify-content: space-between;
     }
 
-    .source-link {
+    .osh-source-link{
       display: inline-flex;
       min-height: 42px;
       align-items: center;
       justify-content: center;
       padding: 10px 14px;
       color: var(--cream);
-      font-family: var(--font-bold);
-      border: 1px solid var(--steel);
-      border-radius: var(--radius);
+      border: 1px solid rgba(93,92,90,.9);
+      border-radius: 12px;
       background: var(--burgundy);
-      font-size: 0.9rem;
+      font-size: 13px;
       font-weight: 950;
       white-space: nowrap;
     }
 
-    .source-link:hover {
-      background: var(--red);
+    .osh-source-link:hover{
+      background: var(--cooper-red);
     }
 
-    .empty,
-    .status {
-      margin: 0 0 18px;
+    .osh-empty,
+    .osh-status{
+      width: min(1180px, calc(100% - 44px));
+      margin: 0 auto 18px;
       padding: 18px;
-      border: 1px solid var(--steel);
-      border-radius: var(--radius);
-      background: var(--onyx);
+      border: 1px solid rgba(93,92,90,.72);
+      border-radius: var(--radius-md);
+      background: rgba(17,17,18,.84);
       color: var(--cloud);
     }
 
-    .status {
+    .osh-status{
       display: none;
     }
 
-    .status.show {
+    .osh-status.show{
       display: block;
     }
 
-    .status.error {
+    .osh-status.error{
       color: var(--cream);
-      border-color: var(--red);
+      border-color: var(--cooper-red);
       background: var(--burgundy);
     }
 
-    .empty {
+    .osh-empty{
       display: none;
       text-align: center;
     }
 
-    .empty.show {
+    .osh-empty.show{
       display: block;
     }
 
-    .footer-note {
-      margin: 24px 0 0;
-      color: var(--cloud);
-      font-size: 0.92rem;
+    .osh-footer-note{
+      width: min(1180px, calc(100% - 44px));
+      margin: 24px auto 0;
+      color: rgba(242,239,235,.62);
+      font-size: 13px;
     }
 
-    @media (max-width: 1180px) {
-      .cards {
+    @media (max-width: 1180px){
+      .osh-cards{
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
     }
 
-    @media (max-width: 780px) {
-      .shell {
+    @media (max-width: 780px){
+      #oshaView,
+      .osh-cards,
+      .osh-toolbar,
+      .osh-state-index-panel,
+      .osh-active-state,
+      .osh-empty,
+      .osh-status,
+      .osh-footer-note{
         width: min(100% - 22px, 1680px);
-        padding-top: 24px;
       }
 
-      .toolbar,
-      .active-state {
+      .osh-toolbar,
+      .osh-active-state{
         grid-template-columns: 1fr;
       }
 
-      .panel-head {
+      .osh-panel-head{
         display: block;
       }
 
-      .panel-head p {
+      .osh-panel-head p{
         margin-top: 8px;
       }
 
-      .state-index {
+      .osh-state-index{
         flex-wrap: nowrap;
         overflow-x: auto;
         padding-bottom: 18px;
       }
 
-      .cards {
+      .osh-cards{
         grid-template-columns: 1fr;
       }
 
-      .requirement-card {
+      .osh-requirement-card{
         min-height: 280px;
       }
 
-      .source-row {
+      .osh-source-row{
         display: grid;
       }
     }
+
   </style>
 </head>
+
 <body>
-  <main class="shell">
-    <section class="hero" aria-label="Dashboard summary">
-      <div class="eyebrow">Cooper Steel Field Safety</div>
-      <h1>State OSHA Steel Erection Requirements</h1>
-    </section>
 
-    <section class="toolbar" aria-label="Search controls">
-      <div class="search-wrap">
-        <span class="search-label" aria-hidden="true">Search</span>
-        <input id="searchInput" type="search" placeholder="Search within the selected state">
+  <!-- ==============================
+       SIMPLE LOGIN GATE (CLIENT-SIDE)
+       NOTE: This is NOT real security.
+       Anyone with the file can bypass.
+       Use a real hosted auth for true security.
+  ============================== -->
+  <div id="authOverlay" class="auth-overlay" aria-hidden="true">
+    <div class="auth-card" role="dialog" aria-modal="true" aria-label="Login">
+      <div class="auth-title">Protected Dashboard</div>
+      <p class="auth-sub">
+        Enter the password to view this dashboard.
+      </p>
+      <div class="auth-row">
+        <input id="authPass" class="auth-input" type="password" placeholder="Password…" autocomplete="current-password" />
+        <button id="authBtn" class="auth-btn" type="button">Unlock</button>
       </div>
-      <button id="clearButton" class="clear-btn" type="button">Clear Search</button>
+      <div id="authErr" class="auth-err">Nope. Wrong password.</div>
+      <div class="auth-sub" style="margin-top:12px;">
+        Press <strong>Enter</strong> to submit.
+      </div>
+    </div>
+  </div>
+  <button id="logoutBtn" class="logout-btn" type="button" title="Lock dashboard">Lock</button>
+
+  <div id="protectedApp" class="protected hide">
+
+  <header class="brand-header">
+    <img src="coopersteel-logo.png" alt="Cooper Steel" class="brand-logo">
+  </header>
+
+  <nav class="dashboard-tabs" aria-label="Dashboard tabs">
+    <button class="tab-btn active" type="button" data-view="safetyView" aria-selected="true">Safety Metrics</button>
+    <button class="tab-btn" type="button" data-view="oshaView" aria-selected="false">State OSHA</button>
+  </nav>
+
+
+  <section id="safetyView" class="dashboard-view active" aria-label="Safety metrics dashboard">
+  <div class="shell">
+    <div class="container">
+
+      <h1>2026 Safety Performance</h1>
+      <p class="subhead">Real-time safety metrics across all active projects and subcontractors.</p>
+
+      <div class="export-actions" aria-label="Export dashboard">
+        <button id="exportPdf" type="button">Export PDF</button>
+        <button id="exportExcel" type="button">Export Excel</button>
+      </div>
+
+      <div class="kpi-row" id="kpis">
+        <div class="kpi"><div class="val">—</div><div class="lab">Total Man-Hours</div></div>
+        <div class="kpi"><div class="val">—</div><div class="lab">TRIR</div></div>
+        <div class="kpi"><div class="val">—</div><div class="lab">LTIR</div></div>
+        <div class="kpi"><div class="val">—</div><div class="lab">Total Recordables</div></div>
+        <div class="kpi"><div class="val">—</div><div class="lab">Active Subcontractors</div></div>
+      </div>
+
+      <!-- ✅ TIME WINDOW TOGGLE (Executive view) -->
+      <div class="window-toggle" role="group" aria-label="Telemetry window">
+        <button class="win-btn active" type="button" data-window="30" id="win30">30D</button>
+        <button class="win-btn" type="button" data-window="60" id="win60">60D</button>
+        <button class="win-btn" type="button" data-window="YTD" id="winYTD">YTD</button>
+        <div class="win-meta" id="winMeta">Window: —</div>
+      </div>
+
+      <!-- ✅ IOI INSIGHTS (telemetry — neutral, factual) -->
+      <div class="ioi-insights" id="ioiInsights" aria-label="IOI details">
+        <div class="ioi-insight-grid">
+
+          <div class="ioi-card" id="ioiCardWindow">
+            <div class="ioi-card-h">
+              <div class="k" id="ioiWindowTitle">Last 30 Days</div>
+              <div class="meta" id="ioiWindowLabel">Window</div>
+            </div>
+            <div class="ioi-card-b">
+              <div class="row"><div class="label">Total incidents</div><div class="value" id="tIncTotal">—</div></div>
+              <div class="row"><div class="label">High / Mod / Low</div><div class="value" id="tSevMix">—</div></div>
+              <div class="row"><div class="label">Top area (sub + project)</div><div class="value" id="tTopArea">—</div></div>
+              <div class="row"><div class="label">Concentration (top area share)</div><div class="value" id="tConcShare">—</div></div>
+            </div>
+            <div class="ioi-card-f">
+            </div>
+          </div>
+
+          <div class="ioi-card" id="ioiCardTopSubs">
+            <div class="ioi-card-h">
+              <div class="k">Top Subcontractors</div>
+            </div>
+            <div class="ioi-card-b">
+              <div class="mini-table" id="tTopSubsTable">—</div>
+            </div>
+            <div class="ioi-card-f">
+            </div>
+          </div>
+
+          <div class="ioi-card" id="ioiCardTopProjects">
+            <div class="ioi-card-h">
+              <div class="k">Top Projects</div>
+            </div>
+            <div class="ioi-card-b">
+              <div class="mini-table" id="tTopProjectsTable">—</div>
+            </div>
+            <div class="ioi-card-f">
+            </div>
+          </div>
+
+          <div class="ioi-card" id="ioiCard10k">
+            <div class="ioi-card-h">
+              <div class="k">≥10,000 Hours Filter</div>
+</div>
+            <div class="ioi-card-b">
+              <div class="row"><div class="label">Top sub</div><div class="value" id="tTop10kSub">—</div></div>
+              <div class="row"><div class="label">Hours (YTD)</div><div class="value" id="tTop10kHours">—</div></div>
+              <div class="row"><div class="label">Window incidents</div><div class="value" id="tTop10kInc">—</div></div>
+              <div class="row"><div class="label">Data source</div><div class="value">SUBS + INCIDENTS</div></div>
+            </div>
+            <div class="ioi-card-f">
+            </div>
+          </div>
+
+          <div class="ioi-card" id="ioiCardEmergingRisk">
+            <div class="ioi-card-h">
+              <div class="k">Emerging Risk Signals</div>
+              <div class="meta" id="emergingRiskSignalsMeta">Recent — vs baseline —</div>
+            </div>
+            <div class="ioi-card-b">
+              <div class="alert-stack" id="emergingRiskSignals">
+                <div class="alert-card stable">
+                  <div class="alert-kicker">STABLE WINDOW</div>
+                  <div class="alert-title">No emerging risk signals detected in the selected window.</div>
+                  <div class="alert-detail">Body part + mechanism spike detection will render here.</div>
+                </div>
+              </div>
+            </div>
+            <div class="ioi-card-f">
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="injury-section">
+        <div class="injury-section-head">
+          <h2>Injury Signature Analytics</h2>
+        </div>
+
+        <div class="ioi-insight-grid injury-grid">
+          <div class="ioi-card injury-card">
+            <div class="ioi-card-h">
+              <div class="k">Body Part Distribution</div>
+</div>
+            <div class="ioi-card-b">
+              <div class="mini-table" id="bodyPartTable">—</div>
+            </div>
+            <div class="ioi-card-f">
+            </div>
+          </div>
+
+          <div class="ioi-card injury-card">
+            <div class="ioi-card-h">
+              <div class="k">Nature of Injury</div>
+</div>
+            <div class="ioi-card-b">
+              <div class="mini-table" id="natureTable">—</div>
+            </div>
+            <div class="ioi-card-f">
+            </div>
+          </div>
+
+          <div class="ioi-card injury-card">
+            <div class="ioi-card-h">
+              <div class="k">Mechanism</div>
+</div>
+            <div class="ioi-card-b">
+              <div class="mini-table" id="mechanismTable">—</div>
+            </div>
+            <div class="ioi-card-f">
+            </div>
+          </div>
+
+          <div class="ioi-card injury-card">
+            <div class="ioi-card-h">
+              <div class="k">Day of Week</div>
+</div>
+            <div class="ioi-card-b">
+              <div class="mini-table" id="dayTable">—</div>
+            </div>
+            <div class="ioi-card-f">
+            </div>
+          </div>
+
+          <div class="ioi-card injury-card">
+            <div class="ioi-card-h">
+              <div class="k">Time of Day</div>
+</div>
+            <div class="ioi-card-b">
+              <div class="mini-table" id="timeTable">—</div>
+            </div>
+            <div class="ioi-card-f">
+            </div>
+          </div>
+
+          <div class="ioi-card injury-card">
+            <div class="ioi-card-h">
+              <div class="k">Top Risk Signatures</div>
+</div>
+            <div class="ioi-card-b">
+              <div class="mini-table" id="riskTable">—</div>
+            </div>
+            <div class="ioi-card-f">
+            </div>
+          </div>
+        </div>
+      </div>
+
+<div class="section">
+        <h2>Subcontractor Performance</h2>
+        <p>Top subcontractors by hours are shown below. Use the lookup to view any subcontractor.</p>
+
+        <div class="row">
+          <label class="small" for="subPick">Subcontractor</label>
+          <input class="input" id="subPick" list="subList" placeholder="Type a subcontractor name…" autocomplete="off" />
+          <datalist id="subList"></datalist>
+        </div>
+
+        <div class="panel" id="subDetail" style="margin-top:12px;">
+          <div class="title">Select a subcontractor</div>
+          <div class="hint">Details will appear here.</div>
+          <div class="small">No selection.</div>
+        </div>
+
+        <div style="height:16px"></div>
+        <div class="grid-3" id="subCards"></div>
+        <div class="status" id="subHint"></div>
+
+      </div>
+
+
+      <div class="section">
+        <h2>Incidents</h2>
+        <p>Latest incidents shown. Search by subcontractor, project, or incident ID.</p>
+
+        <div class="row">
+          <input class="input" id="q" placeholder="Search incidents (sub, project, ID)" autocomplete="off" />
+          <select id="sev">
+            <option value="">Severity: All</option>
+            <option value="High">High</option>
+            <option value="Moderate">Moderate</option>
+            <option value="Low">Low</option>
+          </select>
+          <button id="clear">Clear</button>
+        </div>
+
+        <div class="row" style="margin-top:10px;">
+          <label class="small" for="incPick">Incident</label>
+          <input class="input" id="incPick" list="incList" placeholder="Type an Incident ID…" autocomplete="off" />
+          <datalist id="incList"></datalist>
+        </div>
+
+        <div class="panel" id="incDetail" style="margin-top:12px;">
+          <div class="title">Select an incident</div>
+          <div class="hint">Details will appear here.</div>
+          <div class="small">No selection.</div>
+        </div>
+
+        <div class="inc-list" id="incidentList"></div>
+        <div class="status" id="incHint"></div>
+
+        <div style="margin-top:12px" class="small">
+          Click “View report” to see the incident report details.
+        </div>
+      </div>
+
+      <div class="status" id="status"></div>
+    </div>
+  </div>
+
+  
+  </section>
+
+
+  <section id="oshaView" class="dashboard-view" aria-label="State OSHA requirements dashboard">
+    <section class="osh-hero" aria-label="State OSHA summary">
+      <div class="osh-eyebrow">Cooper Steel Field Safety</div>
+      <h1 class="osh-title">State OSHA Steel Erection Requirements</h1>
+      <p class="osh-subtitle">State-plan steel erection requirements that are more stringent than federal OSHA, arranged by state for fast field planning and bid review.</p>
     </section>
 
-    <p id="status" class="status show">Loading Google Sheet data...</p>
+    <section class="osh-toolbar" aria-label="State OSHA search controls">
+      <div class="osh-search-wrap">
+        <span class="osh-search-label" aria-hidden="true">Search</span>
+        <input id="oshSearchInput" class="osh-search" type="search" placeholder="Search within the selected state">
+      </div>
+      <button id="oshClearButton" class="osh-clear-btn" type="button">Clear Search</button>
+    </section>
 
-    <section class="state-index-panel" aria-label="State index">
-      <div class="panel-head">
+    <p id="oshStatus" class="osh-status show">Loading Google Sheet data...</p>
+
+    <section class="osh-state-index-panel" aria-label="State index">
+      <div class="osh-panel-head">
         <h2>State Index</h2>
         <p>Click a state to load its steel erection cards.</p>
       </div>
-      <div id="stateIndex" class="state-index"></div>
+      <div id="oshStateIndex" class="osh-state-index"></div>
     </section>
 
-    <section class="active-state" aria-label="Selected state">
+    <section class="osh-active-state" aria-label="Selected state">
       <div>
-        <h2 id="activeStateName">Select a state</h2>
-        <p id="activeStateSummary">The selected state's requirements will appear below as review cards.</p>
+        <h2 id="oshActiveStateName">Select a state</h2>
+        <p id="oshActiveStateSummary">The selected state's requirements will appear below as review cards.</p>
       </div>
-      <div id="activeBadge" class="active-badge">0 cards</div>
+      <div id="oshActiveBadge" class="osh-active-badge">0 cards</div>
     </section>
 
-    <div id="empty" class="empty">No matching cards for this state and search.</div>
-    <section id="cards" class="cards" aria-label="Requirement cards"></section>
+    <div id="oshEmpty" class="osh-empty">No matching cards for this state and search.</div>
+    <section id="oshCards" class="osh-cards" aria-label="Requirement cards"></section>
 
-  </main>
+    <p class="osh-footer-note">Live data source: published Google Sheet CSV. Update the source Google Sheet and refresh this page to pull the latest rows.</p>
+  </section>
+
+  </div>
 
   <script>
-    const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR8SxjBcpMRRNWaSO74ZmuI1vgrtKoj4Ktly45QpRHK1QLKFp492sLX79rfEGxLEXnq9CfvVklyw1MH/pub?gid=0&single=true&output=csv";
-    const expectedHeaders = [
-      "State",
-      "Steel-Erection-Related More Stringent Requirement",
-      "Citation",
-      "Source"
-    ];
 
-    const els = {
-      stateIndex: document.getElementById("stateIndex"),
-      cards: document.getElementById("cards"),
-      empty: document.getElementById("empty"),
-      status: document.getElementById("status"),
-      search: document.getElementById("searchInput"),
-      clear: document.getElementById("clearButton"),
-      activeStateName: document.getElementById("activeStateName"),
-      activeStateSummary: document.getElementById("activeStateSummary"),
-      activeBadge: document.getElementById("activeBadge")
-    };
+    
+    /* ==============================
+       SIMPLE LOGIN GATE (CLIENT-SIDE)
+       NOTE: This is NOT real security.
+       For real security, use hosted auth.
+    ============================== */
+    const AUTH_SESSION_KEY = "cs_dash_unlocked_v1";
+    const DASH_PASSWORD = "Logan"; // <-- change this to your password
 
-    let allRows = [];
-    let states = [];
-    let selectedState = "";
+    function showAuth(){
+      const ov = document.getElementById("authOverlay");
+      const app = document.getElementById("protectedApp");
+      const pass = document.getElementById("authPass");
+      const err = document.getElementById("authErr");
+      const logout = document.getElementById("logoutBtn");
 
-    function parseCsv(text) {
+      if (ov) { ov.classList.add("show"); ov.setAttribute("aria-hidden","false"); }
+      if (app) app.classList.add("hide");
+      if (logout) logout.style.display = "none";
+      if (err) err.classList.remove("show");
+      if (pass){
+        pass.value = "";
+        setTimeout(()=>pass.focus(), 50);
+      }
+      document.body.style.overflow = "hidden";
+    }
+
+    function hideAuth(){
+      const ov = document.getElementById("authOverlay");
+      const app = document.getElementById("protectedApp");
+      const logout = document.getElementById("logoutBtn");
+
+      if (ov) { ov.classList.remove("show"); ov.setAttribute("aria-hidden","true"); }
+      if (app) app.classList.remove("hide");
+      if (logout) logout.style.display = "inline-flex";
+      document.body.style.overflow = "";
+    }
+
+    function unlock(){
+      const pass = document.getElementById("authPass");
+      const err = document.getElementById("authErr");
+      const val = (pass?.value || "").trim();
+
+      if (!DASH_PASSWORD || DASH_PASSWORD === "CHANGE_ME"){
+        // Safety: if you forgot to set a password, don't brick the page.
+        console.warn("[Auth] DASH_PASSWORD is not set. Unlocking anyway.");
+        sessionStorage.setItem(AUTH_SESSION_KEY, "1");
+        hideAuth();
+        return true;
+      }
+
+      if (val === DASH_PASSWORD){
+        sessionStorage.setItem(AUTH_SESSION_KEY, "1");
+        hideAuth();
+        return true;
+      }
+
+      if (err) err.classList.add("show");
+      if (pass){
+        pass.value = "";
+        pass.focus();
+      }
+      return false;
+    }
+
+    function lock(){
+      sessionStorage.removeItem(AUTH_SESSION_KEY);
+      showAuth();
+    }
+
+    // Wire up auth UI immediately (before data loads)
+    (function initAuthGate(){
+      const btn = document.getElementById("authBtn");
+      const pass = document.getElementById("authPass");
+      const logout = document.getElementById("logoutBtn");
+
+      if (btn && !btn.dataset.wired){
+        btn.dataset.wired = "1";
+        btn.addEventListener("click", unlock);
+      }
+      if (pass && !pass.dataset.wired){
+        pass.dataset.wired = "1";
+        pass.addEventListener("keydown", (e)=>{ if (e.key === "Enter") unlock(); });
+      }
+      if (logout && !logout.dataset.wired){
+        logout.dataset.wired = "1";
+        logout.addEventListener("click", lock);
+      }
+
+      if (sessionStorage.getItem(AUTH_SESSION_KEY) === "1") hideAuth();
+      else showAuth();
+    })();
+
+
+    /*** CONFIG: your published CSV URLs ***/
+    const KPI_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRrvHagkDQ72AeZe3sWPeJ_DJKgqL9Ipfw9WCdX0sAsRNxOhg_tJ9IhjkIo0Kij2vb4pBXqKyE6cCNJ/pub?gid=152373673&single=true&output=csv";
+    const SUBS_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRrvHagkDQ72AeZe3sWPeJ_DJKgqL9Ipfw9WCdX0sAsRNxOhg_tJ9IhjkIo0Kij2vb4pBXqKyE6cCNJ/pub?gid=466735545&single=true&output=csv";
+    const INCIDENTS_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRrvHagkDQ72AeZe3sWPeJ_DJKgqL9Ipfw9WCdX0sAsRNxOhg_tJ9IhjkIo0Kij2vb4pBXqKyE6cCNJ/pub?gid=535693387&single=true&output=csv";
+
+    /* ✅ PASTE YOUR PUB_IOI PUBLISHED CSV LINK HERE */
+    const IOI_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRrvHagkDQ72AeZe3sWPeJ_DJKgqL9Ipfw9WCdX0sAsRNxOhg_tJ9IhjkIo0Kij2vb4pBXqKyE6cCNJ/pub?gid=303885721&single=true&output=csv";
+
+    const NATURE_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRrvHagkDQ72AeZe3sWPeJ_DJKgqL9Ipfw9WCdX0sAsRNxOhg_tJ9IhjkIo0Kij2vb4pBXqKyE6cCNJ/pub?gid=1755388549&single=true&output=csv";
+    const BODY_PART_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRrvHagkDQ72AeZe3sWPeJ_DJKgqL9Ipfw9WCdX0sAsRNxOhg_tJ9IhjkIo0Kij2vb4pBXqKyE6cCNJ/pub?gid=1787496507&single=true&output=csv";
+    const MECHANISM_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRrvHagkDQ72AeZe3sWPeJ_DJKgqL9Ipfw9WCdX0sAsRNxOhg_tJ9IhjkIo0Kij2vb4pBXqKyE6cCNJ/pub?gid=4709382&single=true&output=csv";
+    const DAYOFWEEK_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRrvHagkDQ72AeZe3sWPeJ_DJKgqL9Ipfw9WCdX0sAsRNxOhg_tJ9IhjkIo0Kij2vb4pBXqKyE6cCNJ/pub?gid=1983006757&single=true&output=csv";
+    const TIME_OF_DAY_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRrvHagkDQ72AeZe3sWPeJ_DJKgqL9Ipfw9WCdX0sAsRNxOhg_tJ9IhjkIo0Kij2vb4pBXqKyE6cCNJ/pub?gid=1637334887&single=true&output=csv";
+    const RISK_SIGNATURES_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRrvHagkDQ72AeZe3sWPeJ_DJKgqL9Ipfw9WCdX0sAsRNxOhg_tJ9IhjkIo0Kij2vb4pBXqKyE6cCNJ/pub?gid=579125110&single=true&output=csv";
+
+
+    /*** helpers ***/
+    const bust = (url) => url + (url.includes("?") ? "&" : "?") + "t=" + Date.now();
+
+    function setStatus(msg, isErr=false){
+      const el = document.getElementById("status");
+      el.textContent = msg || "";
+      el.className = "status" + (isErr ? " danger" : "");
+    }
+
+    function toNumber(x){
+      if (x === null || x === undefined) return 0;
+      const n = parseFloat(String(x).replace(/,/g,"").trim());
+      return Number.isFinite(n) ? n : 0;
+    }
+
+    function safeText(x){
+      return (x === null || x === undefined) ? "" : String(x);
+    }
+
+    function parseCSV(text){
       const rows = [];
       let row = [];
-      let field = "";
+      let cur = "";
       let inQuotes = false;
 
-      for (let i = 0; i < text.length; i += 1) {
-        const char = text[i];
-        const next = text[i + 1];
+      for (let i=0; i<text.length; i++){
+        const c = text[i];
+        const next = text[i+1];
 
-        if (char === "\"") {
-          if (inQuotes && next === "\"") {
-            field += "\"";
-            i += 1;
-          } else {
-            inQuotes = !inQuotes;
-          }
+        if (c === '"' ){
+          if (inQuotes && next === '"'){ cur += '"'; i++; }
+          else inQuotes = !inQuotes;
           continue;
         }
-
-        if (char === "," && !inQuotes) {
-          row.push(field);
-          field = "";
-          continue;
+        if (!inQuotes && c === "," ){
+          row.push(cur); cur = ""; continue;
         }
-
-        if ((char === "\n" || char === "\r") && !inQuotes) {
-          if (char === "\r" && next === "\n") {
-            i += 1;
-          }
-          row.push(field);
-          if (row.some((value) => value.trim() !== "")) {
-            rows.push(row);
-          }
+        if (!inQuotes && (c === "\n" || c === "\r")) {
+          if (c === "\r"  && next === "\n")  i++;
+          row.push(cur);
+          rows.push(row);
           row = [];
-          field = "";
+          cur = "";
+          continue;
+        }
+        cur += c;
+      }
+      row.push(cur);
+      rows.push(row);
+      return rows.filter(r => r.some(cell => String(cell).trim() !== ""));
+    }
+
+    async function fetchTable(url){
+      const res = await fetch(bust(url), { cache: "no-store" });
+      if (!res.ok) throw new Error("Fetch failed: " + res.status);
+      const txt = await res.text();
+      const grid = parseCSV(txt);
+
+      if (!grid.length) return [];
+      const headers = grid[0].map(h => String(h).trim());
+      const out = [];
+
+      for (let i=1; i<grid.length; i++){
+        const obj = {};
+        for (let j=0; j<headers.length; j++){
+          obj[headers[j] || ("col"+j)] = (grid[i][j] ?? "").trim();
+        }
+        out.push(obj);
+      }
+      return out;
+    }
+
+    /*** KPI ***/
+    function renderKPIs(kpis){
+      const map = {};
+      kpis.forEach(r => { map[r.Metric] = r.Value; });
+
+      const kpiEls = document.getElementById("kpis").querySelectorAll(".kpi .val");
+      const totalHours = safeText(map["Total Man-Hours"] ?? "—");
+      const trir = safeText(map["TRIR"] ?? "—");
+      const ltir = safeText(map["LTIR"] ?? "—");
+      const rec = safeText(map["Total Recordables"] ?? "—");
+      const active = safeText(map["Active Subcontractors"] ?? "—");
+
+      kpiEls[0].textContent = totalHours;
+      kpiEls[1].textContent = trir;
+      kpiEls[2].textContent = ltir;
+      kpiEls[3].textContent = rec;
+      kpiEls[4].textContent = active;
+    }
+
+    /*** IOI TICKER ***/
+    function fmt(n, d=2){
+      const num = parseFloat(n);
+      if (!Number.isFinite(num)) return safeText(n) || "—";
+      return num.toFixed(d);
+    }
+
+    function buildTick(label, value, delta){
+      const d = parseFloat(delta);
+      let cls = "flat", arrow = "•", sign = "";
+      if (Number.isFinite(d)){
+        if (d > 0){ cls = "up"; arrow = "▲"; sign = "+"; }
+        else if (d < 0){ cls = "down"; arrow = "▼"; sign = ""; }
+      } else {
+        delta = "";
+      }
+
+      const deltaTxt = (delta === "" || delta === null || delta === undefined)
+        ? ""
+        : `${arrow} ${sign}${fmt(d,2)}`;
+
+      return `
+        <div class="tick">
+          <span class="sym">${label}</span>
+          <span class="val">${value}</span>
+          <span class="chg ${cls}">${deltaTxt || "• —"}</span>
+        </div>
+      `;
+    }
+
+    
+    /*** IOI INSIGHTS (neutral + factual) ***/
+    let INC_NORM = [];
+
+    function parseDateAny(s){
+      if (!s) return null;
+      const str = String(s).trim();
+      // Try native first
+      let d = new Date(str);
+      if (!isNaN(d)) return d;
+      // Try MM/DD/YYYY or M/D/YYYY
+      const m = str.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{2,4})/);
+      if (m){
+        const mm = parseInt(m[1],10) - 1;
+        const dd = parseInt(m[2],10);
+        let yy = parseInt(m[3],10);
+        if (yy < 100) yy += 2000;
+        d = new Date(yy, mm, dd);
+        return isNaN(d) ? null : d;
+      }
+      return null;
+    }
+
+    function fmtDelta(x, decimals=2){
+      const n = toNumber(x);
+      if (!Number.isFinite(n) || n === 0) return "• Δ 0";
+      const sign = n > 0 ? "+" : "";
+      return (n > 0 ? "▲ " : "▼ ") + "Δ " + sign + n.toFixed(decimals);
+    }
+
+    function openDriversModal(title, note, rows){
+      const back = document.getElementById("ioiDriversBack");
+      const modal = document.getElementById("ioiDriversModal");
+      const t = document.getElementById("ioiDriversTitle");
+      const sub = document.getElementById("ioiDriversSub");
+      const n = document.getElementById("ioiDriversNote");
+      const body = document.getElementById("ioiDriversTbody");
+      if (!back || !modal || !t || !sub || !n || !body) return;
+
+      t.textContent = "IOI Drivers";
+      sub.textContent = title || "Drivers";
+      n.textContent = note || "Drivers are computed from incident distribution in the last 30 days (Date field). Values are counts and shares; no narrative interpretation.";
+
+      body.innerHTML = "";
+      if (!rows || !rows.length){
+        body.innerHTML = `<tr><td colspan="4" style="color:rgba(242,239,235,.7);padding:14px 12px;">No driver data available for the current window.</td></tr>`;
+      } else {
+        body.innerHTML = rows.map(r => {
+          const sev = r.sevMix || "—";
+          return `
+            <tr>
+              <td>${escapeHtml(r.area)}</td>
+              <td class="num">${r.count}</td>
+              <td class="num">${r.share}</td>
+              <td>${sev}</td>
+            </tr>
+          `;
+        }).join("");
+      }
+
+      back.style.display = "block";
+      modal.style.display = "block";
+      back.setAttribute("aria-hidden","false");
+      modal.setAttribute("aria-hidden","false");
+      document.body.style.overflow = "hidden";
+
+      const close = document.getElementById("ioiDriversClose");
+      if (close) close.focus();
+    }
+
+    function closeDriversModal(){
+      const back = document.getElementById("ioiDriversBack");
+      const modal = document.getElementById("ioiDriversModal");
+      if (!back || !modal) return;
+      back.style.display = "none";
+      modal.style.display = "none";
+      back.setAttribute("aria-hidden","true");
+      modal.setAttribute("aria-hidden","true");
+      document.body.style.overflow = "";
+
+      // return focus to explainer button if exists, otherwise nothing
+      const btn = document.getElementById("win30");
+      if (btn) btn.focus();
+    }
+
+    function escapeHtml(s){
+      return String(s ?? "").replace(/[&<>"']/g, ch => ({
+        "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+      }[ch]));
+    }
+
+    function computeDriversLast30(incRows){
+      // Window: [today-29, today]
+      const end = new Date();
+      end.setHours(23,59,59,999);
+      const start = new Date(end);
+      start.setDate(start.getDate() - 29);
+      start.setHours(0,0,0,0);
+
+      const inWindow = (incRows || []).filter(r => {
+        const d = parseDateAny(r.Date);
+        return d && d >= start && d <= end;
+      });
+
+      const total = inWindow.length || 0;
+
+      const byArea = new Map(); // key -> {count, sev: {high/mod/low/other}}
+      function bump(key, sev){
+        const k = key || "—";
+        const rec = byArea.get(k) || {count:0, sev:{}};
+        rec.count += 1;
+        const s = (sev || "Unspecified").toLowerCase();
+        rec.sev[s] = (rec.sev[s] || 0) + 1;
+        byArea.set(k, rec);
+      }
+
+      for (const r of inWindow){
+        const sub = (r.Subcontractor || "—").trim();
+        const proj = (r.Project || "—").trim();
+        const area = `${sub} • ${proj}`;
+        bump(area, r.Severity);
+      }
+
+      const rows = Array.from(byArea.entries())
+        .map(([area, v]) => {
+          const share = total ? (v.count/total) : 0;
+          const sevPairs = Object.entries(v.sev).sort((a,b)=>b[1]-a[1]);
+          const sevMix = sevPairs.slice(0,3).map(([k,c])=>`${k}:${c}`).join("  ");
+          return {
+            area,
+            count: v.count,
+            shareRaw: share,
+            share: (share*100).toFixed(0) + "%",
+            sevMix: sevMix || "—"
+          };
+        })
+        .sort((a,b)=> b.count - a.count || b.shareRaw - a.shareRaw);
+
+      const top = rows[0] || null;
+
+      return {
+        start,
+        end,
+        total,
+        rows,
+        top
+      };
+    }
+
+    
+function computeTelemetryWindow(incNorm, subsAll, window){
+      const parsed = (d)=>{
+        const t = Date.parse(d);
+        return isNaN(t) ? null : new Date(t);
+      };
+
+      const dates = incNorm.map(x => parsed(x.Date)).filter(Boolean);
+      const end = dates.length ? new Date(Math.max(...dates.map(d=>d.getTime()))) : new Date();
+      end.setHours(23,59,59,999);
+
+      let start;
+      let label;
+
+      if (String(window).toUpperCase() === "YTD"){
+        start = new Date(end.getFullYear(), 0, 1);
+        start.setHours(0,0,0,0);
+        label = "YTD";
+      } else {
+        const days = Math.max(1, Number(window) || 30);
+        start = new Date(end);
+        start.setDate(start.getDate() - (days - 1));
+        start.setHours(0,0,0,0);
+        label = `${days}D`;
+      }
+
+      const inWin = incNorm.filter(x=>{
+        const d = parsed(x.Date);
+        if(!d) return false;
+        d.setHours(12,0,0,0); // normalize midday to avoid DST edge weirdness
+        return d >= start && d <= end;
+      });
+
+      const total = inWin.length;
+
+      const sevBucket = (s)=>{
+        const v = String(s||"").trim().toLowerCase();
+        if(!v) return "unknown";
+        if(v.includes("high")) return "high";
+        if(v.includes("mod")) return "moderate";
+        if(v.includes("low")) return "low";
+        return v;
+      };
+
+      const sev = {high:0, moderate:0, low:0, unknown:0};
+      const bySub = new Map();
+      const byProj = new Map();
+      const byArea = new Map(); // sub + project
+
+      for (const it of inWin){
+        const s = (it.Subcontractor||"—").trim() || "—";
+        const p = (it.Project||"—").trim() || "—";
+        const a = `${s} • ${p}`;
+        bySub.set(s, (bySub.get(s)||0)+1);
+        byProj.set(p, (byProj.get(p)||0)+1);
+        byArea.set(a, (byArea.get(a)||0)+1);
+
+        const b = sevBucket(it.Severity);
+        if(sev[b] === undefined) sev.unknown++;
+        else sev[b]++;
+      }
+
+      const topFromMap = (mp, n=5)=> [...mp.entries()]
+        .sort((a,b)=> b[1]-a[1])
+        .slice(0,n)
+        .map(([name,count])=> ({name, count}));
+
+      const topSubs = topFromMap(bySub, 5);
+      const topProjects = topFromMap(byProj, 5);
+      const topAreas = topFromMap(byArea, 10);
+
+      const topArea = topAreas[0] || null;
+      const topAreaShare = topArea && total ? (topArea.count/total) : null;
+
+      // ≥10k filter using SUBS (YTD hours) + window incident counts
+      const subs10k = (subsAll||[])
+        .filter(s => (Number(s.hours)||0) >= 10000)
+        .map(s => {
+          const c = bySub.get(s.sub) || 0;
+          return { sub: s.sub, hours: Number(s.hours)||0, incWin: c };
+        })
+        .sort((a,b)=> b.incWin - a.incWin || b.hours - a.hours);
+
+      const top10k = subs10k[0] || null;
+
+      return {
+        windowLabel: label,
+        start, end, total,
+        sev,
+        topSubs,
+        topProjects,
+        topAreas,
+        topArea,
+        topAreaShare,
+        subs10k,
+        top10k
+      };
+    }
+
+    function fmtPct(x){
+      if (x === null || x === undefined) return "—";
+      return (x*100).toFixed(1) + "%";
+    }
+
+    function buildMiniTable(rows, total){
+      if(!rows || !rows.length) return `<div class="small">No data in window.</div>`;
+      return `
+        <table class="mini">
+          <thead><tr><th>Rank</th><th>Name</th><th>Count</th><th>Share</th></tr></thead>
+          <tbody>
+            ${rows.map((r,i)=>`
+              <tr>
+                <td class="mono">${i+1}</td>
+                <td>${safeText(r.name||r.sub||"—")}</td>
+                <td class="mono">${r.count ?? r.incWin ?? 0}</td>
+                <td class="mono">${total ? fmtPct(((r.count ?? r.incWin ?? 0)/total)) : "—"}</td>
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>
+      `;
+    }
+
+    function renderTelemetry(tele){
+      // Insights
+      const winEl = document.getElementById("ioiWindowLabel");
+      const tIncTotal = document.getElementById("tIncTotal");
+      const tSevMix = document.getElementById("tSevMix");
+      const tTopArea = document.getElementById("tTopArea");
+      const tConcShare = document.getElementById("tConcShare");
+      const tTopSubsTable = document.getElementById("tTopSubsTable");
+      const tTopProjectsTable = document.getElementById("tTopProjectsTable");
+      const tTop10kSub = document.getElementById("tTop10kSub");
+      const tTop10kHours = document.getElementById("tTop10kHours");
+      const tTop10kInc = document.getElementById("tTop10kInc");
+
+      if(!tele){
+        if(winEl) winEl.textContent = "Window";
+        if(tIncTotal) tIncTotal.textContent = "—";
+        if(tSevMix) tSevMix.textContent = "—";
+        if(tTopArea) tTopArea.textContent = "—";
+        if(tConcShare) tConcShare.textContent = "—";
+        if(tTopSubsTable) tTopSubsTable.innerHTML = "—";
+        if(tTopProjectsTable) tTopProjectsTable.innerHTML = "—";
+        if(tTop10kSub) tTop10kSub.textContent = "—";
+        if(tTop10kHours) tTop10kHours.textContent = "—";
+        if(tTop10kInc) tTop10kInc.textContent = "—";
+        return;
+      }
+
+      const winTxt = `${tele.start.toLocaleDateString()} → ${tele.end.toLocaleDateString()}`;
+      if(winEl) winEl.textContent = winTxt;
+
+      if(tIncTotal) tIncTotal.textContent = String(tele.total ?? 0);
+      if(tSevMix) tSevMix.textContent = `${tele.sev.high||0} / ${tele.sev.moderate||0} / ${tele.sev.low||0}`;
+      if(tTopArea) tTopArea.textContent = tele.topArea ? tele.topArea.name : "—";
+      if(tConcShare) tConcShare.textContent = tele.topAreaShare !== null ? fmtPct(tele.topAreaShare) : "—";
+
+      if(tTopSubsTable) tTopSubsTable.innerHTML = buildMiniTable(tele.topSubs, tele.total);
+      if(tTopProjectsTable) tTopProjectsTable.innerHTML = buildMiniTable(tele.topProjects, tele.total);
+
+      if(tele.top10k){
+        if(tTop10kSub) tTop10kSub.textContent = tele.top10k.sub || "—";
+        if(tTop10kHours) tTop10kHours.textContent = fmt(tele.top10k.hours,0);
+        if(tTop10kInc) tTop10kInc.textContent = String(tele.top10k.incWin ?? 0);
+      } else {
+        if(tTop10kSub) tTop10kSub.textContent = "—";
+        if(tTop10kHours) tTop10kHours.textContent = "—";
+        if(tTop10kInc) tTop10kInc.textContent = "—";
+      }
+
+    }
+    
+
+
+     
+    
+
+
+    function computeEmergingRiskSignals(incidents, start, end) {
+      const MS_PER_DAY = 24 * 60 * 60 * 1000;
+      const dayDiff = Math.max(1, Math.round((end - start) / MS_PER_DAY) + 1);
+
+      const baselineMultiplier = 4;
+      const baselineDays = Math.max(30, dayDiff * baselineMultiplier);
+
+      const baselineEnd = new Date(start);
+      baselineEnd.setDate(baselineEnd.getDate() - 1);
+      baselineEnd.setHours(23,59,59,999);
+
+      const baselineStart = new Date(start);
+      baselineStart.setDate(baselineStart.getDate() - baselineDays);
+      baselineStart.setHours(0,0,0,0);
+
+      const inRange = (d, a, b) => d && d >= a && d <= b;
+      const clean = v => String(v || "").trim();
+      const sigKey = r => `${clean(r.BodyPart)} + ${clean(r.Mechanism)}`;
+
+      const validRows = (incidents || []).filter(r =>
+        r && r.DateObj instanceof Date && !isNaN(r.DateObj) && clean(r.BodyPart) && clean(r.Mechanism)
+      );
+
+      const recentRows = validRows.filter(r => inRange(r.DateObj, start, end));
+      const baselineRows = validRows.filter(r => inRange(r.DateObj, baselineStart, baselineEnd));
+
+      const recentTotal = recentRows.length;
+      const baselineTotal = baselineRows.length;
+
+      const countBy = rows => {
+        const map = new Map();
+        rows.forEach(r => {
+          const key = sigKey(r);
+          map.set(key, (map.get(key) || 0) + 1);
+        });
+        return map;
+      };
+
+      const recentCounts = countBy(recentRows);
+      const baselineCounts = countBy(baselineRows);
+
+      const MIN_WINDOW_COUNT = 2;
+      const MIN_BASELINE_COUNT_FOR_RATIO = 3;
+      const MIN_SHARE_RATIO = 1.75;
+      const MIN_ABSOLUTE_SHARE_LIFT = 0.05;
+      const MAX_DISPLAY_RATIO = 9.9;
+
+      const alerts = [];
+
+      for (const [signature, windowCount] of recentCounts.entries()) {
+        if (windowCount < MIN_WINDOW_COUNT) continue;
+
+        const baselineCount = baselineCounts.get(signature) || 0;
+        const windowShare = recentTotal ? windowCount / recentTotal : 0;
+        const baselineShare = baselineTotal ? baselineCount / baselineTotal : 0;
+        const absoluteLift = windowShare - baselineShare;
+
+        if (baselineCount < MIN_BASELINE_COUNT_FOR_RATIO) {
+          if (windowCount >= 3 && windowShare >= 0.12) {
+            alerts.push({
+              type: "new",
+              severity: windowCount >= 4 ? "critical" : "elevated",
+              signature,
+              windowCount,
+              baselineCount,
+              recentTotal,
+              baselineTotal,
+              windowShare,
+              baselineShare,
+              ratio: null,
+              label: "NEW EMERGING PATTERN",
+              message: `${signature} injuries are appearing as a new concentration in the selected window.`,
+              detail: `Window: ${windowCount}/${recentTotal}. Baseline: ${baselineCount}/${baselineTotal}`
+            });
+          }
           continue;
         }
 
-        field += char;
+        if (!baselineShare) continue;
+
+        const shareRatio = windowShare / baselineShare;
+
+        if (shareRatio >= MIN_SHARE_RATIO && absoluteLift >= MIN_ABSOLUTE_SHARE_LIFT) {
+          const cappedRatio = Math.min(shareRatio, MAX_DISPLAY_RATIO);
+          const roundedRatio = Math.round(cappedRatio * 10) / 10;
+
+          let severity = "elevated";
+          let label = "ELEVATED RISK";
+
+          if (shareRatio >= 3 || absoluteLift >= 0.12) {
+            severity = "critical";
+            label = "CRITICAL SPIKE";
+          }
+
+          alerts.push({
+            type: "ratio",
+            severity,
+            signature,
+            windowCount,
+            baselineCount,
+            recentTotal,
+            baselineTotal,
+            windowShare,
+            baselineShare,
+            ratio: roundedRatio,
+            label,
+            message: `${signature} injuries are ${roundedRatio}× above baseline.`,
+            detail: `Window: ${windowCount}/${recentTotal}. Baseline: ${baselineCount}/${baselineTotal}`
+          });
+        }
       }
 
-      row.push(field);
-      if (row.some((value) => value.trim() !== "")) {
-        rows.push(row);
+      alerts.sort((a, b) => {
+        const score = x => {
+          if (x.type === "new") return (x.windowCount * 10) + x.windowShare;
+          return ((x.ratio || 0) * 10) + (x.windowCount * 2) + x.windowShare;
+        };
+        return score(b) - score(a);
+      });
+
+      return {
+        alerts: alerts.slice(0, 3),
+        recentTotal,
+        baselineTotal,
+        baselineStart,
+        baselineEnd,
+        start,
+        end
+      };
+    }
+
+    function renderEmergingRiskSignals(tele){
+      const host = document.getElementById("emergingRiskSignals");
+      const meta = document.getElementById("emergingRiskSignalsMeta");
+      if (!host || !meta || !tele) return;
+
+      const result = computeEmergingRiskSignals(INC_NORM || [], tele.start, tele.end);
+      meta.textContent = `Recent ${result.recentTotal} vs baseline ${result.baselineTotal}`;
+
+      if (!result.recentTotal) {
+        host.innerHTML = `
+          <div class="alert-card stable">
+            <div class="alert-kicker">STABLE WINDOW</div>
+            <div class="alert-title">No incidents in the selected window.</div>
+            <div class="alert-detail">There are no body-part/mechanism signatures to evaluate for this period.</div>
+          </div>
+        `;
+        return;
       }
 
-      return rows;
-    }
-
-    function normalizeHeader(value) {
-      return String(value || "").trim().toLowerCase();
-    }
-
-    function rowsFromCsv(text) {
-      const parsed = parseCsv(text);
-      if (!parsed.length) {
-        return [];
+      if (!result.baselineTotal) {
+        host.innerHTML = `
+          <div class="alert-card stable">
+            <div class="alert-kicker">INSUFFICIENT BASELINE</div>
+            <div class="alert-title">Historical comparison window is too thin for spike detection.</div>
+            <div class="alert-detail">Recent incidents: ${result.recentTotal}. Add more historical incident depth to enable stronger baseline comparisons.</div>
+          </div>
+        `;
+        return;
       }
 
-      const headers = parsed[0].map((header) => header.trim());
-      const headerMap = new Map(headers.map((header, index) => [normalizeHeader(header), index]));
-      const missing = expectedHeaders.filter((header) => !headerMap.has(normalizeHeader(header)));
-
-      if (missing.length) {
-        throw new Error("The published sheet is missing: " + missing.join(", "));
+      if (!result.alerts.length) {
+        host.innerHTML = `
+          <div class="alert-card stable">
+            <div class="alert-kicker">STABLE WINDOW</div>
+            <div class="alert-title">No emerging risk signals detected in the selected window.</div>
+            <div class="alert-detail">No body-part/mechanism signature cleared the spike threshold against baseline.</div>
+          </div>
+        `;
+        return;
       }
 
-      return parsed.slice(1)
-        .map((cells) => ({
-          state: (cells[headerMap.get(normalizeHeader("State"))] || "").trim(),
-          requirement: (cells[headerMap.get(normalizeHeader("Steel-Erection-Related More Stringent Requirement"))] || "").trim(),
-          citation: (cells[headerMap.get(normalizeHeader("Citation"))] || "").trim(),
-          source: (cells[headerMap.get(normalizeHeader("Source"))] || "").trim()
-        }))
-        .filter((item) => item.state || item.requirement || item.citation || item.source);
+      host.innerHTML = result.alerts.map(a => `
+        <div class="alert-card ${a.severity === "critical" ? "critical" : "elevated"}">
+          <div class="alert-kicker">⚠ ${a.label}</div>
+          <div class="alert-title">${a.message}</div>
+          <div class="alert-detail">${a.detail}</div>
+        </div>
+      `).join("");
+    }
+/*** SUBS ***/
+    let SUBS_ALL = [];
+
+    function normalizeSubsRows(rows){
+      return rows.map(r => {
+        const sub = r.Subcontractor || r.subcontractor || r.Sub || r.SUB || r.Name || r.name || "";
+        const hours = toNumber(r.TotalHours ?? r.Hours ?? r.hours ?? 0);
+        const incidents = toNumber(r.TotalIncidents ?? r.Incidents ?? r.incidents ?? 0);
+        const recordables = toNumber(r.Recordables ?? r.recordables ?? 0);
+        const lost = toNumber(r.LostTime ?? r.Lost ?? r.losttime ?? 0);
+        const trir = safeText(r.TRIR ?? r.trir ?? "");
+        const ltir = safeText(r.LTIR ?? r.ltir ?? "");
+        return {
+          sub: String(sub).trim(),
+          hours,
+          incidents,
+          recordables,
+          lost,
+          trir: (trir === "" ? "" : String(trir)),
+          ltir: (ltir === "" ? "" : String(ltir))
+        };
+      }).filter(x => x.sub && x.sub.toLowerCase() !== "subcontractor");
     }
 
-    function escapeHtml(value) {
-      return String(value || "")
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-    }
-
-    function isUrl(value) {
-      return /^https?:\/\//i.test(String(value || "").trim());
-    }
-
-    function countForState(state) {
-      return allRows.filter((row) => row.state === state).length;
-    }
-
-    function setStatus(message, isError = false) {
-      els.status.textContent = message;
-      els.status.classList.toggle("show", Boolean(message));
-      els.status.classList.toggle("error", isError);
-    }
-
-    function citationText(citation) {
-      const trimmed = String(citation || "").trim();
-      if (!trimmed) {
-        return "Citation not listed";
-      }
-      return isUrl(trimmed) ? "See source document" : trimmed;
-    }
-
-    function sourceMarkup(source, fallback) {
-      const sourceValue = String(source || "").trim();
-      const fallbackValue = String(fallback || "").trim();
-      const link = isUrl(sourceValue) ? sourceValue : isUrl(fallbackValue) ? fallbackValue : "";
-
-      if (link) {
-        return `<a class="source-link" href="${escapeHtml(link)}" target="_blank" rel="noopener">Open Source</a>`;
+    function renderSubDetail(item){
+      const box = document.getElementById("subDetail");
+      if (!item){
+        box.innerHTML = `
+          <div class="title">Select a subcontractor</div>
+          <div class="hint">Details will appear here.</div>
+          <div class="small">No selection.</div>
+        `;
+        return;
       }
 
-      return `<span class="citation-text">${escapeHtml(sourceValue || "No source listed")}</span>`;
+      box.innerHTML = `
+        <div class="title">${item.sub}</div>
+        <div class="hint">YTD exposure & rates</div>
+        <div class="kv">
+          <div class="k">Hours</div><div class="v">${item.hours.toLocaleString()}</div>
+          <div class="k">Incidents</div><div class="v">${item.incidents}</div>
+          <div class="k">Recordables</div><div class="v">${item.recordables}</div>
+          <div class="k">Lost Time</div><div class="v">${item.lost}</div>
+          <div class="k">TRIR</div><div class="v">${item.trir || "0"}</div>
+          <div class="k">LTIR</div><div class="v">${item.ltir || "0"}</div>
+        </div>
+      `;
     }
 
-    function buildStateIndex() {
-      states = [...new Set(allRows.map((row) => row.state).filter(Boolean))]
-        .sort((a, b) => a.localeCompare(b));
+    function renderSubs(rows){
+      SUBS_ALL = normalizeSubsRows(rows);
 
-      els.stateIndex.innerHTML = states.map((state) => `
-        <button class="state-btn" type="button" data-state="${escapeHtml(state)}">
-          ${escapeHtml(state)} <small>${countForState(state)}</small>
-        </button>
+      const dl = document.getElementById("subList");
+      dl.innerHTML = [...SUBS_ALL]
+        .sort((a,b)=> a.sub.localeCompare(b.sub))
+        .map(r => `<option value="${r.sub}"></option>`)
+        .join("");
+
+      const top = [...SUBS_ALL].sort((a,b)=> b.hours - a.hours).slice(0, 9);
+      const wrap = document.getElementById("subCards");
+      wrap.innerHTML = top.map(r => `
+        <div class="card" data-sub="${r.sub}">
+          <h3>${r.sub}</h3>
+<div class="kv">
+            <div class="k">Hours</div><div class="v">${r.hours.toLocaleString()}</div>
+            <div class="k">Incidents</div><div class="v">${r.incidents}</div>
+            <div class="k">Recordables</div><div class="v">${r.recordables}</div>
+            <div class="k">TRIR</div><div class="v">${r.trir || "0"}</div>
+            <div class="k">LTIR</div><div class="v">${r.ltir || "0"}</div>
+          </div>
+        </div>
       `).join("");
 
-      els.stateIndex.querySelectorAll(".state-btn").forEach((button) => {
+
+      document.getElementById("subHint").textContent =
+        `Showing top ${top.length} by hours. Use the lookup to view any of ${SUBS_ALL.length} subcontractors.`;
+
+      const pick = document.getElementById("subPick");
+      if (!pick.dataset.wired){
+        pick.dataset.wired = "1";
+        const apply = () => {
+          const v = (pick.value || "").trim().toLowerCase();
+          const found = SUBS_ALL.find(x => x.sub.toLowerCase() === v);
+          renderSubDetail(found || null);
+        };
+        pick.addEventListener("change", apply);
+        pick.addEventListener("blur", apply);
+        pick.addEventListener("keydown", (e)=>{ if (e.key === "Enter") apply(); });
+      }
+    }
+
+    /*** INCIDENTS ***/
+    let INC_ALL = [];
+
+    function pillForSeverity(sev){
+      const s = (sev || "").toLowerCase();
+      if (s === "high") return `<span class="pill high">High</span>`;
+      if (s === "moderate") return `<span class="pill mod">Moderate</span>`;
+      if (s === "low") return `<span class="pill low">Low</span>`;
+      return "";
+    }
+
+
+    function normalizeIncidentRows(rows){
+      const pick = (row, candidates=[]) => {
+        for (const key of candidates){
+          if (row[key] !== undefined && row[key] !== null && String(row[key]).trim() !== "") {
+            return String(row[key]).trim();
+          }
+        }
+
+        const norm = s => String(s || "").toLowerCase().replace(/[^a-z0-9]/g, "");
+        const wanted = candidates.map(norm);
+
+        for (const [k,v] of Object.entries(row || {})){
+          if (v === undefined || v === null || String(v).trim() === "") continue;
+          const nk = norm(k);
+          if (wanted.includes(nk)) return String(v).trim();
+        }
+        return "";
+      };
+
+      return (rows || []).map(r => {
+        const date = pick(r, ["Date","date","DATE","Incident Date","IncidentDate","Date of Incident","Injury Date"]);
+        return {
+          Date: date,
+          DateObj: parseDateAny(date),
+          IncidentID: pick(r, ["IncidentID","IncidentId","ID","Id","Case Number","CaseNumber","Record ID"]),
+          Subcontractor: pick(r, ["Subcontractor","subcontractor","Sub","Employer","Contractor","ERECTOR","Trade Partner"]),
+          Project: pick(r, ["Project","project","Job","Job Name","JOB NAME / #","Project Name","Site","Location"]),
+          IncidentType: pick(r, ["IncidentType","Incident Types","IncidentTypes","Type","Type of Incident"]),
+          Severity: pick(r, ["Severity","severity","INCIDENT OUTCOME","Outcome","Recordability","Classification","Incident Severity"]),
+          Recordable: pick(r, ["Recordable","recordable","Recordable?","OSHA Recordable"]),
+          LostTime: pick(r, ["LostTime","losttime","Lost Time","LTR","Lost Work Time"]),
+          Description: pick(r, ["Description","description","Narrative","Summary"]),
+          BodyPart: pick(r, ["BodyPart","Body Part","BODY PART INJURED","Body Part(s)","Body Part Injured","Affected Body Part","Injured Body Part","bodypart"]),
+          Mechanism: pick(r, ["Mechanism","mechanism","NATURE OF INCIDENT","Incident Mechanism","Injury Mechanism","Cause","Primary Cause","Event Type","Exposure Type"]),
+          NatureOfInjury: pick(r, ["NatureOfInjury","Nature Of Injury","Nature of Injury","INJURY TYPE","Type of Injury","natureofinjury"]),
+          Time: pick(r, ["Time","time"]),
+          DayOfWeek: pick(r, ["DayOfWeek","Day Of Week","DAY OF WEEK"]),
+          ReportLink: pick(r, ["ReportLink","reportlink","Link","Report Link","URL","Report URL"])
+        };
+      }).filter(x => {
+        const idOk = String(x.IncidentID || "").trim().toLowerCase() !== "incidentid";
+        return idOk && (x.Date || x.Subcontractor || x.Project || x.BodyPart || x.Mechanism);
+      });
+    }
+
+    function renderIncidentDetail(item){
+      const box = document.getElementById("incDetail");
+      if(!item){
+        box.innerHTML = `
+          <div class="title">Select an incident</div>
+          <div class="hint">Details will appear here.</div>
+          <div class="small">No selection.</div>
+        `;
+        return;
+      }
+
+      box.innerHTML = `
+        <div class="title">${safeText(item.IncidentID) || "—"}</div>
+        <div class="hint">${safeText(item.Date) || ""} • ${safeText(item.Severity) || "—"} • ${safeText(item.Subcontractor) || "—"}</div>
+        <div class="kv">
+          <div class="k">Project</div><div class="v">${safeText(item.Project) || "—"}</div>
+          <div class="k">Subcontractor</div><div class="v">${safeText(item.Subcontractor) || "—"}</div>
+          <div class="k">Severity</div><div class="v">${safeText(item.Severity) || "—"}</div>
+          <div class="k">Date</div><div class="v">${safeText(item.Date) || "—"}</div>
+        </div>
+        <div style="margin-top:12px;">
+          ${item.ReportLink
+            ? `<a class="link" href="${item.ReportLink}" target="_blank" rel="noopener">View report</a>`
+            : `<span class="small">No report link</span>`}
+        </div>
+      `;
+    }
+
+    function renderIncidentsLookup(rows){
+      INC_ALL = normalizeIncidentRows(rows);
+
+      const dl = document.getElementById("incList");
+      dl.innerHTML = [...INC_ALL]
+        .sort((a,b)=> String(a.IncidentID).localeCompare(String(b.IncidentID)))
+        .map(r => `<option value="${safeText(r.IncidentID)}"></option>`)
+        .join("");
+
+      const pick = document.getElementById("incPick");
+      if(!pick.dataset.wired){
+        pick.dataset.wired = "1";
+        const apply = () => {
+          const v = (pick.value || "").trim().toLowerCase();
+          const found = INC_ALL.find(x => String(x.IncidentID || "").trim().toLowerCase() === v);
+          renderIncidentDetail(found || null);
+        };
+        pick.addEventListener("change", apply);
+        pick.addEventListener("blur", apply);
+        pick.addEventListener("keydown", (e)=>{ if(e.key==="Enter") apply(); });
+      }
+    }
+
+    function renderIncidentsTable(allIncidents){
+      const q = document.getElementById("q").value.trim().toLowerCase();
+      const sev = document.getElementById("sev").value;
+
+      let rows = normalizeIncidentRows(allIncidents);
+
+      if (sev) rows = rows.filter(r => (r.Severity || "") === sev);
+
+      if (q){
+        rows = rows.filter(r => (
+          String(r.IncidentID || "").toLowerCase().includes(q) ||
+          String(r.Subcontractor || "").toLowerCase().includes(q) ||
+          String(r.Project || "").toLowerCase().includes(q)
+        ));
+      }
+
+      rows.sort((a,b)=>{
+        const da = Date.parse(a.Date) || 0;
+        const db = Date.parse(b.Date) || 0;
+        return db - da;
+      });
+
+      const cap = (q || sev) ? 10 : 5;
+      const shown = rows.slice(0, cap);
+
+      document.getElementById("incHint").textContent =
+        (q || sev)
+          ? `Showing top ${Math.min(cap, rows.length)} matches (capped).`
+          : "Showing latest 5 incidents.";
+
+      const list = document.getElementById("incidentList");
+      if (!shown.length){
+        list.innerHTML = `<div class="small" style="padding:12px 0;">No incidents match your filters.</div>`;
+        return;
+      }
+
+      list.innerHTML = shown.map(r => `
+        <div class="inc-row">
+          <div>
+            <strong>${safeText(r.Date) || "—"}</strong>
+</div>
+          <div>
+            <strong>${safeText(r.Subcontractor) || "—"} ${pillForSeverity(r.Severity)}</strong>
+</div>
+          <div style="text-align:right;">
+            ${r.ReportLink ? `<a class="link" href="${r.ReportLink}" target="_blank" rel="noopener">View report</a>` : `<span class="small">—</span>`}
+          </div>
+        </div>
+      `).join("");
+    }
+
+
+    /*** DIMENSION ANALYTICS ***/
+    function normalizeDimensionRows(rows, primaryKeys){
+      return (rows || []).map(r => {
+        const label = primaryKeys.map(k => r[k]).find(v => String(v || "").trim() !== "")
+          || r.Label || r.Name || r.Category || "";
+        const count = toNumber(r.Count ?? r.Total ?? r.Incidents ?? r.Value ?? 0);
+        return {
+          label: String(label || "").trim(),
+          count
+        };
+      }).filter(x => x.label && x.label.toLowerCase() !== "total" && x.label.toLowerCase() !== "grand total");
+    }
+
+    function buildDimensionTable(rows, opts={}){
+      const topN = opts.topN || 7;
+      const ordered = (rows || []).slice(0, topN);
+      const total = ordered.reduce((a,b)=> a + (Number(b.count)||0), 0);
+
+      if (!ordered.length){
+        return `<div class="dim-empty">No data available.</div>`;
+      }
+
+      return `
+        <table class="mini">
+          <thead><tr><th>Rank</th><th>Name</th><th>Count</th><th>Share</th></tr></thead>
+          <tbody>
+            ${ordered.map((r,i)=>`
+              <tr>
+                <td class="mono">${i+1}</td>
+                <td>${safeText(r.label)}</td>
+                <td class="mono">${r.count}</td>
+                <td class="mono">${total ? fmtPct(r.count / total) : "—"}</td>
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>
+      `;
+    }
+
+    function renderDimensionAnalytics(bodyRows, natureRows, mechanismRows, dayRows, timeRows, riskRows){
+      const bodyEl = document.getElementById("bodyPartTable");
+      const natureEl = document.getElementById("natureTable");
+      const mechEl = document.getElementById("mechanismTable");
+      const dayEl = document.getElementById("dayTable");
+
+      const body = normalizeDimensionRows(bodyRows, ["BodyPart"]);
+      const nature = normalizeDimensionRows(natureRows, ["NatureOfInjury"]);
+      const mech = normalizeDimensionRows(mechanismRows, ["Mechanism"]);
+      let day = normalizeDimensionRows(dayRows, ["DayOfWeek"]);
+
+      const dayOrder = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
+      day.sort((a,b)=>{
+        const ai = dayOrder.indexOf(a.label);
+        const bi = dayOrder.indexOf(b.label);
+        if (ai !== -1 && bi !== -1) return ai - bi;
+        if (ai !== -1) return -1;
+        if (bi !== -1) return 1;
+        return b.count - a.count;
+      });
+
+      if (bodyEl) bodyEl.innerHTML = buildDimensionTable(body, { topN: 7 });
+      if (natureEl) natureEl.innerHTML = buildDimensionTable(nature, { topN: 7 });
+      if (mechEl) mechEl.innerHTML = buildDimensionTable(mech, { topN: 7 });
+      if (dayEl) dayEl.innerHTML = buildDimensionTable(day, { topN: 7 });
+      renderTimeTable(timeRows);
+      renderRiskTable(riskRows);
+    }
+
+
+    function renderRiskTable(rows){
+      const el = document.getElementById("riskTable");
+      if(!el) return;
+
+      const data = (rows || []).map(r => {
+        const body = String(r.BodyPart || r["Body Part"] || "").trim();
+        const mech = String(r.Mechanism || "").trim();
+        const count = toNumber(r.Count ?? r.count ?? 0);
+        return {
+          label: [body, mech].filter(Boolean).join(" + "),
+          count
+        };
+      }).filter(x => x.label);
+
+      el.innerHTML = buildDimensionTable(data, { topN: 7 });
+    }
+
+    function renderTimeTable(rows){
+      const el = document.getElementById("timeTable");
+      if(!el) return;
+
+      const data = (rows || []).map(r => {
+        const label = String(r["Hour Range"] || r.HourRange || r.Hour || r.Label || "").trim();
+        const count = toNumber(r.Count ?? r.count ?? 0);
+        return { label, count };
+      }).filter(x => x.label);
+
+      el.innerHTML = buildDimensionTable(data, { topN: 12 });
+    }
+
+
+    /*** EXPORTS ***/
+    let KPI_ALL = [];
+    let BODY_PART_ALL = [];
+    let NATURE_ALL = [];
+    let MECHANISM_ALL = [];
+    let DAY_ALL = [];
+    let TIME_ALL = [];
+    let RISK_ALL = [];
+
+    function csvEscape(value){
+      const s = String(value ?? "");
+      return /[",\n\r\t]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+    }
+
+    function rowsToSheet(title, rows){
+      const safeTitle = String(title || "Sheet").replace(/[\\/?*\[\]:]/g, " ").slice(0,31) || "Sheet";
+      if (!rows || !rows.length){
+        return `<table><tr><th>${escapeHtml(safeTitle)}</th></tr><tr><td>No data available.</td></tr></table>`;
+      }
+
+      const headers = Array.from(rows.reduce((set,row)=>{
+        Object.keys(row || {}).forEach(k=>set.add(k));
+        return set;
+      }, new Set()));
+
+      return `
+        <table>
+          <tr>${headers.map(h=>`<th>${escapeHtml(h)}</th>`).join("")}</tr>
+          ${rows.map(row=>`
+            <tr>${headers.map(h=>`<td>${escapeHtml(row?.[h] ?? "")}</td>`).join("")}</tr>
+          `).join("")}
+        </table>
+        <br>
+      `;
+    }
+
+    function exportDashboardPdf(){
+      window.print();
+    }
+
+    function exportDashboardExcel(){
+      const sheets = [
+        ["KPIs", KPI_ALL],
+        ["Subcontractors", SUBS_ALL],
+        ["Incidents", INC_ALL],
+        ["Body Parts", BODY_PART_ALL],
+        ["Nature", NATURE_ALL],
+        ["Mechanisms", MECHANISM_ALL],
+        ["Days", DAY_ALL],
+        ["Times", TIME_ALL],
+        ["Risk Signatures", RISK_ALL]
+      ];
+
+      const html = `
+        <html>
+          <head>
+            <meta charset="utf-8" />
+            <style>
+              table{ border-collapse:collapse; margin-bottom:18px; }
+              th,td{ border:1px solid #999; padding:6px 8px; font-family:Arial, sans-serif; font-size:12px; }
+              th{ background:#e9e9e9; font-weight:bold; }
+            </style>
+          </head>
+          <body>
+            ${sheets.map(([title, rows])=>rowsToSheet(title, rows)).join("")}
+          </body>
+        </html>
+      `;
+
+      const blob = new Blob([html], { type: "application/vnd.ms-excel;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `safety-performance-${new Date().toISOString().slice(0,10)}.xls`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    function wireExportButtons(){
+      const pdf = document.getElementById("exportPdf");
+      const excel = document.getElementById("exportExcel");
+
+      if (pdf && pdf.dataset.wired !== "1"){
+        pdf.dataset.wired = "1";
+        pdf.addEventListener("click", exportDashboardPdf);
+      }
+
+      if (excel && excel.dataset.wired !== "1"){
+        excel.dataset.wired = "1";
+        excel.addEventListener("click", exportDashboardExcel);
+      }
+    }
+
+
+    /*** init ***/
+    (async function init(){
+      try {
+        setStatus("Loading data…");
+
+        const [kpis, subs, inc, bodyParts, natures, mechanisms, days, timeRows, riskRows] = await Promise.all([
+          fetchTable(KPI_CSV),
+          fetchTable(SUBS_CSV),
+          fetchTable(INCIDENTS_CSV),
+          fetchTable(BODY_PART_CSV),
+          fetchTable(NATURE_CSV),
+          fetchTable(MECHANISM_CSV),
+          fetchTable(DAYOFWEEK_CSV),
+          fetchTable(TIME_OF_DAY_CSV),
+          fetchTable(RISK_SIGNATURES_CSV)
+        ]);
+
+        KPI_ALL = kpis;
+        BODY_PART_ALL = bodyParts;
+        NATURE_ALL = natures;
+        MECHANISM_ALL = mechanisms;
+        DAY_ALL = days;
+        TIME_ALL = timeRows;
+        RISK_ALL = riskRows;
+
+        // Normalize incidents once for IOI drivers (neutral rollup)
+        INC_NORM = normalizeIncidentRows(inc);
+
+        renderKPIs(kpis);
+        renderSubs(subs);
+        renderDimensionAnalytics(bodyParts, natures, mechanisms, days, timeRows, riskRows);
+
+        // Incidents
+        renderIncidentsTable(inc);
+        renderIncidentsLookup(inc);
+
+        // Auto-select latest incident into detail panel
+        const latest = normalizeIncidentRows(inc).sort((a,b)=>{
+          const da = Date.parse(a.Date) || 0;
+          const db = Date.parse(b.Date) || 0;
+          return db - da;
+        })[0];
+        if (latest) renderIncidentDetail(latest);
+
+        document.getElementById("q").addEventListener("input", ()=>renderIncidentsTable(inc));
+        document.getElementById("sev").addEventListener("change", ()=>renderIncidentsTable(inc));
+        document.getElementById("clear").addEventListener("click", (e)=>{
+          e.preventDefault();
+          document.getElementById("q").value = "";
+          document.getElementById("sev").value = "";
+          renderIncidentsTable(inc);
+        });
+
+        // ✅ Telemetry (windowed) from INCIDENTS + SUBS
+        let ACTIVE_WINDOW = 30; // 30 | 60 | "YTD"
+
+        function setActiveWindow(win){
+          ACTIVE_WINDOW = win;
+
+          // button state
+          document.querySelectorAll(".win-btn").forEach(b=>b.classList.remove("active"));
+          const btn = (win === 30) ? document.getElementById("win30")
+                    : (win === 60) ? document.getElementById("win60")
+                    : document.getElementById("winYTD");
+          if (btn) btn.classList.add("active");
+
+          updateTelemetry();
+        }
+
+        function updateTelemetry(){
+          const win = (ACTIVE_WINDOW === "YTD") ? "YTD" : ACTIVE_WINDOW;
+          const tele = computeTelemetryWindow(INC_NORM, SUBS_ALL, win);
+          renderTelemetry(tele);
+          renderEmergingRiskSignals(tele);
+
+          // update labels
+          const title = document.getElementById("ioiWindowTitle");
+          const meta = document.getElementById("ioiWindowMeta");
+          const wm = document.getElementById("winMeta");
+          const winLabel = (ACTIVE_WINDOW === "YTD") ? "YTD" : `${ACTIVE_WINDOW}D`;
+
+          if (title) title.textContent = (ACTIVE_WINDOW === "YTD") ? "Year to Date" : `Last ${ACTIVE_WINDOW} Days`;
+          if (meta) meta.textContent = "Window incidents";
+          if (wm) wm.textContent = `Window: ${tele.start.toLocaleDateString()} → ${tele.end.toLocaleDateString()} (${winLabel})`;
+        }
+
+        // Wire toggle buttons (once)
+        document.querySelectorAll(".win-btn").forEach(btn=>{
+          if (btn.dataset.wired === "1") return;
+          btn.dataset.wired = "1";
+          btn.addEventListener("click", ()=>{
+            const w = btn.getAttribute("data-window");
+            if (!w) return;
+            if (w === "YTD") setActiveWindow("YTD");
+            else setActiveWindow(Number(w) || 30);
+          });
+        });
+
+        // initial render
+        setActiveWindow(30);
+        wireExportButtons();
+        setStatus("");
+      } catch (err){
+        console.error(err);
+        setStatus("Data fetch failed. Check CSV publish links, then refresh.", true);
+        document.getElementById("subHint").textContent = "Could not load subcontractor data. Verify your published SUBS CSV.";
+        document.getElementById("incHint").textContent = "Could not load incidents. Verify your published INCIDENTS CSV.";
+      }
+    })();
+  
+
+
+    (function initDashboardTabs(){
+      const buttons = document.querySelectorAll(".tab-btn");
+      const views = document.querySelectorAll(".dashboard-view");
+
+      buttons.forEach((button) => {
         button.addEventListener("click", () => {
-          selectedState = button.dataset.state;
-          els.search.value = "";
-          render();
-          document.querySelector(".active-state").scrollIntoView({ block: "start", behavior: "smooth" });
+          const target = button.dataset.view;
+          buttons.forEach((btn) => {
+            const active = btn === button;
+            btn.classList.toggle("active", active);
+            btn.setAttribute("aria-selected", active ? "true" : "false");
+          });
+          views.forEach((view) => {
+            view.classList.toggle("active", view.id === target);
+          });
+          window.scrollTo({ top: 0, behavior: "smooth" });
         });
       });
+    })();
 
-      selectedState = states[0] || "";
-    }
 
-    function filteredRows() {
-      const term = els.search.value.trim().toLowerCase();
-      return allRows.filter((row) => {
-        if (row.state !== selectedState) {
-          return false;
+
+    (function initStateOshaDashboard(){
+      const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR8SxjBcpMRRNWaSO74ZmuI1vgrtKoj4Ktly45QpRHK1QLKFp492sLX79rfEGxLEXnq9CfvVklyw1MH/pub?gid=0&single=true&output=csv";
+      const expectedHeaders = [
+        "State",
+        "Steel-Erection-Related More Stringent Requirement",
+        "Citation",
+        "Source"
+      ];
+
+      const els = {
+        stateIndex: document.getElementById("oshStateIndex"),
+        cards: document.getElementById("oshCards"),
+        empty: document.getElementById("oshEmpty"),
+        status: document.getElementById("oshStatus"),
+        search: document.getElementById("oshSearchInput"),
+        clear: document.getElementById("oshClearButton"),
+        activeStateName: document.getElementById("oshActiveStateName"),
+        activeStateSummary: document.getElementById("oshActiveStateSummary"),
+        activeBadge: document.getElementById("oshActiveBadge")
+      };
+
+      let allRows = [];
+      let states = [];
+      let selectedState = "";
+
+      function parseCsv(text) {
+        const rows = [];
+        let row = [];
+        let field = "";
+        let inQuotes = false;
+
+        for (let i = 0; i < text.length; i += 1) {
+          const char = text[i];
+          const next = text[i + 1];
+
+          if (char === "\"") {
+            if (inQuotes && next === "\"") {
+              field += "\"";
+              i += 1;
+            } else {
+              inQuotes = !inQuotes;
+            }
+            continue;
+          }
+
+          if (char === "," && !inQuotes) {
+            row.push(field);
+            field = "";
+            continue;
+          }
+
+          if ((char === "\n" || char === "\r") && !inQuotes) {
+            if (char === "\r" && next === "\n") {
+              i += 1;
+            }
+            row.push(field);
+            if (row.some((value) => value.trim() !== "")) {
+              rows.push(row);
+            }
+            row = [];
+            field = "";
+            continue;
+          }
+
+          field += char;
         }
-        if (!term) {
-          return true;
-        }
-        return `${row.requirement} ${row.citation} ${row.source}`.toLowerCase().includes(term);
-      });
-    }
 
-    function renderStateButtons() {
-      els.stateIndex.querySelectorAll(".state-btn").forEach((button) => {
-        button.classList.toggle("active", button.dataset.state === selectedState);
-      });
-    }
-
-    function render() {
-      renderStateButtons();
-      const rows = filteredRows();
-      const totalForState = countForState(selectedState);
-
-      els.activeStateName.textContent = selectedState || "Select a state";
-      els.activeStateSummary.textContent = selectedState
-        ? `${totalForState} steel-erection-related row${totalForState === 1 ? "" : "s"} in the source matrix.`
-        : "The selected state's requirements will appear below as review cards.";
-      els.activeBadge.textContent = `${rows.length} card${rows.length === 1 ? "" : "s"}`;
-      els.empty.classList.toggle("show", rows.length === 0);
-
-      els.cards.innerHTML = rows.map((row, index) => `
-        <article class="requirement-card">
-          <div class="card-number">Requirement ${String(index + 1).padStart(2, "0")}</div>
-          <p class="requirement-text">${escapeHtml(row.requirement)}</p>
-          <div class="card-footer">
-            <div class="citation-row">
-              <span class="label">Citation</span>
-              <span class="citation-text">${escapeHtml(citationText(row.citation))}</span>
-            </div>
-            <div class="source-row">
-              <span class="label">Source</span>
-              ${sourceMarkup(row.source, row.citation)}
-            </div>
-          </div>
-        </article>
-      `).join("");
-    }
-
-    async function loadData() {
-      try {
-        const response = await fetch(CSV_URL, { cache: "no-store" });
-        if (!response.ok) {
-          throw new Error("Google Sheets returned HTTP " + response.status);
+        row.push(field);
+        if (row.some((value) => value.trim() !== "")) {
+          rows.push(row);
         }
 
-        const text = await response.text();
-        allRows = rowsFromCsv(text);
-        buildStateIndex();
-        render();
-        setStatus("");
-      } catch (error) {
-        console.error(error);
-        setStatus("Could not load the published Google Sheet. Confirm the sheet is published to the web as CSV, then refresh this page.", true);
+        return rows;
       }
-    }
 
-    els.search.addEventListener("input", render);
-    els.clear.addEventListener("click", () => {
-      els.search.value = "";
-      render();
-      els.search.focus();
-    });
+      function normalizeHeader(value) {
+        return String(value || "").trim().toLowerCase();
+      }
 
-    loadData();
+      function rowsFromCsv(text) {
+        const parsed = parseCsv(text);
+        if (!parsed.length) {
+          return [];
+        }
+
+        const headers = parsed[0].map((header) => header.trim());
+        const headerMap = new Map(headers.map((header, index) => [normalizeHeader(header), index]));
+        const missing = expectedHeaders.filter((header) => !headerMap.has(normalizeHeader(header)));
+
+        if (missing.length) {
+          throw new Error("The published sheet is missing: " + missing.join(", "));
+        }
+
+        return parsed.slice(1)
+          .map((cells) => ({
+            state: (cells[headerMap.get(normalizeHeader("State"))] || "").trim(),
+            requirement: (cells[headerMap.get(normalizeHeader("Steel-Erection-Related More Stringent Requirement"))] || "").trim(),
+            citation: (cells[headerMap.get(normalizeHeader("Citation"))] || "").trim(),
+            source: (cells[headerMap.get(normalizeHeader("Source"))] || "").trim()
+          }))
+          .filter((item) => item.state || item.requirement || item.citation || item.source);
+      }
+
+      function escapeHtml(value) {
+        return String(value || "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#039;");
+      }
+
+      function isUrl(value) {
+        return /^https?:\/\//i.test(String(value || "").trim());
+      }
+
+      function countForState(state) {
+        return allRows.filter((row) => row.state === state).length;
+      }
+
+      function setOshaStatus(message, isError = false) {
+        els.status.textContent = message;
+        els.status.classList.toggle("show", Boolean(message));
+        els.status.classList.toggle("error", isError);
+      }
+
+      function citationText(citation) {
+        const trimmed = String(citation || "").trim();
+        if (!trimmed) {
+          return "Citation not listed";
+        }
+        return isUrl(trimmed) ? "See source document" : trimmed;
+      }
+
+      function sourceMarkup(source, fallback) {
+        const sourceValue = String(source || "").trim();
+        const fallbackValue = String(fallback || "").trim();
+        const link = isUrl(sourceValue) ? sourceValue : isUrl(fallbackValue) ? fallbackValue : "";
+
+        if (link) {
+          return `<a class="osh-source-link" href="${escapeHtml(link)}" target="_blank" rel="noopener">Open Source</a>`;
+        }
+
+        return `<span class="osh-citation-text">${escapeHtml(sourceValue || "No source listed")}</span>`;
+      }
+
+      function buildStateIndex() {
+        states = [...new Set(allRows.map((row) => row.state).filter(Boolean))]
+          .sort((a, b) => a.localeCompare(b));
+
+        els.stateIndex.innerHTML = states.map((state) => `
+          <button class="osh-state-btn" type="button" data-state="${escapeHtml(state)}">
+            ${escapeHtml(state)} <small>${countForState(state)}</small>
+          </button>
+        `).join("");
+
+        els.stateIndex.querySelectorAll(".osh-state-btn").forEach((button) => {
+          button.addEventListener("click", () => {
+            selectedState = button.dataset.state;
+            els.search.value = "";
+            render();
+            document.querySelector(".osh-active-state").scrollIntoView({ block: "start", behavior: "smooth" });
+          });
+        });
+
+        selectedState = states[0] || "";
+      }
+
+      function filteredRows() {
+        const term = els.search.value.trim().toLowerCase();
+        return allRows.filter((row) => {
+          if (row.state !== selectedState) {
+            return false;
+          }
+          if (!term) {
+            return true;
+          }
+          return `${row.requirement} ${row.citation} ${row.source}`.toLowerCase().includes(term);
+        });
+      }
+
+      function renderStateButtons() {
+        els.stateIndex.querySelectorAll(".osh-state-btn").forEach((button) => {
+          button.classList.toggle("active", button.dataset.state === selectedState);
+        });
+      }
+
+      function render() {
+        renderStateButtons();
+        const rows = filteredRows();
+        const totalForState = countForState(selectedState);
+
+        els.activeStateName.textContent = selectedState || "Select a state";
+        els.activeStateSummary.textContent = selectedState
+          ? `${totalForState} steel-erection-related row${totalForState === 1 ? "" : "s"} in the source matrix.`
+          : "The selected state's requirements will appear below as review cards.";
+        els.activeBadge.textContent = `${rows.length} card${rows.length === 1 ? "" : "s"}`;
+        els.empty.classList.toggle("show", rows.length === 0);
+
+        els.cards.innerHTML = rows.map((row, index) => `
+          <article class="osh-requirement-card">
+            <div class="osh-card-number">Requirement ${String(index + 1).padStart(2, "0")}</div>
+            <p class="osh-requirement-text">${escapeHtml(row.requirement)}</p>
+            <div class="osh-card-footer">
+              <div class="osh-citation-row">
+                <span class="osh-label">Citation</span>
+                <span class="osh-citation-text">${escapeHtml(citationText(row.citation))}</span>
+              </div>
+              <div class="osh-source-row">
+                <span class="osh-label">Source</span>
+                ${sourceMarkup(row.source, row.citation)}
+              </div>
+            </div>
+          </article>
+        `).join("");
+      }
+
+      async function loadData() {
+        try {
+          const response = await fetch(CSV_URL, { cache: "no-store" });
+          if (!response.ok) {
+            throw new Error("Google Sheets returned HTTP " + response.status);
+          }
+
+          const text = await response.text();
+          allRows = rowsFromCsv(text);
+          buildStateIndex();
+          render();
+          setOshaStatus("");
+        } catch (error) {
+          console.error(error);
+          setOshaStatus("Could not load the published Google Sheet. Confirm the sheet is published to the web as CSV, then refresh this page.", true);
+        }
+      }
+
+      els.search.addEventListener("input", render);
+      els.clear.addEventListener("click", () => {
+        els.search.value = "";
+        render();
+        els.search.focus();
+      });
+
+      loadData();
+    })();
+
   </script>
 </body>
 </html>
