@@ -1832,6 +1832,435 @@
       }
     }
 
+    /* ---------- General Contractor Requirements Tab ---------- */
+    #gcView{
+      width: min(1680px, calc(100% - 40px));
+      margin: 0 auto;
+      padding: 0 0 80px;
+    }
+
+    .gc-hero{
+      max-width: 1180px;
+      margin: 0 auto 26px;
+      padding: 0 22px;
+    }
+
+    .gc-eyebrow{
+      display: inline-flex;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 14px;
+      color: var(--cloud);
+      font-family: var(--font-condensed);
+      font-size: 13px;
+      font-weight: 950;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+    }
+
+    .gc-eyebrow::before{
+      display: inline-block;
+      width: 36px;
+      height: 2px;
+      content: "";
+      background: var(--cooper-red);
+    }
+
+    .gc-title{
+      max-width: 980px;
+      margin: 0;
+      color: var(--cream);
+      font-family: var(--font-display);
+      font-size: clamp(44px, 6vw, 88px);
+      line-height: .92;
+    }
+
+    .gc-subtitle{
+      max-width: 860px;
+      margin: 16px 0 0;
+      color: rgba(242,239,235,.78);
+      font-size: 15px;
+      line-height: 1.55;
+    }
+
+    .gc-toolbar{
+      width: min(1180px, calc(100% - 44px));
+      display: grid;
+      grid-template-columns: minmax(260px, 1fr) repeat(3, minmax(150px, 190px)) auto;
+      gap: 12px;
+      align-items: center;
+      margin: 0 auto 18px;
+      padding: 12px;
+      border: 1px solid rgba(93,92,90,.72);
+      border-radius: var(--radius-md);
+      background: rgba(17,17,18,.82);
+      box-shadow: var(--soft-shadow);
+    }
+
+    .gc-search-wrap{
+      position: relative;
+    }
+
+    .gc-search-label{
+      position: absolute;
+      top: 50%;
+      left: 16px;
+      color: var(--cloud);
+      font-family: var(--font-condensed);
+      font-size: 12px;
+      font-weight: 950;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      transform: translateY(-50%);
+      pointer-events: none;
+    }
+
+    .gc-search,
+    .gc-filter{
+      width: 100%;
+      min-height: 52px;
+      color: var(--cream);
+      border: 1px solid rgba(93,92,90,.9);
+      border-radius: 14px;
+      outline: none;
+      background: rgba(40,40,40,.92);
+    }
+
+    .gc-search{
+      padding: 12px 16px 12px 92px;
+    }
+
+    .gc-filter{
+      padding: 12px 14px;
+    }
+
+    .gc-search::placeholder{
+      color: rgba(207,205,202,.82);
+    }
+
+    .gc-search:focus,
+    .gc-filter:focus{
+      border-color: var(--cooper-red);
+    }
+
+    .gc-clear-btn{
+      min-height: 52px;
+      padding: 0 18px;
+      color: var(--cream);
+      font-weight: 950;
+      border: 1px solid rgba(93,92,90,.9);
+      border-radius: 14px;
+      background: var(--burgundy);
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .gc-clear-btn:hover{
+      background: var(--cooper-red);
+    }
+
+    .gc-summary{
+      width: min(1180px, calc(100% - 44px));
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin: 0 auto 22px;
+    }
+
+    .gc-summary-card{
+      min-height: 96px;
+      padding: 16px;
+      border: 1px solid rgba(93,92,90,.72);
+      border-radius: var(--radius-md);
+      background: rgba(17,17,18,.82);
+      box-shadow: var(--soft-shadow);
+    }
+
+    .gc-summary-value{
+      color: var(--cream);
+      font-family: var(--font-bold);
+      font-size: 26px;
+      line-height: 1;
+    }
+
+    .gc-summary-label{
+      margin-top: 9px;
+      color: var(--cloud);
+      font-family: var(--font-condensed);
+      font-size: 12px;
+      font-weight: 950;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    .gc-status,
+    .gc-empty{
+      width: min(1180px, calc(100% - 44px));
+      margin: 0 auto 18px;
+      padding: 18px;
+      border: 1px solid rgba(93,92,90,.72);
+      border-radius: var(--radius-md);
+      background: rgba(17,17,18,.84);
+      color: var(--cloud);
+    }
+
+    .gc-status{
+      display: none;
+    }
+
+    .gc-status.show{
+      display: block;
+    }
+
+    .gc-status.error{
+      color: var(--cream);
+      border-color: var(--cooper-red);
+      background: var(--burgundy);
+    }
+
+    .gc-empty{
+      display: none;
+      text-align: center;
+    }
+
+    .gc-empty.show{
+      display: block;
+    }
+
+    .gc-cards{
+      width: min(1680px, calc(100% - 44px));
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .gc-requirement-card{
+      display: flex;
+      min-height: 360px;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+      padding: 24px;
+      border: 1px solid rgba(93,92,90,.74);
+      border-radius: var(--radius-lg);
+      background:
+        radial-gradient(650px 260px at 8% 0%, rgba(159,28,31,.24), transparent 62%),
+        linear-gradient(145deg, rgba(40,40,40,.96), rgba(17,17,18,.96) 56%, rgba(104,12,25,.72));
+      box-shadow: var(--card-shadow);
+    }
+
+    .gc-requirement-card::before{
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      content: "";
+      background: var(--cooper-red);
+    }
+
+    .gc-card-top{
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .gc-card-number{
+      color: rgba(207,205,202,.82);
+      font-family: var(--font-condensed);
+      font-size: 13px;
+      font-weight: 950;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+
+    .gc-priority{
+      display: inline-flex;
+      min-height: 30px;
+      align-items: center;
+      justify-content: center;
+      padding: 6px 10px;
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 999px;
+      font-family: var(--font-bold);
+      font-size: 12px;
+      font-weight: 950;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .gc-priority.critical{
+      color: #fff;
+      background: rgba(159,28,31,.9);
+    }
+
+    .gc-priority.high{
+      color: #fff3f3;
+      background: rgba(159,28,31,.62);
+    }
+
+    .gc-priority.medium{
+      color: #fff8e3;
+      background: rgba(171,116,22,.62);
+    }
+
+    .gc-priority.low{
+      color: #e9fff2;
+      background: rgba(22,116,72,.62);
+    }
+
+    .gc-card-title{
+      margin: 0 0 8px;
+      color: var(--cream);
+      font-family: var(--font-bold);
+      font-size: 19px;
+      line-height: 1.2;
+    }
+
+    .gc-card-meta{
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .gc-chip{
+      display: inline-flex;
+      min-height: 30px;
+      align-items: center;
+      padding: 6px 10px;
+      color: var(--cloud);
+      border: 1px solid rgba(93,92,90,.8);
+      border-radius: 999px;
+      background: rgba(40,40,40,.74);
+      font-size: 12px;
+      font-weight: 850;
+    }
+
+    .gc-section{
+      display: grid;
+      gap: 6px;
+      padding-top: 14px;
+      border-top: 1px solid rgba(93,92,90,.74);
+    }
+
+    .gc-section + .gc-section{
+      margin-top: 14px;
+    }
+
+    .gc-label{
+      color: var(--cloud);
+      font-family: var(--font-condensed);
+      font-size: 12px;
+      font-weight: 950;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    .gc-text{
+      margin: 0;
+      color: rgba(242,239,235,.92);
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .gc-card-footer{
+      display: grid;
+      gap: 12px;
+      margin-top: auto;
+      padding-top: 18px;
+    }
+
+    .gc-source-row{
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .gc-source-reference{
+      color: var(--cream);
+      font-family: var(--font-bold);
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    .gc-source-link{
+      display: inline-flex;
+      min-height: 40px;
+      align-items: center;
+      justify-content: center;
+      padding: 9px 12px;
+      color: var(--cream);
+      border: 1px solid rgba(93,92,90,.9);
+      border-radius: 12px;
+      background: var(--burgundy);
+      font-family: var(--font-bold);
+      font-size: 12px;
+      font-weight: 950;
+      white-space: nowrap;
+    }
+
+    .gc-source-link:hover{
+      background: var(--cooper-red);
+    }
+
+    .gc-footer-note{
+      width: min(1180px, calc(100% - 44px));
+      margin: 24px auto 0;
+      color: rgba(242,239,235,.62);
+      font-size: 13px;
+    }
+
+    @media (max-width: 1280px){
+      .gc-toolbar{
+        grid-template-columns: minmax(260px, 1fr) repeat(2, minmax(150px, 1fr));
+      }
+
+      .gc-clear-btn{
+        grid-column: auto;
+      }
+    }
+
+    @media (max-width: 1180px){
+      .gc-cards{
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 780px){
+      #gcView,
+      .gc-toolbar,
+      .gc-summary,
+      .gc-cards,
+      .gc-status,
+      .gc-empty,
+      .gc-footer-note{
+        width: min(100% - 22px, 1680px);
+      }
+
+      .gc-toolbar,
+      .gc-summary{
+        grid-template-columns: 1fr;
+      }
+
+      .gc-cards{
+        grid-template-columns: 1fr;
+      }
+
+      .gc-requirement-card{
+        min-height: 300px;
+      }
+
+      .gc-source-row{
+        display: grid;
+      }
+    }
+
   </style>
 </head>
 
@@ -2155,10 +2584,53 @@
     <section id="oshCards" class="osh-cards" aria-label="Requirement cards"></section>
   </section>
 
-  <section id="gcView" class="dashboard-view construction-view" aria-label="General contractor requirements">
-    <div class="construction-kicker">General Contractor Requirements</div>
-    <h1 class="construction-title">Under Construction</h1>
-    <p class="construction-subtitle">This tab is staged for future GC-specific requirements, contract rules, and project controls.</p>
+  <section id="gcView" class="dashboard-view" aria-label="General contractor requirements dashboard">
+    <section class="gc-hero" aria-label="General contractor requirements summary">
+      <div class="gc-eyebrow">Cooper Steel Field Safety</div>
+      <h1 class="gc-title">General Contractor Extra Requirements</h1>
+      <p class="gc-subtitle">A focused list of GC-specific requirements that go beyond Cooper Steel's subcontractor safety baseline.</p>
+    </section>
+
+    <section class="gc-toolbar" aria-label="General contractor requirements filters">
+      <div class="gc-search-wrap">
+        <span class="gc-search-label" aria-hidden="true">Search</span>
+        <input id="gcSearchInput" class="gc-search" type="search" placeholder="Search GC requirements by keyword, e.g. CDZ, lift plan, hot work">
+      </div>
+      <select id="gcOwnerFilter" class="gc-filter" aria-label="Filter by general contractor">
+        <option value="">All GCs</option>
+      </select>
+      <select id="gcCategoryFilter" class="gc-filter" aria-label="Filter by category">
+        <option value="">All Categories</option>
+      </select>
+      <select id="gcPriorityFilter" class="gc-filter" aria-label="Filter by priority">
+        <option value="">All Priorities</option>
+      </select>
+      <button id="gcClearButton" class="gc-clear-btn" type="button">Clear Filters</button>
+    </section>
+
+    <section class="gc-summary" aria-label="General contractor requirements totals">
+      <div class="gc-summary-card">
+        <div id="gcTotalCount" class="gc-summary-value">0</div>
+        <div class="gc-summary-label">Visible Requirements</div>
+      </div>
+      <div class="gc-summary-card">
+        <div id="gcCriticalCount" class="gc-summary-value">0</div>
+        <div class="gc-summary-label">Critical</div>
+      </div>
+      <div class="gc-summary-card">
+        <div id="gcHighCount" class="gc-summary-value">0</div>
+        <div class="gc-summary-label">High</div>
+      </div>
+      <div class="gc-summary-card">
+        <div id="gcActiveFilters" class="gc-summary-value">0</div>
+        <div class="gc-summary-label">Active Filters</div>
+      </div>
+    </section>
+
+    <p id="gcStatus" class="gc-status show">Loading General Contractor requirement data...</p>
+    <div id="gcEmpty" class="gc-empty">No GC requirements match the current filters.</div>
+    <section id="gcCards" class="gc-cards" aria-label="General contractor requirement cards"></section>
+    <p class="gc-footer-note">Source links become clickable when the sheet includes a Source URL column or when a hosted PDF base URL is configured in the code.</p>
   </section>
 
   <section id="ownerView" class="dashboard-view construction-view" aria-label="Owner requirements">
@@ -3739,6 +4211,351 @@ function computeTelemetryWindow(incNorm, subsAll, window){
       els.search.addEventListener("input", render);
       els.clear.addEventListener("click", () => {
         els.search.value = "";
+        render();
+        els.search.focus();
+      });
+
+      loadData();
+    })();
+
+    (function initGcRequirementsDashboard(){
+      const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR8SxjBcpMRRNWaSO74ZmuI1vgrtKoj4Ktly45QpRHK1QLKFp492sLX79rfEGxLEXnq9CfvVklyw1MH/pub?gid=608450026&single=true&output=csv";
+
+      // Optional: after the WT PDF is hosted, paste its public URL here.
+      // Example: "Whiting-Turner": "https://example.com/docs/Whiting-Turner-Trade-Partner-Safety-Manual-2026.pdf"
+      const GC_SOURCE_PDF_URLS = {
+        "Whiting-Turner": ""
+      };
+
+      const requiredHeaders = [
+        ["GC / Owner", "GC", "Owner"],
+        ["Category"],
+        ["Requirement / Topic", "Topic", "Requirement Topic"],
+        ["Extra Requirement", "Requirement"],
+        ["Required Field Action", "Field Action", "Dashboard Action"],
+        ["Priority"],
+        ["Source Reference", "Source"],
+        ["Tags"]
+      ];
+
+      const els = {
+        cards: document.getElementById("gcCards"),
+        empty: document.getElementById("gcEmpty"),
+        status: document.getElementById("gcStatus"),
+        search: document.getElementById("gcSearchInput"),
+        owner: document.getElementById("gcOwnerFilter"),
+        category: document.getElementById("gcCategoryFilter"),
+        priority: document.getElementById("gcPriorityFilter"),
+        clear: document.getElementById("gcClearButton"),
+        total: document.getElementById("gcTotalCount"),
+        critical: document.getElementById("gcCriticalCount"),
+        high: document.getElementById("gcHighCount"),
+        activeFilters: document.getElementById("gcActiveFilters")
+      };
+
+      let allRows = [];
+
+      function parseCsv(text) {
+        const rows = [];
+        let row = [];
+        let field = "";
+        let inQuotes = false;
+
+        for (let i = 0; i < text.length; i += 1) {
+          const char = text[i];
+          const next = text[i + 1];
+
+          if (char === "\"") {
+            if (inQuotes && next === "\"") {
+              field += "\"";
+              i += 1;
+            } else {
+              inQuotes = !inQuotes;
+            }
+            continue;
+          }
+
+          if (char === "," && !inQuotes) {
+            row.push(field);
+            field = "";
+            continue;
+          }
+
+          if ((char === "\n" || char === "\r") && !inQuotes) {
+            if (char === "\r" && next === "\n") {
+              i += 1;
+            }
+            row.push(field);
+            if (row.some((value) => value.trim() !== "")) {
+              rows.push(row);
+            }
+            row = [];
+            field = "";
+            continue;
+          }
+
+          field += char;
+        }
+
+        row.push(field);
+        if (row.some((value) => value.trim() !== "")) {
+          rows.push(row);
+        }
+
+        return rows;
+      }
+
+      function normalizeHeader(value) {
+        return String(value || "").trim().toLowerCase();
+      }
+
+      function escapeHtml(value) {
+        return String(value || "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#039;");
+      }
+
+      function isUrl(value) {
+        return /^https?:\/\//i.test(String(value || "").trim());
+      }
+
+      function firstAvailableCell(cells, headerMap, aliases) {
+        for (const alias of aliases) {
+          const index = headerMap.get(normalizeHeader(alias));
+          if (index !== undefined) {
+            return (cells[index] || "").trim();
+          }
+        }
+        return "";
+      }
+
+      function rowsFromCsv(text) {
+        const parsed = parseCsv(text);
+        if (!parsed.length) {
+          return [];
+        }
+
+        const headers = parsed[0].map((header) => header.trim());
+        const headerMap = new Map(headers.map((header, index) => [normalizeHeader(header), index]));
+        const missing = requiredHeaders
+          .filter((aliases) => !aliases.some((alias) => headerMap.has(normalizeHeader(alias))))
+          .map((aliases) => aliases[0]);
+
+        if (missing.length) {
+          throw new Error("The published GC sheet is missing: " + missing.join(", "));
+        }
+
+        return parsed.slice(1)
+          .map((cells) => ({
+            gc: firstAvailableCell(cells, headerMap, ["GC / Owner", "GC", "Owner"]),
+            id: firstAvailableCell(cells, headerMap, ["Requirement ID", "ID"]),
+            category: firstAvailableCell(cells, headerMap, ["Category"]),
+            topic: firstAvailableCell(cells, headerMap, ["Requirement / Topic", "Topic", "Requirement Topic"]),
+            requirement: firstAvailableCell(cells, headerMap, ["Extra Requirement", "Requirement"]),
+            action: firstAvailableCell(cells, headerMap, ["Required Field Action", "Field Action", "Dashboard Action"]),
+            priority: firstAvailableCell(cells, headerMap, ["Priority"]),
+            trigger: firstAvailableCell(cells, headerMap, ["Applies / Trigger", "Trigger", "Applies"]),
+            sourceReference: firstAvailableCell(cells, headerMap, ["Source Reference", "Source"]),
+            sourceUrl: firstAvailableCell(cells, headerMap, ["Source URL", "Source Link", "PDF URL", "URL"]),
+            status: firstAvailableCell(cells, headerMap, ["Status"]),
+            tags: firstAvailableCell(cells, headerMap, ["Tags"])
+          }))
+          .filter((item) => item.gc || item.topic || item.requirement)
+          .filter((item) => item.status.toLowerCase() !== "exclude");
+      }
+
+      function uniqueSorted(values) {
+        return [...new Set(values.filter(Boolean))]
+          .sort((a, b) => a.localeCompare(b));
+      }
+
+      function populateSelect(select, values, allLabel) {
+        const current = select.value;
+        select.innerHTML = `<option value="">${escapeHtml(allLabel)}</option>` + values.map((value) => (
+          `<option value="${escapeHtml(value)}">${escapeHtml(value)}</option>`
+        )).join("");
+
+        if (values.includes(current)) {
+          select.value = current;
+        }
+      }
+
+      function buildFilters() {
+        populateSelect(els.owner, uniqueSorted(allRows.map((row) => row.gc)), "All GCs");
+        populateSelect(els.category, uniqueSorted(allRows.map((row) => row.category)), "All Categories");
+        populateSelect(els.priority, uniqueSorted(allRows.map((row) => row.priority)), "All Priorities");
+      }
+
+      function setGcStatus(message, isError = false) {
+        els.status.textContent = message;
+        els.status.classList.toggle("show", Boolean(message));
+        els.status.classList.toggle("error", isError);
+      }
+
+      function normalizedPriority(priority) {
+        return String(priority || "").trim().toLowerCase();
+      }
+
+      function sourcePageNumber(sourceReference) {
+        const match = String(sourceReference || "").match(/\b(?:p\.?|page)\s*(\d+)\b/i);
+        return match ? match[1] : "";
+      }
+
+      function sourceLink(row) {
+        const direct = String(row.sourceUrl || "").trim();
+        if (isUrl(direct)) {
+          return direct;
+        }
+
+        const reference = String(row.sourceReference || "").trim();
+        if (isUrl(reference)) {
+          return reference;
+        }
+
+        const basePdf = String(GC_SOURCE_PDF_URLS[row.gc] || "").trim();
+        const page = sourcePageNumber(reference);
+        if (isUrl(basePdf) && page) {
+          return basePdf.split("#")[0] + "#page=" + encodeURIComponent(page);
+        }
+
+        return "";
+      }
+
+      function sourceMarkup(row) {
+        const reference = row.sourceReference || "Source reference not listed";
+        const link = sourceLink(row);
+
+        if (link) {
+          return `
+            <div class="gc-source-row">
+              <span class="gc-source-reference">${escapeHtml(reference)}</span>
+              <a class="gc-source-link" href="${escapeHtml(link)}" target="_blank" rel="noopener">Open Source</a>
+            </div>
+          `;
+        }
+
+        return `<span class="gc-source-reference">${escapeHtml(reference)}</span>`;
+      }
+
+      function filteredRows() {
+        const term = els.search.value.trim().toLowerCase();
+        const owner = els.owner.value;
+        const category = els.category.value;
+        const priority = els.priority.value;
+
+        return allRows.filter((row) => {
+          const haystack = [
+            row.gc,
+            row.id,
+            row.category,
+            row.topic,
+            row.requirement,
+            row.action,
+            row.priority,
+            row.trigger,
+            row.sourceReference,
+            row.tags
+          ].join(" ").toLowerCase();
+
+          return (!term || haystack.includes(term))
+            && (!owner || row.gc === owner)
+            && (!category || row.category === category)
+            && (!priority || row.priority === priority);
+        });
+      }
+
+      function activeFilterCount() {
+        return [
+          els.search.value.trim(),
+          els.owner.value,
+          els.category.value,
+          els.priority.value
+        ].filter(Boolean).length;
+      }
+
+      function renderSummary(rows) {
+        els.total.textContent = rows.length;
+        els.critical.textContent = rows.filter((row) => normalizedPriority(row.priority) === "critical").length;
+        els.high.textContent = rows.filter((row) => normalizedPriority(row.priority) === "high").length;
+        els.activeFilters.textContent = activeFilterCount();
+      }
+
+      function render() {
+        const rows = filteredRows();
+        renderSummary(rows);
+        els.empty.classList.toggle("show", rows.length === 0);
+
+        els.cards.innerHTML = rows.map((row, index) => {
+          const priorityClass = normalizedPriority(row.priority) || "low";
+          const priorityText = row.priority || "Unrated";
+
+          return `
+            <article class="gc-requirement-card">
+              <div class="gc-card-top">
+                <div class="gc-card-number">${escapeHtml(row.gc || "GC")} ${row.id ? " / " + escapeHtml(row.id) : ""} / ${String(index + 1).padStart(2, "0")}</div>
+                <span class="gc-priority ${escapeHtml(priorityClass)}">${escapeHtml(priorityText)}</span>
+              </div>
+              <h2 class="gc-card-title">${escapeHtml(row.topic || "Requirement")}</h2>
+              <div class="gc-card-meta">
+                ${row.category ? `<span class="gc-chip">${escapeHtml(row.category)}</span>` : ""}
+                ${row.trigger ? `<span class="gc-chip">${escapeHtml(row.trigger)}</span>` : ""}
+              </div>
+              <div class="gc-section">
+                <span class="gc-label">Extra Requirement</span>
+                <p class="gc-text">${escapeHtml(row.requirement || "No requirement text listed.")}</p>
+              </div>
+              <div class="gc-section">
+                <span class="gc-label">Required Field Action</span>
+                <p class="gc-text">${escapeHtml(row.action || "No field action listed.")}</p>
+              </div>
+              <div class="gc-card-footer">
+                <div class="gc-section">
+                  <span class="gc-label">Source Reference</span>
+                  ${sourceMarkup(row)}
+                </div>
+                ${row.tags ? `
+                  <div class="gc-section">
+                    <span class="gc-label">Tags</span>
+                    <p class="gc-text">${escapeHtml(row.tags)}</p>
+                  </div>
+                ` : ""}
+              </div>
+            </article>
+          `;
+        }).join("");
+      }
+
+      async function loadData() {
+        try {
+          const response = await fetch(CSV_URL, { cache: "no-store" });
+          if (!response.ok) {
+            throw new Error("Google Sheets returned HTTP " + response.status);
+          }
+
+          const text = await response.text();
+          allRows = rowsFromCsv(text);
+          buildFilters();
+          render();
+          setGcStatus("");
+        } catch (error) {
+          console.error(error);
+          setGcStatus("Could not load the published General Contractor requirements sheet. Confirm the sheet is published to the web as CSV, then refresh this page.", true);
+        }
+      }
+
+      [els.search, els.owner, els.category, els.priority].forEach((control) => {
+        control.addEventListener("input", render);
+        control.addEventListener("change", render);
+      });
+
+      els.clear.addEventListener("click", () => {
+        els.search.value = "";
+        els.owner.value = "";
+        els.category.value = "";
+        els.priority.value = "";
         render();
         els.search.focus();
       });
