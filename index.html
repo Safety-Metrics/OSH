@@ -2034,6 +2034,84 @@
       font-weight: 950;
     }
 
+    .gc-group-panel{
+      width: min(1180px, calc(100% - 44px));
+      margin: 0 auto 22px;
+      border: 1px solid rgba(93,92,90,.72);
+      border-radius: var(--radius-lg);
+      background: rgba(17,17,18,.78);
+      box-shadow: var(--soft-shadow);
+      overflow: hidden;
+    }
+
+    .gc-group-panel.hide{
+      display: none;
+    }
+
+    .gc-group-index{
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      padding: 16px;
+    }
+
+    .gc-group-btn{
+      min-height: 112px;
+      padding: 14px;
+      color: var(--cream);
+      border: 1px solid rgba(93,92,90,.86);
+      border-radius: 14px;
+      background:
+        radial-gradient(420px 160px at 0% 0%, rgba(159,28,31,.18), transparent 62%),
+        rgba(40,40,40,.84);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.025);
+      cursor: pointer;
+      text-align: left;
+      transition: transform 150ms ease, border-color 150ms ease, background 150ms ease;
+    }
+
+    .gc-group-btn:hover{
+      border-color: rgba(159,28,31,.9);
+      transform: translateY(-1px);
+    }
+
+    .gc-group-btn.active{
+      border-color: var(--cooper-red);
+      background:
+        radial-gradient(420px 160px at 0% 0%, rgba(159,28,31,.38), transparent 62%),
+        rgba(104,12,25,.72);
+    }
+
+    .gc-group-title{
+      display: block;
+      color: var(--cream);
+      font-family: var(--font-bold);
+      font-size: 15px;
+      line-height: 1.2;
+    }
+
+    .gc-group-count{
+      display: inline-flex;
+      margin-top: 12px;
+      padding: 5px 9px;
+      border-radius: 999px;
+      background: rgba(0,0,0,.24);
+      color: var(--cloud);
+      font-family: var(--font-condensed);
+      font-size: 12px;
+      font-weight: 950;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+
+    .gc-group-meta{
+      display: block;
+      margin-top: 8px;
+      color: rgba(242,239,235,.66);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
     .gc-active-contractor{
       width: min(1180px, calc(100% - 44px));
       display: grid;
@@ -2347,6 +2425,7 @@
       #ownerView,
       .gc-toolbar,
       .gc-index-panel,
+      .gc-group-panel,
       .gc-active-contractor,
       .gc-summary,
       .gc-cards,
@@ -2374,6 +2453,10 @@
         flex-wrap: nowrap;
         overflow-x: auto;
         padding-bottom: 18px;
+      }
+
+      .gc-group-index{
+        grid-template-columns: 1fr;
       }
 
       .gc-cards{
@@ -2768,6 +2851,13 @@
       </div>
       <div id="gcActiveBadge" class="gc-active-badge">0 cards</div>
     </section>
+    <section id="gcGroupPanel" class="gc-group-panel" aria-label="General contractor requirement groups">
+      <div class="gc-panel-head">
+        <h2>Requirement Groups</h2>
+        <p>Select a group to show only those cards. Search still cuts across all groups.</p>
+      </div>
+      <div id="gcGroupIndex" class="gc-group-index"></div>
+    </section>
     <div id="gcEmpty" class="gc-empty">No GC requirements match the current filters.</div>
     <section id="gcCards" class="gc-cards" aria-label="General contractor requirement cards"></section>
     <p class="gc-footer-note">Source links become clickable when the sheet includes a Source URL column or when a hosted PDF base URL is configured in the code.</p>
@@ -2828,6 +2918,13 @@
         <p id="ownerActiveSummary">The selected owner's extra requirements will appear below as review cards.</p>
       </div>
       <div id="ownerActiveBadge" class="gc-active-badge">0 cards</div>
+    </section>
+    <section id="ownerGroupPanel" class="gc-group-panel" aria-label="Owner requirement groups">
+      <div class="gc-panel-head">
+        <h2>Requirement Groups</h2>
+        <p>Select a group to show only those cards. Search still cuts across all groups.</p>
+      </div>
+      <div id="ownerGroupIndex" class="gc-group-index"></div>
     </section>
     <div id="ownerEmpty" class="gc-empty">No owner requirements match the current filters.</div>
     <section id="ownerCards" class="gc-cards" aria-label="Owner requirement cards"></section>
@@ -4449,12 +4546,15 @@ function computeTelemetryWindow(incNorm, subsAll, window){
         activeFilters: document.getElementById("gcActiveFilters"),
         activeName: document.getElementById("gcActiveName"),
         activeSummary: document.getElementById("gcActiveSummary"),
-        activeBadge: document.getElementById("gcActiveBadge")
+        activeBadge: document.getElementById("gcActiveBadge"),
+        groupPanel: document.getElementById("gcGroupPanel"),
+        groupIndex: document.getElementById("gcGroupIndex")
       };
 
       let allRows = [];
       let contractors = [];
       let selectedGc = "";
+      let selectedGroup = "";
 
       function parseCsv(text) {
         const rows = [];
@@ -4567,6 +4667,7 @@ function computeTelemetryWindow(incNorm, subsAll, window){
             sourceReference: firstAvailableCell(cells, headerMap, ["Source Reference", "Source"]),
             sourceUrl: firstAvailableCell(cells, headerMap, ["Source URL", "Source Link", "PDF URL", "URL"]),
             sourcePdf: firstAvailableCell(cells, headerMap, ["Source PDF", "PDF Filename", "PDF File", "Manual PDF", "Manual File", "Hosted PDF", "PDF"]),
+            dashboardGroup: firstAvailableCell(cells, headerMap, ["Dashboard Group", "Group", "Card Group", "Requirement Group"]),
             status: firstAvailableCell(cells, headerMap, ["Status"]),
             tags: firstAvailableCell(cells, headerMap, ["Tags"])
           }))
@@ -4611,6 +4712,7 @@ function computeTelemetryWindow(incNorm, subsAll, window){
         els.contractorIndex.querySelectorAll(".gc-contractor-btn").forEach((button) => {
           button.addEventListener("click", () => {
             selectedGc = button.dataset.gc;
+            selectedGroup = "";
             els.search.value = "";
             render();
             document.querySelector(".gc-active-contractor").scrollIntoView({ block: "start", behavior: "smooth" });
@@ -4628,6 +4730,91 @@ function computeTelemetryWindow(incNorm, subsAll, window){
 
       function normalizedPriority(priority) {
         return String(priority || "").trim().toLowerCase();
+      }
+
+      function priorityRank(priority) {
+        const ranks = { critical: 0, high: 1, medium: 2, low: 3 };
+        const normalized = normalizedPriority(priority);
+        return ranks[normalized] ?? 4;
+      }
+
+      function idNumber(id) {
+        const match = String(id || "").match(/(\d+)(?!.*\d)/);
+        return match ? Number(match[1]) : 9999;
+      }
+
+      function rowText(row) {
+        return [
+          row.dashboardGroup,
+          row.category,
+          row.topic,
+          row.requirement,
+          row.action,
+          row.trigger,
+          row.tags
+        ].join(" ").toLowerCase();
+      }
+
+      const groupRules = [
+        {
+          label: "Executive / Governance",
+          keywords: ["governance", "contract", "version", "variance", "prequalification", "exemption", "discipline", "cardinal", "stop work"]
+        },
+        {
+          label: "Pre-Mobilization & Plans",
+          keywords: ["pre-mobilization", "premobilization", "mobilization", "sssp", "site-specific", "safety planning", "pre-start", "insurance", "document", "orientation", "training", "access", "visitor", "worker classification", "translation", "safety staffing", "safety rep"]
+        },
+        {
+          label: "HRA, Permits & Pre-Task Planning",
+          keywords: ["hra", "high risk", "permit", "ptp", "ptsa", "pre-task", "jha", "aha", "lookahead", "look-ahead", "safe work", "daily planning", "task planning"]
+        },
+        {
+          label: "Fall Protection & Elevated Work",
+          keywords: ["fall", "elevated", "roof", "ladder", "scaffold", "opening", "hole", "guardrail", "harness", "aerial lift", "mewp", "dropped object", "drop zone", "tether"]
+        },
+        {
+          label: "Electrical, LOTO & Commissioning",
+          keywords: ["electrical", "energized", "energy", "loto", "lockout", "tagout", "commissioning", "gfc", "temporary power", "arc flash", "nfpa", "energy marshal"]
+        },
+        {
+          label: "Cranes, Rigging & Mobile Equipment",
+          keywords: ["crane", "lift plan", "critical lift", "lifting", "rigging", "rigger", "telehandler", "forklift", "mobile equipment", "vehicle", "equipment", "spotter", "traffic"]
+        },
+        {
+          label: "Excavation, Civil & Site Logistics",
+          keywords: ["excavation", "trench", "ground disturbance", "civil", "utility", "utilities", "soil", "traffic control", "road", "walkway", "delivery", "deliveries", "public", "wheel wash"]
+        },
+        {
+          label: "Fire, Hot Work, HazCom & Environmental",
+          keywords: ["fire", "hot work", "flammable", "compressed gas", "hazcom", "hazard communication", "chemical", "sds", "environment", "spill", "waste", "silica", "respiratory", "pressure", "water", "weather", "heat", "cold", "fatigue", "noise", "blasting", "explosive"]
+        },
+        {
+          label: "Incident, Medical & Reporting",
+          keywords: ["incident", "near miss", "report", "reporting", "medical", "first aid", "cpr", "clinic", "injury", "emergency", "drill", "erp", "substance", "drug", "alcohol"]
+        },
+        {
+          label: "Meetings, Audits, Training & Administration",
+          keywords: ["meeting", "toolbox", "audit", "inspection", "observation", "weekly", "committee", "metrics", "record", "competency", "wellness", "ergonomic", "housekeeping", "sanitation", "welfare"]
+        }
+      ];
+
+      function groupForRow(row) {
+        const explicit = String(row.dashboardGroup || "").trim();
+        if (explicit) {
+          return explicit;
+        }
+
+        const haystack = rowText(row);
+        const rule = groupRules.find((group) => group.keywords.some((keyword) => haystack.includes(keyword)));
+        return rule ? rule.label : "Other / Review";
+      }
+
+      function sortedRows(rows) {
+        return [...rows].sort((a, b) => (
+          priorityRank(a.priority) - priorityRank(b.priority)
+          || idNumber(a.id) - idNumber(b.id)
+          || String(a.topic || "").localeCompare(String(b.topic || ""))
+        ));
       }
 
       function sourcePageNumber(sourceReference) {
@@ -4715,7 +4902,9 @@ function computeTelemetryWindow(incNorm, subsAll, window){
         return `<span class="gc-source-reference">${escapeHtml(reference)}</span>`;
       }
 
-      function filteredRows() {
+      const allGroupsValue = "__ALL_GROUPS__";
+
+      function filteredRows({ applyGroup = true } = {}) {
         const term = els.search.value.trim().toLowerCase();
         const category = els.category.value;
         const priority = els.priority.value;
@@ -4737,15 +4926,23 @@ function computeTelemetryWindow(incNorm, subsAll, window){
           return (!term || haystack.includes(term))
             && (term || !selectedGc || row.gc === selectedGc)
             && (!category || row.category === category)
-            && (!priority || row.priority === priority);
+            && (!priority || row.priority === priority)
+            && (
+              term
+              || !applyGroup
+              || selectedGroup === allGroupsValue
+              || (selectedGroup && groupForRow(row) === selectedGroup)
+            );
         });
       }
 
       function activeFilterCount() {
+        const hasSearch = Boolean(els.search.value.trim());
         return [
           els.search.value.trim(),
           els.category.value,
-          els.priority.value
+          els.priority.value,
+          !hasSearch && selectedGroup && selectedGroup !== allGroupsValue ? selectedGroup : ""
         ].filter(Boolean).length;
       }
 
@@ -4763,29 +4960,107 @@ function computeTelemetryWindow(incNorm, subsAll, window){
         });
       }
 
+      function groupOrder(label) {
+        if (label === allGroupsValue) {
+          return -1;
+        }
+
+        const index = groupRules.findIndex((group) => group.label === label);
+        return index === -1 ? 999 : index;
+      }
+
+      function groupCounts(rows) {
+        const counts = new Map();
+        rows.forEach((row) => {
+          const group = groupForRow(row);
+          if (!counts.has(group)) {
+            counts.set(group, []);
+          }
+          counts.get(group).push(row);
+        });
+
+        return [...counts.entries()].sort((a, b) => groupOrder(a[0]) - groupOrder(b[0]) || a[0].localeCompare(b[0]));
+      }
+
+      function renderGroupButtons(baseRows, term) {
+        const shouldShow = !term && selectedGc && baseRows.length > 0;
+        els.groupPanel.classList.toggle("hide", !shouldShow);
+
+        if (!shouldShow) {
+          els.groupIndex.innerHTML = "";
+          return [];
+        }
+
+        const groups = groupCounts(baseRows);
+        const allGroups = [[allGroupsValue, baseRows], ...groups];
+        const validGroups = new Set(allGroups.map(([label]) => label));
+        if (selectedGroup && !validGroups.has(selectedGroup)) {
+          selectedGroup = "";
+        }
+
+        els.groupIndex.innerHTML = allGroups.map(([label, groupRows]) => {
+          const isAll = label === allGroupsValue;
+          const critical = groupRows.filter((row) => normalizedPriority(row.priority) === "critical").length;
+          const high = groupRows.filter((row) => normalizedPriority(row.priority) === "high").length;
+          const meta = [
+            critical ? `${critical} Critical` : "",
+            high ? `${high} High` : ""
+          ].filter(Boolean).join(" / ") || "No Critical or High rows";
+
+          return `
+            <button class="gc-group-btn ${selectedGroup === label ? "active" : ""}" type="button" data-group="${escapeHtml(label)}">
+              <span class="gc-group-title">${escapeHtml(isAll ? "Show All Groups" : label)}</span>
+              <span class="gc-group-count">${groupRows.length} row${groupRows.length === 1 ? "" : "s"}</span>
+              <span class="gc-group-meta">${escapeHtml(isAll ? "Use only when you want the full card stack." : meta)}</span>
+            </button>
+          `;
+        }).join("");
+
+        els.groupIndex.querySelectorAll(".gc-group-btn").forEach((button) => {
+          button.addEventListener("click", () => {
+            selectedGroup = button.dataset.group;
+            render();
+            els.cards.scrollIntoView({ block: "start", behavior: "smooth" });
+          });
+        });
+
+        return groups;
+      }
+
       function render() {
         renderContractorButtons();
-        const rows = filteredRows();
         const term = els.search.value.trim();
+        const baseRows = filteredRows({ applyGroup: false });
+        const groups = renderGroupButtons(baseRows, term);
+        const rows = term ? filteredRows({ applyGroup: false }) : selectedGroup ? filteredRows() : [];
+        const sortedCardRows = sortedRows(rows);
         const totalForGc = countForGc(selectedGc);
-        const matchedContractors = uniqueSorted(rows.map((row) => row.gc));
+        const matchedContractors = uniqueSorted(baseRows.map((row) => row.gc));
 
-        renderSummary(rows);
-        els.empty.classList.toggle("show", rows.length === 0);
+        renderSummary(term || selectedGroup ? sortedCardRows : baseRows);
+        els.empty.textContent = !term && selectedGc && !selectedGroup && baseRows.length
+          ? "Select a requirement group above to show cards."
+          : "No GC requirements match the current filters.";
+        els.empty.classList.toggle("show", sortedCardRows.length === 0);
 
         if (term) {
           els.activeName.textContent = "Search Results";
-          els.activeSummary.textContent = `${rows.length} matching row${rows.length === 1 ? "" : "s"} across ${matchedContractors.length} GC${matchedContractors.length === 1 ? "" : "s"} for "${term}".`;
+          els.activeSummary.textContent = `${sortedCardRows.length} matching row${sortedCardRows.length === 1 ? "" : "s"} across ${matchedContractors.length} GC${matchedContractors.length === 1 ? "" : "s"} for "${term}".`;
           els.activeBadge.textContent = `${matchedContractors.length} GC${matchedContractors.length === 1 ? "" : "s"}`;
+        } else if (selectedGroup) {
+          const groupName = selectedGroup === allGroupsValue ? "All Groups" : selectedGroup;
+          els.activeName.textContent = selectedGc || "Select a GC";
+          els.activeSummary.textContent = `${groupName}: ${sortedCardRows.length} visible card${sortedCardRows.length === 1 ? "" : "s"} out of ${totalForGc} total row${totalForGc === 1 ? "" : "s"} for ${selectedGc}.`;
+          els.activeBadge.textContent = `${sortedCardRows.length} card${sortedCardRows.length === 1 ? "" : "s"}`;
         } else {
           els.activeName.textContent = selectedGc || "Select a GC";
           els.activeSummary.textContent = selectedGc
-            ? `${totalForGc} extra requirement row${totalForGc === 1 ? "" : "s"} in the source matrix.`
+            ? `${totalForGc} extra requirement row${totalForGc === 1 ? "" : "s"} organized into ${groups.length} group${groups.length === 1 ? "" : "s"}. Select a group below to load cards.`
             : "The selected contractor's extra requirements will appear below as review cards.";
-          els.activeBadge.textContent = `${rows.length} card${rows.length === 1 ? "" : "s"}`;
+          els.activeBadge.textContent = `${groups.length} group${groups.length === 1 ? "" : "s"}`;
         }
 
-        els.cards.innerHTML = rows.map((row, index) => {
+        els.cards.innerHTML = sortedCardRows.map((row, index) => {
           const priorityClass = normalizedPriority(row.priority) || "low";
           const priorityText = row.priority || "Unrated";
 
@@ -4797,6 +5072,7 @@ function computeTelemetryWindow(incNorm, subsAll, window){
               </div>
               <h2 class="gc-card-title">${escapeHtml(row.topic || "Requirement")}</h2>
               <div class="gc-card-meta">
+                ${groupForRow(row) ? `<span class="gc-chip">${escapeHtml(groupForRow(row))}</span>` : ""}
                 ${row.category ? `<span class="gc-chip">${escapeHtml(row.category)}</span>` : ""}
                 ${row.trigger ? `<span class="gc-chip">${escapeHtml(row.trigger)}</span>` : ""}
               </div>
@@ -4853,6 +5129,7 @@ function computeTelemetryWindow(incNorm, subsAll, window){
         els.search.value = "";
         els.category.value = "";
         els.priority.value = "";
+        selectedGroup = "";
         render();
         els.search.focus();
       });
@@ -4895,7 +5172,9 @@ function computeTelemetryWindow(incNorm, subsAll, window){
         activeFilters: document.getElementById("ownerActiveFilters"),
         activeName: document.getElementById("ownerActiveName"),
         activeSummary: document.getElementById("ownerActiveSummary"),
-        activeBadge: document.getElementById("ownerActiveBadge")
+        activeBadge: document.getElementById("ownerActiveBadge"),
+        groupPanel: document.getElementById("ownerGroupPanel"),
+        groupIndex: document.getElementById("ownerGroupIndex")
       };
 
       if (!els.cards || !els.ownerIndex) {
@@ -4905,6 +5184,7 @@ function computeTelemetryWindow(incNorm, subsAll, window){
       let allRows = [];
       let owners = [];
       let selectedOwner = "";
+      let selectedGroup = "";
 
       function parseCsv(text) {
         const rows = [];
@@ -5017,6 +5297,7 @@ function computeTelemetryWindow(incNorm, subsAll, window){
             sourceReference: firstAvailableCell(cells, headerMap, ["Source Reference", "Source"]),
             sourceUrl: firstAvailableCell(cells, headerMap, ["Source URL", "Source Link", "PDF URL", "URL"]),
             sourcePdf: firstAvailableCell(cells, headerMap, ["Source PDF", "PDF Filename", "PDF File", "Manual PDF", "Manual File", "Hosted PDF", "PDF"]),
+            dashboardGroup: firstAvailableCell(cells, headerMap, ["Dashboard Group", "Group", "Card Group", "Requirement Group"]),
             status: firstAvailableCell(cells, headerMap, ["Status"]),
             tags: firstAvailableCell(cells, headerMap, ["Tags"])
           }))
@@ -5061,6 +5342,7 @@ function computeTelemetryWindow(incNorm, subsAll, window){
         els.ownerIndex.querySelectorAll(".owner-btn").forEach((button) => {
           button.addEventListener("click", () => {
             selectedOwner = button.dataset.owner;
+            selectedGroup = "";
             els.search.value = "";
             render();
             document.querySelector("#ownerView .gc-active-contractor").scrollIntoView({ block: "start", behavior: "smooth" });
@@ -5078,6 +5360,95 @@ function computeTelemetryWindow(incNorm, subsAll, window){
 
       function normalizedPriority(priority) {
         return String(priority || "").trim().toLowerCase();
+      }
+
+      function priorityRank(priority) {
+        const ranks = { critical: 0, high: 1, medium: 2, low: 3 };
+        const normalized = normalizedPriority(priority);
+        return ranks[normalized] ?? 4;
+      }
+
+      function idNumber(id) {
+        const match = String(id || "").match(/(\d+)(?!.*\d)/);
+        return match ? Number(match[1]) : 9999;
+      }
+
+      function rowText(row) {
+        return [
+          row.dashboardGroup,
+          row.category,
+          row.topic,
+          row.requirement,
+          row.action,
+          row.trigger,
+          row.tags
+        ].join(" ").toLowerCase();
+      }
+
+      const groupRules = [
+        {
+          label: "Executive / Governance",
+          keywords: ["governance", "contract", "version", "variance", "prequalification", "exemption", "discipline", "cardinal", "stop work", "audit rights", "legal"]
+        },
+        {
+          label: "Pre-Mobilization & Plans",
+          keywords: ["pre-mobilization", "premobilization", "mobilization", "csmp", "sssp", "site-specific", "safety planning", "pre-start", "insurance", "document", "orientation", "induction", "training", "access", "visitor", "worker classification", "translation", "safety staffing", "safety rep"]
+        },
+        {
+          label: "HRA, Permits & Pre-Task Planning",
+          keywords: ["hra", "high risk", "permit", "ptp", "ptsa", "pre-task", "jha", "aha", "lookahead", "look-ahead", "safe work", "daily planning", "task planning"]
+        },
+        {
+          label: "Fall Protection & Elevated Work",
+          keywords: ["fall", "elevated", "roof", "ladder", "scaffold", "opening", "hole", "guardrail", "harness", "aerial lift", "mewp", "dropped object", "drop zone", "tether"]
+        },
+        {
+          label: "Electrical, LOTO & Commissioning",
+          keywords: ["electrical", "energized", "energy", "loto", "lockout", "tagout", "commissioning", "gfc", "temporary power", "arc flash", "nfpa", "energy marshal", "live service"]
+        },
+        {
+          label: "Cranes, Rigging & Mobile Equipment",
+          keywords: ["crane", "lift plan", "critical lift", "lifting", "rigging", "rigger", "telehandler", "forklift", "mobile equipment", "vehicle", "equipment", "spotter", "traffic"]
+        },
+        {
+          label: "Excavation, Civil & Site Logistics",
+          keywords: ["excavation", "trench", "ground disturbance", "civil", "utility", "utilities", "soil", "traffic control", "road", "walkway", "delivery", "deliveries", "public", "wheel wash"]
+        },
+        {
+          label: "Fire, Hot Work, HazCom & Environmental",
+          keywords: ["fire", "hot work", "flammable", "compressed gas", "hazcom", "hazard communication", "chemical", "sds", "environment", "spill", "waste", "silica", "respiratory", "pressure", "water", "weather", "heat", "cold", "fatigue", "noise", "blasting", "explosive", "battery", "legionella", "air quality"]
+        },
+        {
+          label: "Incident, Medical & Reporting",
+          keywords: ["incident", "near miss", "report", "reporting", "medical", "first aid", "cpr", "clinic", "injury", "emergency", "drill", "erp", "substance", "drug", "alcohol", "procore", "observation", "metrics"]
+        },
+        {
+          label: "Meetings, Audits, Training & Administration",
+          keywords: ["meeting", "toolbox", "audit", "inspection", "weekly", "committee", "record", "competency", "wellness", "ergonomic", "housekeeping", "sanitation", "welfare", "recognition", "staffing"]
+        },
+        {
+          label: "Live Spaces / Operational Areas",
+          keywords: ["live space", "operational", "operational zone", "oz", "cpi", "mop", "mcm", "facility manager", "operations", "data center"]
+        }
+      ];
+
+      function groupForRow(row) {
+        const explicit = String(row.dashboardGroup || "").trim();
+        if (explicit) {
+          return explicit;
+        }
+
+        const haystack = rowText(row);
+        const rule = groupRules.find((group) => group.keywords.some((keyword) => haystack.includes(keyword)));
+        return rule ? rule.label : "Other / Review";
+      }
+
+      function sortedRows(rows) {
+        return [...rows].sort((a, b) => (
+          priorityRank(a.priority) - priorityRank(b.priority)
+          || idNumber(a.id) - idNumber(b.id)
+          || String(a.topic || "").localeCompare(String(b.topic || ""))
+        ));
       }
 
       function sourcePageNumber(sourceReference) {
@@ -5165,7 +5536,9 @@ function computeTelemetryWindow(incNorm, subsAll, window){
         return `<span class="gc-source-reference">${escapeHtml(reference)}</span>`;
       }
 
-      function filteredRows() {
+      const allGroupsValue = "__ALL_GROUPS__";
+
+      function filteredRows({ applyGroup = true } = {}) {
         const term = els.search.value.trim().toLowerCase();
         const category = els.category.value;
         const priority = els.priority.value;
@@ -5187,15 +5560,23 @@ function computeTelemetryWindow(incNorm, subsAll, window){
           return (!term || haystack.includes(term))
             && (term || !selectedOwner || row.owner === selectedOwner)
             && (!category || row.category === category)
-            && (!priority || row.priority === priority);
+            && (!priority || row.priority === priority)
+            && (
+              term
+              || !applyGroup
+              || selectedGroup === allGroupsValue
+              || (selectedGroup && groupForRow(row) === selectedGroup)
+            );
         });
       }
 
       function activeFilterCount() {
+        const hasSearch = Boolean(els.search.value.trim());
         return [
           els.search.value.trim(),
           els.category.value,
-          els.priority.value
+          els.priority.value,
+          !hasSearch && selectedGroup && selectedGroup !== allGroupsValue ? selectedGroup : ""
         ].filter(Boolean).length;
       }
 
@@ -5213,29 +5594,107 @@ function computeTelemetryWindow(incNorm, subsAll, window){
         });
       }
 
+      function groupOrder(label) {
+        if (label === allGroupsValue) {
+          return -1;
+        }
+
+        const index = groupRules.findIndex((group) => group.label === label);
+        return index === -1 ? 999 : index;
+      }
+
+      function groupCounts(rows) {
+        const counts = new Map();
+        rows.forEach((row) => {
+          const group = groupForRow(row);
+          if (!counts.has(group)) {
+            counts.set(group, []);
+          }
+          counts.get(group).push(row);
+        });
+
+        return [...counts.entries()].sort((a, b) => groupOrder(a[0]) - groupOrder(b[0]) || a[0].localeCompare(b[0]));
+      }
+
+      function renderGroupButtons(baseRows, term) {
+        const shouldShow = !term && selectedOwner && baseRows.length > 0;
+        els.groupPanel.classList.toggle("hide", !shouldShow);
+
+        if (!shouldShow) {
+          els.groupIndex.innerHTML = "";
+          return [];
+        }
+
+        const groups = groupCounts(baseRows);
+        const allGroups = [[allGroupsValue, baseRows], ...groups];
+        const validGroups = new Set(allGroups.map(([label]) => label));
+        if (selectedGroup && !validGroups.has(selectedGroup)) {
+          selectedGroup = "";
+        }
+
+        els.groupIndex.innerHTML = allGroups.map(([label, groupRows]) => {
+          const isAll = label === allGroupsValue;
+          const critical = groupRows.filter((row) => normalizedPriority(row.priority) === "critical").length;
+          const high = groupRows.filter((row) => normalizedPriority(row.priority) === "high").length;
+          const meta = [
+            critical ? `${critical} Critical` : "",
+            high ? `${high} High` : ""
+          ].filter(Boolean).join(" / ") || "No Critical or High rows";
+
+          return `
+            <button class="gc-group-btn ${selectedGroup === label ? "active" : ""}" type="button" data-group="${escapeHtml(label)}">
+              <span class="gc-group-title">${escapeHtml(isAll ? "Show All Groups" : label)}</span>
+              <span class="gc-group-count">${groupRows.length} row${groupRows.length === 1 ? "" : "s"}</span>
+              <span class="gc-group-meta">${escapeHtml(isAll ? "Use only when you want the full card stack." : meta)}</span>
+            </button>
+          `;
+        }).join("");
+
+        els.groupIndex.querySelectorAll(".gc-group-btn").forEach((button) => {
+          button.addEventListener("click", () => {
+            selectedGroup = button.dataset.group;
+            render();
+            els.cards.scrollIntoView({ block: "start", behavior: "smooth" });
+          });
+        });
+
+        return groups;
+      }
+
       function render() {
         renderOwnerButtons();
-        const rows = filteredRows();
         const term = els.search.value.trim();
+        const baseRows = filteredRows({ applyGroup: false });
+        const groups = renderGroupButtons(baseRows, term);
+        const rows = term ? filteredRows({ applyGroup: false }) : selectedGroup ? filteredRows() : [];
+        const sortedCardRows = sortedRows(rows);
         const totalForOwner = countForOwner(selectedOwner);
-        const matchedOwners = uniqueSorted(rows.map((row) => row.owner));
+        const matchedOwners = uniqueSorted(baseRows.map((row) => row.owner));
 
-        renderSummary(rows);
-        els.empty.classList.toggle("show", rows.length === 0 && allRows.length > 0);
+        renderSummary(term || selectedGroup ? sortedCardRows : baseRows);
+        els.empty.textContent = !term && selectedOwner && !selectedGroup && baseRows.length
+          ? "Select a requirement group above to show cards."
+          : "No owner requirements match the current filters.";
+        els.empty.classList.toggle("show", sortedCardRows.length === 0 && allRows.length > 0);
 
         if (term) {
           els.activeName.textContent = "Search Results";
-          els.activeSummary.textContent = `${rows.length} matching row${rows.length === 1 ? "" : "s"} across ${matchedOwners.length} owner${matchedOwners.length === 1 ? "" : "s"} for "${term}".`;
+          els.activeSummary.textContent = `${sortedCardRows.length} matching row${sortedCardRows.length === 1 ? "" : "s"} across ${matchedOwners.length} owner${matchedOwners.length === 1 ? "" : "s"} for "${term}".`;
           els.activeBadge.textContent = `${matchedOwners.length} owner${matchedOwners.length === 1 ? "" : "s"}`;
+        } else if (selectedGroup) {
+          const groupName = selectedGroup === allGroupsValue ? "All Groups" : selectedGroup;
+          els.activeName.textContent = selectedOwner || "Select an Owner";
+          els.activeSummary.textContent = `${groupName}: ${sortedCardRows.length} visible card${sortedCardRows.length === 1 ? "" : "s"} out of ${totalForOwner} total row${totalForOwner === 1 ? "" : "s"} for ${selectedOwner}.`;
+          els.activeBadge.textContent = `${sortedCardRows.length} card${sortedCardRows.length === 1 ? "" : "s"}`;
         } else {
           els.activeName.textContent = selectedOwner || "Select an Owner";
           els.activeSummary.textContent = selectedOwner
-            ? `${totalForOwner} extra requirement row${totalForOwner === 1 ? "" : "s"} in the source matrix.`
+            ? `${totalForOwner} extra requirement row${totalForOwner === 1 ? "" : "s"} organized into ${groups.length} group${groups.length === 1 ? "" : "s"}. Select a group below to load cards.`
             : "The selected owner's extra requirements will appear below as review cards.";
-          els.activeBadge.textContent = `${rows.length} card${rows.length === 1 ? "" : "s"}`;
+          els.activeBadge.textContent = `${groups.length} group${groups.length === 1 ? "" : "s"}`;
         }
 
-        els.cards.innerHTML = rows.map((row, index) => {
+        els.cards.innerHTML = sortedCardRows.map((row, index) => {
           const priorityClass = normalizedPriority(row.priority) || "low";
           const priorityText = row.priority || "Unrated";
 
@@ -5247,6 +5706,7 @@ function computeTelemetryWindow(incNorm, subsAll, window){
               </div>
               <h2 class="gc-card-title">${escapeHtml(row.topic || "Requirement")}</h2>
               <div class="gc-card-meta">
+                ${groupForRow(row) ? `<span class="gc-chip">${escapeHtml(groupForRow(row))}</span>` : ""}
                 ${row.category ? `<span class="gc-chip">${escapeHtml(row.category)}</span>` : ""}
                 ${row.trigger ? `<span class="gc-chip">${escapeHtml(row.trigger)}</span>` : ""}
               </div>
@@ -5303,6 +5763,7 @@ function computeTelemetryWindow(incNorm, subsAll, window){
         els.search.value = "";
         els.category.value = "";
         els.priority.value = "";
+        selectedGroup = "";
         render();
         els.search.focus();
       });
