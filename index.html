@@ -4416,10 +4416,11 @@ function computeTelemetryWindow(incNorm, subsAll, window){
     (function initGcRequirementsDashboard(){
       const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR8SxjBcpMRRNWaSO74ZmuI1vgrtKoj4Ktly45QpRHK1QLKFp492sLX79rfEGxLEXnq9CfvVklyw1MH/pub?gid=608450026&single=true&output=csv";
 
-      // Optional: after the WT PDF is hosted, paste its public URL here.
-      // Example: "Whiting-Turner": "https://example.com/docs/Whiting-Turner-Trade-Partner-Safety-Manual-2026.pdf"
+      // Known hosted PDFs. Future GCs can also use a Source URL, Source PDF,
+      // PDF Filename, or PDF File column in the sheet without changing code.
       const GC_SOURCE_PDF_URLS = {
-        "Whiting-Turner": "Whiting-Turner_Trade_Partner_Safety_Manual_2026.pdf"
+        "Whiting-Turner": "Whiting-Turner_Trade_Partner_Safety_Manual_2026.pdf",
+        "Clayco": "Clayco_Safety_Health_Code_Book_2026.pdf"
       };
 
       const requiredHeaders = [
@@ -4565,6 +4566,7 @@ function computeTelemetryWindow(incNorm, subsAll, window){
             trigger: firstAvailableCell(cells, headerMap, ["Applies / Trigger", "Trigger", "Applies"]),
             sourceReference: firstAvailableCell(cells, headerMap, ["Source Reference", "Source"]),
             sourceUrl: firstAvailableCell(cells, headerMap, ["Source URL", "Source Link", "PDF URL", "URL"]),
+            sourcePdf: firstAvailableCell(cells, headerMap, ["Source PDF", "PDF Filename", "PDF File", "Manual PDF", "Manual File", "Hosted PDF", "PDF"]),
             status: firstAvailableCell(cells, headerMap, ["Status"]),
             tags: firstAvailableCell(cells, headerMap, ["Tags"])
           }))
@@ -4629,25 +4631,69 @@ function computeTelemetryWindow(incNorm, subsAll, window){
       }
 
       function sourcePageNumber(sourceReference) {
+        const pdfMatch = String(sourceReference || "").match(/\bPDF\s*p(?:age)?\.?\s*(\d+)\b/i);
+        if (pdfMatch) {
+          return pdfMatch[1];
+        }
+
         const match = String(sourceReference || "").match(/\b(?:p{1,2}\.?|pages?)\s*(\d+)\b/i);
         return match ? match[1] : "";
       }
 
+      function sourceKey(value) {
+        return String(value || "")
+          .trim()
+          .toLowerCase()
+          .replace(/&/g, "and")
+          .replace(/[^a-z0-9]+/g, "");
+      }
+
+      function mappedSourcePdf(name) {
+        const exact = String(GC_SOURCE_PDF_URLS[name] || "").trim();
+        if (exact) {
+          return exact;
+        }
+
+        const key = sourceKey(name);
+        const matched = Object.entries(GC_SOURCE_PDF_URLS)
+          .find(([label]) => sourceKey(label) === key);
+        return matched ? String(matched[1] || "").trim() : "";
+      }
+
+      function pdfFileNameFromName(name) {
+        const cleanName = String(name || "")
+          .trim()
+          .replace(/&/g, "and")
+          .replace(/['’]/g, "")
+          .replace(/[^A-Za-z0-9]+/g, "_")
+          .replace(/^_+|_+$/g, "");
+        return cleanName ? `${cleanName}.pdf` : "";
+      }
+
+      function addPageToPdfLink(link, page) {
+        const cleanLink = String(link || "").trim();
+        if (!cleanLink || !page || !/\.pdf(?:$|#|\?)/i.test(cleanLink) || /#page=/i.test(cleanLink)) {
+          return cleanLink;
+        }
+
+        return encodeURI(cleanLink.split("#")[0]) + "#page=" + encodeURIComponent(page);
+      }
+
       function sourceLink(row) {
-        const direct = String(row.sourceUrl || "").trim();
-        if (isSourceLink(direct)) {
-          return direct;
-        }
-
         const reference = String(row.sourceReference || "").trim();
-        if (isSourceLink(reference)) {
-          return reference;
+        const page = sourcePageNumber(reference);
+        const direct = String(row.sourceUrl || row.sourcePdf || "").trim();
+        if (isSourceLink(direct)) {
+          return addPageToPdfLink(direct, page);
         }
 
-        const basePdf = String(GC_SOURCE_PDF_URLS[row.gc] || "").trim();
-        const page = sourcePageNumber(reference);
+        if (isSourceLink(reference)) {
+          return addPageToPdfLink(reference, page);
+        }
+
+        const basePdf = String(mappedSourcePdf(row.gc) || pdfFileNameFromName(row.gc)).trim();
         if (isSourceLink(basePdf) && page) {
-          return encodeURI(basePdf.split("#")[0]) + "#page=" + encodeURIComponent(page);
+          return addPageToPdfLink(basePdf, page);
         }
 
         return "";
@@ -4817,6 +4863,8 @@ function computeTelemetryWindow(incNorm, subsAll, window){
     (function initOwnerRequirementsDashboard(){
       const OWNER_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR8SxjBcpMRRNWaSO74ZmuI1vgrtKoj4Ktly45QpRHK1QLKFp492sLX79rfEGxLEXnq9CfvVklyw1MH/pub?gid=1090818101&single=true&output=csv";
 
+      // Known hosted PDFs. Future owners can also use a Source URL, Source PDF,
+      // PDF Filename, or PDF File column in the sheet without changing code.
       const OWNER_SOURCE_PDF_URLS = {
         "Amazon": "Amazon_Global_Minimum_Requirements_2026_v3_0.pdf"
       };
@@ -4968,6 +5016,7 @@ function computeTelemetryWindow(incNorm, subsAll, window){
             trigger: firstAvailableCell(cells, headerMap, ["Applies / Trigger", "Trigger", "Applies"]),
             sourceReference: firstAvailableCell(cells, headerMap, ["Source Reference", "Source"]),
             sourceUrl: firstAvailableCell(cells, headerMap, ["Source URL", "Source Link", "PDF URL", "URL"]),
+            sourcePdf: firstAvailableCell(cells, headerMap, ["Source PDF", "PDF Filename", "PDF File", "Manual PDF", "Manual File", "Hosted PDF", "PDF"]),
             status: firstAvailableCell(cells, headerMap, ["Status"]),
             tags: firstAvailableCell(cells, headerMap, ["Tags"])
           }))
@@ -5032,25 +5081,69 @@ function computeTelemetryWindow(incNorm, subsAll, window){
       }
 
       function sourcePageNumber(sourceReference) {
+        const pdfMatch = String(sourceReference || "").match(/\bPDF\s*p(?:age)?\.?\s*(\d+)\b/i);
+        if (pdfMatch) {
+          return pdfMatch[1];
+        }
+
         const match = String(sourceReference || "").match(/\b(?:p{1,2}\.?|pages?)\s*(\d+)\b/i);
         return match ? match[1] : "";
       }
 
+      function sourceKey(value) {
+        return String(value || "")
+          .trim()
+          .toLowerCase()
+          .replace(/&/g, "and")
+          .replace(/[^a-z0-9]+/g, "");
+      }
+
+      function mappedSourcePdf(name) {
+        const exact = String(OWNER_SOURCE_PDF_URLS[name] || "").trim();
+        if (exact) {
+          return exact;
+        }
+
+        const key = sourceKey(name);
+        const matched = Object.entries(OWNER_SOURCE_PDF_URLS)
+          .find(([label]) => sourceKey(label) === key);
+        return matched ? String(matched[1] || "").trim() : "";
+      }
+
+      function pdfFileNameFromName(name) {
+        const cleanName = String(name || "")
+          .trim()
+          .replace(/&/g, "and")
+          .replace(/['’]/g, "")
+          .replace(/[^A-Za-z0-9]+/g, "_")
+          .replace(/^_+|_+$/g, "");
+        return cleanName ? `${cleanName}.pdf` : "";
+      }
+
+      function addPageToPdfLink(link, page) {
+        const cleanLink = String(link || "").trim();
+        if (!cleanLink || !page || !/\.pdf(?:$|#|\?)/i.test(cleanLink) || /#page=/i.test(cleanLink)) {
+          return cleanLink;
+        }
+
+        return encodeURI(cleanLink.split("#")[0]) + "#page=" + encodeURIComponent(page);
+      }
+
       function sourceLink(row) {
-        const direct = String(row.sourceUrl || "").trim();
-        if (isSourceLink(direct)) {
-          return direct;
-        }
-
         const reference = String(row.sourceReference || "").trim();
-        if (isSourceLink(reference)) {
-          return reference;
+        const page = sourcePageNumber(reference);
+        const direct = String(row.sourceUrl || row.sourcePdf || "").trim();
+        if (isSourceLink(direct)) {
+          return addPageToPdfLink(direct, page);
         }
 
-        const basePdf = String(OWNER_SOURCE_PDF_URLS[row.owner] || "").trim();
-        const page = sourcePageNumber(reference);
+        if (isSourceLink(reference)) {
+          return addPageToPdfLink(reference, page);
+        }
+
+        const basePdf = String(mappedSourcePdf(row.owner) || pdfFileNameFromName(row.owner)).trim();
         if (isSourceLink(basePdf) && page) {
-          return encodeURI(basePdf.split("#")[0]) + "#page=" + encodeURIComponent(page);
+          return addPageToPdfLink(basePdf, page);
         }
 
         return "";
