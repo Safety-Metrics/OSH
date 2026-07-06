@@ -1249,6 +1249,11 @@
       margin: 10px 0 18px;
     }
 
+    .hero-export-actions{
+      margin-top: 18px;
+      margin-bottom: 0;
+    }
+
     @media print{
       .export-actions,
       .logout-btn,
@@ -2519,13 +2524,15 @@
   <div class="shell">
     <div class="container">
 
-      <h1>2026 Safety Performance</h1>
-      <p class="subhead">Real-time safety metrics across all active projects and subcontractors.</p>
-
-      <div class="export-actions" aria-label="Export dashboard">
-        <button id="exportPdf" type="button">Export PDF</button>
-        <button id="exportExcel" type="button">Export Excel</button>
-      </div>
+      <section class="gc-hero safety-hero" aria-label="Safety metrics summary">
+        <div class="gc-eyebrow">Cooper Steel Field Safety</div>
+        <h1 class="gc-title">2026 Safety Performance</h1>
+        <p class="gc-subtitle">Real-time safety metrics across all active projects and subcontractors.</p>
+        <div class="export-actions hero-export-actions" aria-label="Export safety metrics dashboard">
+          <button class="export-pdf-btn" type="button" data-export-view="safetyView">Export PDF</button>
+          <button class="export-excel-btn" type="button" data-export-view="safetyView">Export Excel</button>
+        </div>
+      </section>
 
       <div class="kpi-row" id="kpis">
         <div class="kpi"><div class="val">—</div><div class="lab">Total Man-Hours</div></div>
@@ -2763,6 +2770,10 @@
     <section class="osh-hero" aria-label="State OSHA summary">
       <div class="osh-eyebrow">Cooper Steel Field Safety</div>
       <h1 class="osh-title">State OSHA Steel Erection Requirements</h1>
+      <div class="export-actions hero-export-actions" aria-label="Export State OSHA dashboard">
+        <button class="export-pdf-btn" type="button" data-export-view="oshaView">Export PDF</button>
+        <button class="export-excel-btn" type="button" data-export-view="oshaView">Export Excel</button>
+      </div>
     </section>
 
     <section class="osh-toolbar" aria-label="State OSHA search controls">
@@ -2800,6 +2811,10 @@
       <div class="gc-eyebrow">Cooper Steel Field Safety</div>
       <h1 class="gc-title">General Contractor Extra Requirements</h1>
       <p class="gc-subtitle">A focused list of GC-specific requirements that go beyond Cooper Steel's subcontractor safety baseline.</p>
+      <div class="export-actions hero-export-actions" aria-label="Export general contractor requirements dashboard">
+        <button class="export-pdf-btn" type="button" data-export-view="gcView">Export PDF</button>
+        <button class="export-excel-btn" type="button" data-export-view="gcView">Export Excel</button>
+      </div>
     </section>
 
     <section class="gc-toolbar" aria-label="General contractor requirements filters">
@@ -2868,6 +2883,10 @@
       <div class="gc-eyebrow">Cooper Steel Field Safety</div>
       <h1 class="gc-title">Owner Extra Requirements</h1>
       <p class="gc-subtitle">A focused list of owner-specific requirements that go beyond Cooper Steel's subcontractor safety baseline.</p>
+      <div class="export-actions hero-export-actions" aria-label="Export owner requirements dashboard">
+        <button class="export-pdf-btn" type="button" data-export-view="ownerView">Export PDF</button>
+        <button class="export-excel-btn" type="button" data-export-view="ownerView">Export Excel</button>
+      </div>
     </section>
 
     <section class="gc-toolbar" aria-label="Owner requirements filters">
@@ -4033,6 +4052,9 @@ function computeTelemetryWindow(incNorm, subsAll, window){
     let DAY_ALL = [];
     let TIME_ALL = [];
     let RISK_ALL = [];
+    let OSHA_EXPORT_ROWS = [];
+    let GC_EXPORT_ROWS = [];
+    let OWNER_EXPORT_ROWS = [];
 
     function csvEscape(value){
       const s = String(value ?? "");
@@ -4061,22 +4083,44 @@ function computeTelemetryWindow(incNorm, subsAll, window){
       `;
     }
 
+    function activeDashboardViewId(){
+      return document.querySelector(".dashboard-view.active")?.id || "safetyView";
+    }
+
     function exportDashboardPdf(){
       window.print();
     }
 
-    function exportDashboardExcel(){
-      const sheets = [
-        ["KPIs", KPI_ALL],
-        ["Subcontractors", SUBS_ALL],
-        ["Incidents", INC_ALL],
-        ["Body Parts", BODY_PART_ALL],
-        ["Nature", NATURE_ALL],
-        ["Mechanisms", MECHANISM_ALL],
-        ["Days", DAY_ALL],
-        ["Times", TIME_ALL],
-        ["Risk Signatures", RISK_ALL]
-      ];
+    function exportDashboardExcel(viewId = activeDashboardViewId()){
+      const exportsByView = {
+        safetyView: {
+          filePrefix: "safety-performance",
+          sheets: [
+            ["KPIs", KPI_ALL],
+            ["Subcontractors", SUBS_ALL],
+            ["Incidents", INC_ALL],
+            ["Body Parts", BODY_PART_ALL],
+            ["Nature", NATURE_ALL],
+            ["Mechanisms", MECHANISM_ALL],
+            ["Days", DAY_ALL],
+            ["Times", TIME_ALL],
+            ["Risk Signatures", RISK_ALL]
+          ]
+        },
+        oshaView: {
+          filePrefix: "state-osha-requirements",
+          sheets: [["State OSHA Requirements", OSHA_EXPORT_ROWS]]
+        },
+        gcView: {
+          filePrefix: "gc-extra-requirements",
+          sheets: [["GC Extra Requirements", GC_EXPORT_ROWS]]
+        },
+        ownerView: {
+          filePrefix: "owner-extra-requirements",
+          sheets: [["Owner Extra Requirements", OWNER_EXPORT_ROWS]]
+        }
+      };
+      const exportConfig = exportsByView[viewId] || exportsByView.safetyView;
 
       const html = `
         <html>
@@ -4089,7 +4133,7 @@ function computeTelemetryWindow(incNorm, subsAll, window){
             </style>
           </head>
           <body>
-            ${sheets.map(([title, rows])=>rowsToSheet(title, rows)).join("")}
+            ${exportConfig.sheets.map(([title, rows])=>rowsToSheet(title, rows)).join("")}
           </body>
         </html>
       `;
@@ -4098,7 +4142,7 @@ function computeTelemetryWindow(incNorm, subsAll, window){
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `safety-performance-${new Date().toISOString().slice(0,10)}.xls`;
+      a.download = `${exportConfig.filePrefix}-${new Date().toISOString().slice(0,10)}.xls`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -4106,18 +4150,23 @@ function computeTelemetryWindow(incNorm, subsAll, window){
     }
 
     function wireExportButtons(){
-      const pdf = document.getElementById("exportPdf");
-      const excel = document.getElementById("exportExcel");
+      document.querySelectorAll(".export-pdf-btn").forEach((button) => {
+        if (button.dataset.wired === "1") {
+          return;
+        }
 
-      if (pdf && pdf.dataset.wired !== "1"){
-        pdf.dataset.wired = "1";
-        pdf.addEventListener("click", exportDashboardPdf);
-      }
+        button.dataset.wired = "1";
+        button.addEventListener("click", () => exportDashboardPdf(button.dataset.exportView || activeDashboardViewId()));
+      });
 
-      if (excel && excel.dataset.wired !== "1"){
-        excel.dataset.wired = "1";
-        excel.addEventListener("click", exportDashboardExcel);
-      }
+      document.querySelectorAll(".export-excel-btn").forEach((button) => {
+        if (button.dataset.wired === "1") {
+          return;
+        }
+
+        button.dataset.wired = "1";
+        button.addEventListener("click", () => exportDashboardExcel(button.dataset.exportView || activeDashboardViewId()));
+      });
     }
 
 
@@ -4491,6 +4540,7 @@ function computeTelemetryWindow(incNorm, subsAll, window){
 
           const text = await response.text();
           allRows = rowsFromCsv(text);
+          OSHA_EXPORT_ROWS = allRows;
           buildStateIndex();
           render();
           setOshaStatus("");
@@ -5110,6 +5160,7 @@ function computeTelemetryWindow(incNorm, subsAll, window){
 
           const text = await response.text();
           allRows = rowsFromCsv(text);
+          GC_EXPORT_ROWS = allRows;
           buildFilters();
           buildContractorIndex();
           render();
@@ -5744,6 +5795,7 @@ function computeTelemetryWindow(incNorm, subsAll, window){
 
           const text = await response.text();
           allRows = rowsFromCsv(text);
+          OWNER_EXPORT_ROWS = allRows;
           buildFilters();
           buildOwnerIndex();
           render();
