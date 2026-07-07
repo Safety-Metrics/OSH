@@ -1249,11 +1249,6 @@
       margin: 10px 0 18px;
     }
 
-    .hero-export-actions{
-      margin-top: 18px;
-      margin-bottom: 0;
-    }
-
     @media print{
       .export-actions,
       .logout-btn,
@@ -2039,84 +2034,6 @@
       font-weight: 950;
     }
 
-    .gc-group-panel{
-      width: min(1180px, calc(100% - 44px));
-      margin: 0 auto 22px;
-      border: 1px solid rgba(93,92,90,.72);
-      border-radius: var(--radius-lg);
-      background: rgba(17,17,18,.78);
-      box-shadow: var(--soft-shadow);
-      overflow: hidden;
-    }
-
-    .gc-group-panel.hide{
-      display: none;
-    }
-
-    .gc-group-index{
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 12px;
-      padding: 16px;
-    }
-
-    .gc-group-btn{
-      min-height: 112px;
-      padding: 14px;
-      color: var(--cream);
-      border: 1px solid rgba(93,92,90,.86);
-      border-radius: 14px;
-      background:
-        radial-gradient(420px 160px at 0% 0%, rgba(159,28,31,.18), transparent 62%),
-        rgba(40,40,40,.84);
-      box-shadow: inset 0 0 0 1px rgba(255,255,255,.025);
-      cursor: pointer;
-      text-align: left;
-      transition: transform 150ms ease, border-color 150ms ease, background 150ms ease;
-    }
-
-    .gc-group-btn:hover{
-      border-color: rgba(159,28,31,.9);
-      transform: translateY(-1px);
-    }
-
-    .gc-group-btn.active{
-      border-color: var(--cooper-red);
-      background:
-        radial-gradient(420px 160px at 0% 0%, rgba(159,28,31,.38), transparent 62%),
-        rgba(104,12,25,.72);
-    }
-
-    .gc-group-title{
-      display: block;
-      color: var(--cream);
-      font-family: var(--font-bold);
-      font-size: 15px;
-      line-height: 1.2;
-    }
-
-    .gc-group-count{
-      display: inline-flex;
-      margin-top: 12px;
-      padding: 5px 9px;
-      border-radius: 999px;
-      background: rgba(0,0,0,.24);
-      color: var(--cloud);
-      font-family: var(--font-condensed);
-      font-size: 12px;
-      font-weight: 950;
-      letter-spacing: .1em;
-      text-transform: uppercase;
-    }
-
-    .gc-group-meta{
-      display: block;
-      margin-top: 8px;
-      color: rgba(242,239,235,.66);
-      font-size: 12px;
-      line-height: 1.35;
-    }
-
     .gc-active-contractor{
       width: min(1180px, calc(100% - 44px));
       display: grid;
@@ -2430,7 +2347,6 @@
       #ownerView,
       .gc-toolbar,
       .gc-index-panel,
-      .gc-group-panel,
       .gc-active-contractor,
       .gc-summary,
       .gc-cards,
@@ -2458,10 +2374,6 @@
         flex-wrap: nowrap;
         overflow-x: auto;
         padding-bottom: 18px;
-      }
-
-      .gc-group-index{
-        grid-template-columns: 1fr;
       }
 
       .gc-cards{
@@ -2524,15 +2436,13 @@
   <div class="shell">
     <div class="container">
 
-      <section class="gc-hero safety-hero" aria-label="Safety metrics summary">
-        <div class="gc-eyebrow">Cooper Steel Field Safety</div>
-        <h1 class="gc-title">2026 Safety Performance</h1>
-        <p class="gc-subtitle">Real-time safety metrics across all active projects and subcontractors.</p>
-        <div class="export-actions hero-export-actions" aria-label="Export safety metrics dashboard">
-          <button class="export-pdf-btn" type="button" data-export-view="safetyView">Export PDF</button>
-          <button class="export-excel-btn" type="button" data-export-view="safetyView">Export Excel</button>
-        </div>
-      </section>
+      <h1>2026 Safety Performance</h1>
+      <p class="subhead">Real-time safety metrics across all active projects and subcontractors.</p>
+
+      <div class="export-actions" aria-label="Export dashboard">
+        <button id="exportPdf" type="button">Export PDF</button>
+        <button id="exportExcel" type="button">Export Excel</button>
+      </div>
 
       <div class="kpi-row" id="kpis">
         <div class="kpi"><div class="val">—</div><div class="lab">Total Man-Hours</div></div>
@@ -2770,10 +2680,6 @@
     <section class="osh-hero" aria-label="State OSHA summary">
       <div class="osh-eyebrow">Cooper Steel Field Safety</div>
       <h1 class="osh-title">State OSHA Steel Erection Requirements</h1>
-      <div class="export-actions hero-export-actions" aria-label="Export State OSHA dashboard">
-        <button class="export-pdf-btn" type="button" data-export-view="oshaView">Export PDF</button>
-        <button class="export-excel-btn" type="button" data-export-view="oshaView">Export Excel</button>
-      </div>
     </section>
 
     <section class="osh-toolbar" aria-label="State OSHA search controls">
@@ -2811,10 +2717,6 @@
       <div class="gc-eyebrow">Cooper Steel Field Safety</div>
       <h1 class="gc-title">General Contractor Extra Requirements</h1>
       <p class="gc-subtitle">A focused list of GC-specific requirements that go beyond Cooper Steel's subcontractor safety baseline.</p>
-      <div class="export-actions hero-export-actions" aria-label="Export general contractor requirements dashboard">
-        <button class="export-pdf-btn" type="button" data-export-view="gcView">Export PDF</button>
-        <button class="export-excel-btn" type="button" data-export-view="gcView">Export Excel</button>
-      </div>
     </section>
 
     <section class="gc-toolbar" aria-label="General contractor requirements filters">
@@ -2866,13 +2768,6 @@
       </div>
       <div id="gcActiveBadge" class="gc-active-badge">0 cards</div>
     </section>
-    <section id="gcGroupPanel" class="gc-group-panel" aria-label="General contractor requirement groups">
-      <div class="gc-panel-head">
-        <h2>Requirement Groups</h2>
-        <p>Select a group to show only those cards. Search still cuts across all groups.</p>
-      </div>
-      <div id="gcGroupIndex" class="gc-group-index"></div>
-    </section>
     <div id="gcEmpty" class="gc-empty">No GC requirements match the current filters.</div>
     <section id="gcCards" class="gc-cards" aria-label="General contractor requirement cards"></section>
     <p class="gc-footer-note">Source links become clickable when the sheet includes a Source URL column or when a hosted PDF base URL is configured in the code.</p>
@@ -2883,10 +2778,6 @@
       <div class="gc-eyebrow">Cooper Steel Field Safety</div>
       <h1 class="gc-title">Owner Extra Requirements</h1>
       <p class="gc-subtitle">A focused list of owner-specific requirements that go beyond Cooper Steel's subcontractor safety baseline.</p>
-      <div class="export-actions hero-export-actions" aria-label="Export owner requirements dashboard">
-        <button class="export-pdf-btn" type="button" data-export-view="ownerView">Export PDF</button>
-        <button class="export-excel-btn" type="button" data-export-view="ownerView">Export Excel</button>
-      </div>
     </section>
 
     <section class="gc-toolbar" aria-label="Owner requirements filters">
@@ -2937,13 +2828,6 @@
         <p id="ownerActiveSummary">The selected owner's extra requirements will appear below as review cards.</p>
       </div>
       <div id="ownerActiveBadge" class="gc-active-badge">0 cards</div>
-    </section>
-    <section id="ownerGroupPanel" class="gc-group-panel" aria-label="Owner requirement groups">
-      <div class="gc-panel-head">
-        <h2>Requirement Groups</h2>
-        <p>Select a group to show only those cards. Search still cuts across all groups.</p>
-      </div>
-      <div id="ownerGroupIndex" class="gc-group-index"></div>
     </section>
     <div id="ownerEmpty" class="gc-empty">No owner requirements match the current filters.</div>
     <section id="ownerCards" class="gc-cards" aria-label="Owner requirement cards"></section>
@@ -4052,9 +3936,6 @@ function computeTelemetryWindow(incNorm, subsAll, window){
     let DAY_ALL = [];
     let TIME_ALL = [];
     let RISK_ALL = [];
-    let OSHA_EXPORT_ROWS = [];
-    let GC_EXPORT_ROWS = [];
-    let OWNER_EXPORT_ROWS = [];
 
     function csvEscape(value){
       const s = String(value ?? "");
@@ -4083,44 +3964,22 @@ function computeTelemetryWindow(incNorm, subsAll, window){
       `;
     }
 
-    function activeDashboardViewId(){
-      return document.querySelector(".dashboard-view.active")?.id || "safetyView";
-    }
-
     function exportDashboardPdf(){
       window.print();
     }
 
-    function exportDashboardExcel(viewId = activeDashboardViewId()){
-      const exportsByView = {
-        safetyView: {
-          filePrefix: "safety-performance",
-          sheets: [
-            ["KPIs", KPI_ALL],
-            ["Subcontractors", SUBS_ALL],
-            ["Incidents", INC_ALL],
-            ["Body Parts", BODY_PART_ALL],
-            ["Nature", NATURE_ALL],
-            ["Mechanisms", MECHANISM_ALL],
-            ["Days", DAY_ALL],
-            ["Times", TIME_ALL],
-            ["Risk Signatures", RISK_ALL]
-          ]
-        },
-        oshaView: {
-          filePrefix: "state-osha-requirements",
-          sheets: [["State OSHA Requirements", OSHA_EXPORT_ROWS]]
-        },
-        gcView: {
-          filePrefix: "gc-extra-requirements",
-          sheets: [["GC Extra Requirements", GC_EXPORT_ROWS]]
-        },
-        ownerView: {
-          filePrefix: "owner-extra-requirements",
-          sheets: [["Owner Extra Requirements", OWNER_EXPORT_ROWS]]
-        }
-      };
-      const exportConfig = exportsByView[viewId] || exportsByView.safetyView;
+    function exportDashboardExcel(){
+      const sheets = [
+        ["KPIs", KPI_ALL],
+        ["Subcontractors", SUBS_ALL],
+        ["Incidents", INC_ALL],
+        ["Body Parts", BODY_PART_ALL],
+        ["Nature", NATURE_ALL],
+        ["Mechanisms", MECHANISM_ALL],
+        ["Days", DAY_ALL],
+        ["Times", TIME_ALL],
+        ["Risk Signatures", RISK_ALL]
+      ];
 
       const html = `
         <html>
@@ -4133,7 +3992,7 @@ function computeTelemetryWindow(incNorm, subsAll, window){
             </style>
           </head>
           <body>
-            ${exportConfig.sheets.map(([title, rows])=>rowsToSheet(title, rows)).join("")}
+            ${sheets.map(([title, rows])=>rowsToSheet(title, rows)).join("")}
           </body>
         </html>
       `;
@@ -4142,7 +4001,7 @@ function computeTelemetryWindow(incNorm, subsAll, window){
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `${exportConfig.filePrefix}-${new Date().toISOString().slice(0,10)}.xls`;
+      a.download = `safety-performance-${new Date().toISOString().slice(0,10)}.xls`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -4150,23 +4009,18 @@ function computeTelemetryWindow(incNorm, subsAll, window){
     }
 
     function wireExportButtons(){
-      document.querySelectorAll(".export-pdf-btn").forEach((button) => {
-        if (button.dataset.wired === "1") {
-          return;
-        }
+      const pdf = document.getElementById("exportPdf");
+      const excel = document.getElementById("exportExcel");
 
-        button.dataset.wired = "1";
-        button.addEventListener("click", () => exportDashboardPdf(button.dataset.exportView || activeDashboardViewId()));
-      });
+      if (pdf && pdf.dataset.wired !== "1"){
+        pdf.dataset.wired = "1";
+        pdf.addEventListener("click", exportDashboardPdf);
+      }
 
-      document.querySelectorAll(".export-excel-btn").forEach((button) => {
-        if (button.dataset.wired === "1") {
-          return;
-        }
-
-        button.dataset.wired = "1";
-        button.addEventListener("click", () => exportDashboardExcel(button.dataset.exportView || activeDashboardViewId()));
-      });
+      if (excel && excel.dataset.wired !== "1"){
+        excel.dataset.wired = "1";
+        excel.addEventListener("click", exportDashboardExcel);
+      }
     }
 
 
@@ -4540,7 +4394,6 @@ function computeTelemetryWindow(incNorm, subsAll, window){
 
           const text = await response.text();
           allRows = rowsFromCsv(text);
-          OSHA_EXPORT_ROWS = allRows;
           buildStateIndex();
           render();
           setOshaStatus("");
@@ -4563,11 +4416,13 @@ function computeTelemetryWindow(incNorm, subsAll, window){
     (function initGcRequirementsDashboard(){
       const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR8SxjBcpMRRNWaSO74ZmuI1vgrtKoj4Ktly45QpRHK1QLKFp492sLX79rfEGxLEXnq9CfvVklyw1MH/pub?gid=608450026&single=true&output=csv";
 
-      // Known hosted PDFs. Future GCs can also use a Source URL, Source PDF,
-      // PDF Filename, or PDF File column in the sheet without changing code.
+      // Optional fallback map for older sheet rows that do not include a PDF Filename column.
+      // New GC rows can provide PDF Filename directly in the sheet.
       const GC_SOURCE_PDF_URLS = {
         "Whiting-Turner": "Whiting-Turner_Trade_Partner_Safety_Manual_2026.pdf",
-        "Clayco": "Clayco_Safety_Health_Code_Book_2026.pdf"
+        "Conlan": "Conlan_EHS_Program_Safety_Manual.pdf",
+        "Clayco": "Clayco_Safety_Health_Code_Book_2026.pdf",
+        "Gray Construction": "Gray_Construction_Safety_Manual_2024.pdf"
       };
 
       const requiredHeaders = [
@@ -4596,15 +4451,12 @@ function computeTelemetryWindow(incNorm, subsAll, window){
         activeFilters: document.getElementById("gcActiveFilters"),
         activeName: document.getElementById("gcActiveName"),
         activeSummary: document.getElementById("gcActiveSummary"),
-        activeBadge: document.getElementById("gcActiveBadge"),
-        groupPanel: document.getElementById("gcGroupPanel"),
-        groupIndex: document.getElementById("gcGroupIndex")
+        activeBadge: document.getElementById("gcActiveBadge")
       };
 
       let allRows = [];
       let contractors = [];
       let selectedGc = "";
-      let selectedGroup = "";
 
       function parseCsv(text) {
         const rows = [];
@@ -4716,8 +4568,7 @@ function computeTelemetryWindow(incNorm, subsAll, window){
             trigger: firstAvailableCell(cells, headerMap, ["Applies / Trigger", "Trigger", "Applies"]),
             sourceReference: firstAvailableCell(cells, headerMap, ["Source Reference", "Source"]),
             sourceUrl: firstAvailableCell(cells, headerMap, ["Source URL", "Source Link", "PDF URL", "URL"]),
-            sourcePdf: firstAvailableCell(cells, headerMap, ["Source PDF", "PDF Filename", "PDF File", "Manual PDF", "Manual File", "Hosted PDF", "PDF"]),
-            dashboardGroup: firstAvailableCell(cells, headerMap, ["Dashboard Group", "Group", "Card Group", "Requirement Group"]),
+            pdfFilename: firstAvailableCell(cells, headerMap, ["PDF Filename", "PDF File", "PDF", "Hosted PDF Filename"]),
             status: firstAvailableCell(cells, headerMap, ["Status"]),
             tags: firstAvailableCell(cells, headerMap, ["Tags"])
           }))
@@ -4762,7 +4613,6 @@ function computeTelemetryWindow(incNorm, subsAll, window){
         els.contractorIndex.querySelectorAll(".gc-contractor-btn").forEach((button) => {
           button.addEventListener("click", () => {
             selectedGc = button.dataset.gc;
-            selectedGroup = "";
             els.search.value = "";
             render();
             document.querySelector(".gc-active-contractor").scrollIntoView({ block: "start", behavior: "smooth" });
@@ -4782,155 +4632,26 @@ function computeTelemetryWindow(incNorm, subsAll, window){
         return String(priority || "").trim().toLowerCase();
       }
 
-      function priorityRank(priority) {
-        const ranks = { critical: 0, high: 1, medium: 2, low: 3 };
-        const normalized = normalizedPriority(priority);
-        return ranks[normalized] ?? 4;
-      }
-
-      function idNumber(id) {
-        const match = String(id || "").match(/(\d+)(?!.*\d)/);
-        return match ? Number(match[1]) : 9999;
-      }
-
-      function rowText(row) {
-        return [
-          row.dashboardGroup,
-          row.category,
-          row.topic,
-          row.requirement,
-          row.action,
-          row.trigger,
-          row.tags
-        ].join(" ").toLowerCase();
-      }
-
-      const groupRules = [
-        {
-          label: "Executive / Governance",
-          keywords: ["governance", "contract", "version", "variance", "prequalification", "exemption", "discipline", "cardinal", "stop work"]
-        },
-        {
-          label: "Pre-Mobilization & Plans",
-          keywords: ["pre-mobilization", "premobilization", "mobilization", "sssp", "site-specific", "safety planning", "pre-start", "insurance", "document", "orientation", "training", "access", "visitor", "worker classification", "translation", "safety staffing", "safety rep"]
-        },
-        {
-          label: "HRA, Permits & Pre-Task Planning",
-          keywords: ["hra", "high risk", "permit", "ptp", "ptsa", "pre-task", "jha", "aha", "lookahead", "look-ahead", "safe work", "daily planning", "task planning"]
-        },
-        {
-          label: "Fall Protection & Elevated Work",
-          keywords: ["fall", "elevated", "roof", "ladder", "scaffold", "opening", "hole", "guardrail", "harness", "aerial lift", "mewp", "dropped object", "drop zone", "tether"]
-        },
-        {
-          label: "Electrical, LOTO & Commissioning",
-          keywords: ["electrical", "energized", "energy", "loto", "lockout", "tagout", "commissioning", "gfc", "temporary power", "arc flash", "nfpa", "energy marshal"]
-        },
-        {
-          label: "Cranes, Rigging & Mobile Equipment",
-          keywords: ["crane", "lift plan", "critical lift", "lifting", "rigging", "rigger", "telehandler", "forklift", "mobile equipment", "vehicle", "equipment", "spotter", "traffic"]
-        },
-        {
-          label: "Excavation, Civil & Site Logistics",
-          keywords: ["excavation", "trench", "ground disturbance", "civil", "utility", "utilities", "soil", "traffic control", "road", "walkway", "delivery", "deliveries", "public", "wheel wash"]
-        },
-        {
-          label: "Fire, Hot Work, HazCom & Environmental",
-          keywords: ["fire", "hot work", "flammable", "compressed gas", "hazcom", "hazard communication", "chemical", "sds", "environment", "spill", "waste", "silica", "respiratory", "pressure", "water", "weather", "heat", "cold", "fatigue", "noise", "blasting", "explosive"]
-        },
-        {
-          label: "Incident, Medical & Reporting",
-          keywords: ["incident", "near miss", "report", "reporting", "medical", "first aid", "cpr", "clinic", "injury", "emergency", "drill", "erp", "substance", "drug", "alcohol"]
-        },
-        {
-          label: "Meetings, Audits, Training & Administration",
-          keywords: ["meeting", "toolbox", "audit", "inspection", "observation", "weekly", "committee", "metrics", "record", "competency", "wellness", "ergonomic", "housekeeping", "sanitation", "welfare"]
-        }
-      ];
-
-      function groupForRow(row) {
-        const explicit = String(row.dashboardGroup || "").trim();
-        if (explicit) {
-          return explicit;
-        }
-
-        const haystack = rowText(row);
-        const rule = groupRules.find((group) => group.keywords.some((keyword) => haystack.includes(keyword)));
-        return rule ? rule.label : "Other / Review";
-      }
-
-      function sortedRows(rows) {
-        return [...rows].sort((a, b) => (
-          priorityRank(a.priority) - priorityRank(b.priority)
-          || idNumber(a.id) - idNumber(b.id)
-          || String(a.topic || "").localeCompare(String(b.topic || ""))
-        ));
-      }
-
       function sourcePageNumber(sourceReference) {
-        const pdfMatch = String(sourceReference || "").match(/\bPDF\s*p(?:age)?\.?\s*(\d+)\b/i);
-        if (pdfMatch) {
-          return pdfMatch[1];
-        }
-
         const match = String(sourceReference || "").match(/\b(?:p{1,2}\.?|pages?)\s*(\d+)\b/i);
         return match ? match[1] : "";
       }
 
-      function sourceKey(value) {
-        return String(value || "")
-          .trim()
-          .toLowerCase()
-          .replace(/&/g, "and")
-          .replace(/[^a-z0-9]+/g, "");
-      }
-
-      function mappedSourcePdf(name) {
-        const exact = String(GC_SOURCE_PDF_URLS[name] || "").trim();
-        if (exact) {
-          return exact;
-        }
-
-        const key = sourceKey(name);
-        const matched = Object.entries(GC_SOURCE_PDF_URLS)
-          .find(([label]) => sourceKey(label) === key);
-        return matched ? String(matched[1] || "").trim() : "";
-      }
-
-      function pdfFileNameFromName(name) {
-        const cleanName = String(name || "")
-          .trim()
-          .replace(/&/g, "and")
-          .replace(/['’]/g, "")
-          .replace(/[^A-Za-z0-9]+/g, "_")
-          .replace(/^_+|_+$/g, "");
-        return cleanName ? `${cleanName}.pdf` : "";
-      }
-
-      function addPageToPdfLink(link, page) {
-        const cleanLink = String(link || "").trim();
-        if (!cleanLink || !page || !/\.pdf(?:$|#|\?)/i.test(cleanLink) || /#page=/i.test(cleanLink)) {
-          return cleanLink;
-        }
-
-        return encodeURI(cleanLink.split("#")[0]) + "#page=" + encodeURIComponent(page);
-      }
-
       function sourceLink(row) {
-        const reference = String(row.sourceReference || "").trim();
-        const page = sourcePageNumber(reference);
-        const direct = String(row.sourceUrl || row.sourcePdf || "").trim();
+        const direct = String(row.sourceUrl || "").trim();
         if (isSourceLink(direct)) {
-          return addPageToPdfLink(direct, page);
+          return direct;
         }
 
+        const reference = String(row.sourceReference || "").trim();
         if (isSourceLink(reference)) {
-          return addPageToPdfLink(reference, page);
+          return reference;
         }
 
-        const basePdf = String(mappedSourcePdf(row.gc) || pdfFileNameFromName(row.gc)).trim();
+        const basePdf = String(row.pdfFilename || GC_SOURCE_PDF_URLS[row.gc] || "").trim();
+        const page = sourcePageNumber(reference);
         if (isSourceLink(basePdf) && page) {
-          return addPageToPdfLink(basePdf, page);
+          return encodeURI(basePdf.split("#")[0]) + "#page=" + encodeURIComponent(page);
         }
 
         return "";
@@ -4952,9 +4673,7 @@ function computeTelemetryWindow(incNorm, subsAll, window){
         return `<span class="gc-source-reference">${escapeHtml(reference)}</span>`;
       }
 
-      const allGroupsValue = "__ALL_GROUPS__";
-
-      function filteredRows({ applyGroup = true } = {}) {
+      function filteredRows() {
         const term = els.search.value.trim().toLowerCase();
         const category = els.category.value;
         const priority = els.priority.value;
@@ -4976,23 +4695,15 @@ function computeTelemetryWindow(incNorm, subsAll, window){
           return (!term || haystack.includes(term))
             && (term || !selectedGc || row.gc === selectedGc)
             && (!category || row.category === category)
-            && (!priority || row.priority === priority)
-            && (
-              term
-              || !applyGroup
-              || selectedGroup === allGroupsValue
-              || (selectedGroup && groupForRow(row) === selectedGroup)
-            );
+            && (!priority || row.priority === priority);
         });
       }
 
       function activeFilterCount() {
-        const hasSearch = Boolean(els.search.value.trim());
         return [
           els.search.value.trim(),
           els.category.value,
-          els.priority.value,
-          !hasSearch && selectedGroup && selectedGroup !== allGroupsValue ? selectedGroup : ""
+          els.priority.value
         ].filter(Boolean).length;
       }
 
@@ -5010,107 +4721,29 @@ function computeTelemetryWindow(incNorm, subsAll, window){
         });
       }
 
-      function groupOrder(label) {
-        if (label === allGroupsValue) {
-          return -1;
-        }
-
-        const index = groupRules.findIndex((group) => group.label === label);
-        return index === -1 ? 999 : index;
-      }
-
-      function groupCounts(rows) {
-        const counts = new Map();
-        rows.forEach((row) => {
-          const group = groupForRow(row);
-          if (!counts.has(group)) {
-            counts.set(group, []);
-          }
-          counts.get(group).push(row);
-        });
-
-        return [...counts.entries()].sort((a, b) => groupOrder(a[0]) - groupOrder(b[0]) || a[0].localeCompare(b[0]));
-      }
-
-      function renderGroupButtons(baseRows, term) {
-        const shouldShow = !term && selectedGc && baseRows.length > 0;
-        els.groupPanel.classList.toggle("hide", !shouldShow);
-
-        if (!shouldShow) {
-          els.groupIndex.innerHTML = "";
-          return [];
-        }
-
-        const groups = groupCounts(baseRows);
-        const allGroups = [[allGroupsValue, baseRows], ...groups];
-        const validGroups = new Set(allGroups.map(([label]) => label));
-        if (selectedGroup && !validGroups.has(selectedGroup)) {
-          selectedGroup = "";
-        }
-
-        els.groupIndex.innerHTML = allGroups.map(([label, groupRows]) => {
-          const isAll = label === allGroupsValue;
-          const critical = groupRows.filter((row) => normalizedPriority(row.priority) === "critical").length;
-          const high = groupRows.filter((row) => normalizedPriority(row.priority) === "high").length;
-          const meta = [
-            critical ? `${critical} Critical` : "",
-            high ? `${high} High` : ""
-          ].filter(Boolean).join(" / ") || "No Critical or High rows";
-
-          return `
-            <button class="gc-group-btn ${selectedGroup === label ? "active" : ""}" type="button" data-group="${escapeHtml(label)}">
-              <span class="gc-group-title">${escapeHtml(isAll ? "Show All Groups" : label)}</span>
-              <span class="gc-group-count">${groupRows.length} row${groupRows.length === 1 ? "" : "s"}</span>
-              <span class="gc-group-meta">${escapeHtml(isAll ? "Use only when you want the full card stack." : meta)}</span>
-            </button>
-          `;
-        }).join("");
-
-        els.groupIndex.querySelectorAll(".gc-group-btn").forEach((button) => {
-          button.addEventListener("click", () => {
-            selectedGroup = button.dataset.group;
-            render();
-            els.cards.scrollIntoView({ block: "start", behavior: "smooth" });
-          });
-        });
-
-        return groups;
-      }
-
       function render() {
         renderContractorButtons();
+        const rows = filteredRows();
         const term = els.search.value.trim();
-        const baseRows = filteredRows({ applyGroup: false });
-        const groups = renderGroupButtons(baseRows, term);
-        const rows = term ? filteredRows({ applyGroup: false }) : selectedGroup ? filteredRows() : [];
-        const sortedCardRows = sortedRows(rows);
         const totalForGc = countForGc(selectedGc);
-        const matchedContractors = uniqueSorted(baseRows.map((row) => row.gc));
+        const matchedContractors = uniqueSorted(rows.map((row) => row.gc));
 
-        renderSummary(term || selectedGroup ? sortedCardRows : baseRows);
-        els.empty.textContent = !term && selectedGc && !selectedGroup && baseRows.length
-          ? "Select a requirement group above to show cards."
-          : "No GC requirements match the current filters.";
-        els.empty.classList.toggle("show", sortedCardRows.length === 0);
+        renderSummary(rows);
+        els.empty.classList.toggle("show", rows.length === 0);
 
         if (term) {
           els.activeName.textContent = "Search Results";
-          els.activeSummary.textContent = `${sortedCardRows.length} matching row${sortedCardRows.length === 1 ? "" : "s"} across ${matchedContractors.length} GC${matchedContractors.length === 1 ? "" : "s"} for "${term}".`;
+          els.activeSummary.textContent = `${rows.length} matching row${rows.length === 1 ? "" : "s"} across ${matchedContractors.length} GC${matchedContractors.length === 1 ? "" : "s"} for "${term}".`;
           els.activeBadge.textContent = `${matchedContractors.length} GC${matchedContractors.length === 1 ? "" : "s"}`;
-        } else if (selectedGroup) {
-          const groupName = selectedGroup === allGroupsValue ? "All Groups" : selectedGroup;
-          els.activeName.textContent = selectedGc || "Select a GC";
-          els.activeSummary.textContent = `${groupName}: ${sortedCardRows.length} visible card${sortedCardRows.length === 1 ? "" : "s"} out of ${totalForGc} total row${totalForGc === 1 ? "" : "s"} for ${selectedGc}.`;
-          els.activeBadge.textContent = `${sortedCardRows.length} card${sortedCardRows.length === 1 ? "" : "s"}`;
         } else {
           els.activeName.textContent = selectedGc || "Select a GC";
           els.activeSummary.textContent = selectedGc
-            ? `${totalForGc} extra requirement row${totalForGc === 1 ? "" : "s"} organized into ${groups.length} group${groups.length === 1 ? "" : "s"}. Select a group below to load cards.`
+            ? `${totalForGc} extra requirement row${totalForGc === 1 ? "" : "s"} in the source matrix.`
             : "The selected contractor's extra requirements will appear below as review cards.";
-          els.activeBadge.textContent = `${groups.length} group${groups.length === 1 ? "" : "s"}`;
+          els.activeBadge.textContent = `${rows.length} card${rows.length === 1 ? "" : "s"}`;
         }
 
-        els.cards.innerHTML = sortedCardRows.map((row, index) => {
+        els.cards.innerHTML = rows.map((row, index) => {
           const priorityClass = normalizedPriority(row.priority) || "low";
           const priorityText = row.priority || "Unrated";
 
@@ -5122,7 +4755,6 @@ function computeTelemetryWindow(incNorm, subsAll, window){
               </div>
               <h2 class="gc-card-title">${escapeHtml(row.topic || "Requirement")}</h2>
               <div class="gc-card-meta">
-                ${groupForRow(row) ? `<span class="gc-chip">${escapeHtml(groupForRow(row))}</span>` : ""}
                 ${row.category ? `<span class="gc-chip">${escapeHtml(row.category)}</span>` : ""}
                 ${row.trigger ? `<span class="gc-chip">${escapeHtml(row.trigger)}</span>` : ""}
               </div>
@@ -5160,7 +4792,6 @@ function computeTelemetryWindow(incNorm, subsAll, window){
 
           const text = await response.text();
           allRows = rowsFromCsv(text);
-          GC_EXPORT_ROWS = allRows;
           buildFilters();
           buildContractorIndex();
           render();
@@ -5180,7 +4811,6 @@ function computeTelemetryWindow(incNorm, subsAll, window){
         els.search.value = "";
         els.category.value = "";
         els.priority.value = "";
-        selectedGroup = "";
         render();
         els.search.focus();
       });
@@ -5191,10 +4821,9 @@ function computeTelemetryWindow(incNorm, subsAll, window){
     (function initOwnerRequirementsDashboard(){
       const OWNER_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR8SxjBcpMRRNWaSO74ZmuI1vgrtKoj4Ktly45QpRHK1QLKFp492sLX79rfEGxLEXnq9CfvVklyw1MH/pub?gid=1090818101&single=true&output=csv";
 
-      // Known hosted PDFs. Future owners can also use a Source URL, Source PDF,
-      // PDF Filename, or PDF File column in the sheet without changing code.
       const OWNER_SOURCE_PDF_URLS = {
-        "Amazon": "Amazon_Global_Minimum_Requirements_2026_v3_0.pdf"
+        "Amazon": "Amazon_Global_Minimum_Requirements_2026_v3_0.pdf",
+        "Stack": "Stack_EHS_Guidelines_2026_v7.pdf"
       };
 
       const requiredHeaders = [
@@ -5223,9 +4852,7 @@ function computeTelemetryWindow(incNorm, subsAll, window){
         activeFilters: document.getElementById("ownerActiveFilters"),
         activeName: document.getElementById("ownerActiveName"),
         activeSummary: document.getElementById("ownerActiveSummary"),
-        activeBadge: document.getElementById("ownerActiveBadge"),
-        groupPanel: document.getElementById("ownerGroupPanel"),
-        groupIndex: document.getElementById("ownerGroupIndex")
+        activeBadge: document.getElementById("ownerActiveBadge")
       };
 
       if (!els.cards || !els.ownerIndex) {
@@ -5235,7 +4862,6 @@ function computeTelemetryWindow(incNorm, subsAll, window){
       let allRows = [];
       let owners = [];
       let selectedOwner = "";
-      let selectedGroup = "";
 
       function parseCsv(text) {
         const rows = [];
@@ -5347,8 +4973,7 @@ function computeTelemetryWindow(incNorm, subsAll, window){
             trigger: firstAvailableCell(cells, headerMap, ["Applies / Trigger", "Trigger", "Applies"]),
             sourceReference: firstAvailableCell(cells, headerMap, ["Source Reference", "Source"]),
             sourceUrl: firstAvailableCell(cells, headerMap, ["Source URL", "Source Link", "PDF URL", "URL"]),
-            sourcePdf: firstAvailableCell(cells, headerMap, ["Source PDF", "PDF Filename", "PDF File", "Manual PDF", "Manual File", "Hosted PDF", "PDF"]),
-            dashboardGroup: firstAvailableCell(cells, headerMap, ["Dashboard Group", "Group", "Card Group", "Requirement Group"]),
+            pdfFilename: firstAvailableCell(cells, headerMap, ["PDF Filename", "PDF File", "PDF", "Hosted PDF Filename"]),
             status: firstAvailableCell(cells, headerMap, ["Status"]),
             tags: firstAvailableCell(cells, headerMap, ["Tags"])
           }))
@@ -5393,7 +5018,6 @@ function computeTelemetryWindow(incNorm, subsAll, window){
         els.ownerIndex.querySelectorAll(".owner-btn").forEach((button) => {
           button.addEventListener("click", () => {
             selectedOwner = button.dataset.owner;
-            selectedGroup = "";
             els.search.value = "";
             render();
             document.querySelector("#ownerView .gc-active-contractor").scrollIntoView({ block: "start", behavior: "smooth" });
@@ -5413,159 +5037,26 @@ function computeTelemetryWindow(incNorm, subsAll, window){
         return String(priority || "").trim().toLowerCase();
       }
 
-      function priorityRank(priority) {
-        const ranks = { critical: 0, high: 1, medium: 2, low: 3 };
-        const normalized = normalizedPriority(priority);
-        return ranks[normalized] ?? 4;
-      }
-
-      function idNumber(id) {
-        const match = String(id || "").match(/(\d+)(?!.*\d)/);
-        return match ? Number(match[1]) : 9999;
-      }
-
-      function rowText(row) {
-        return [
-          row.dashboardGroup,
-          row.category,
-          row.topic,
-          row.requirement,
-          row.action,
-          row.trigger,
-          row.tags
-        ].join(" ").toLowerCase();
-      }
-
-      const groupRules = [
-        {
-          label: "Executive / Governance",
-          keywords: ["governance", "contract", "version", "variance", "prequalification", "exemption", "discipline", "cardinal", "stop work", "audit rights", "legal"]
-        },
-        {
-          label: "Pre-Mobilization & Plans",
-          keywords: ["pre-mobilization", "premobilization", "mobilization", "csmp", "sssp", "site-specific", "safety planning", "pre-start", "insurance", "document", "orientation", "induction", "training", "access", "visitor", "worker classification", "translation", "safety staffing", "safety rep"]
-        },
-        {
-          label: "HRA, Permits & Pre-Task Planning",
-          keywords: ["hra", "high risk", "permit", "ptp", "ptsa", "pre-task", "jha", "aha", "lookahead", "look-ahead", "safe work", "daily planning", "task planning"]
-        },
-        {
-          label: "Fall Protection & Elevated Work",
-          keywords: ["fall", "elevated", "roof", "ladder", "scaffold", "opening", "hole", "guardrail", "harness", "aerial lift", "mewp", "dropped object", "drop zone", "tether"]
-        },
-        {
-          label: "Electrical, LOTO & Commissioning",
-          keywords: ["electrical", "energized", "energy", "loto", "lockout", "tagout", "commissioning", "gfc", "temporary power", "arc flash", "nfpa", "energy marshal", "live service"]
-        },
-        {
-          label: "Cranes, Rigging & Mobile Equipment",
-          keywords: ["crane", "lift plan", "critical lift", "lifting", "rigging", "rigger", "telehandler", "forklift", "mobile equipment", "vehicle", "equipment", "spotter", "traffic"]
-        },
-        {
-          label: "Excavation, Civil & Site Logistics",
-          keywords: ["excavation", "trench", "ground disturbance", "civil", "utility", "utilities", "soil", "traffic control", "road", "walkway", "delivery", "deliveries", "public", "wheel wash"]
-        },
-        {
-          label: "Fire, Hot Work, HazCom & Environmental",
-          keywords: ["fire", "hot work", "flammable", "compressed gas", "hazcom", "hazard communication", "chemical", "sds", "environment", "spill", "waste", "silica", "respiratory", "pressure", "water", "weather", "heat", "cold", "fatigue", "noise", "blasting", "explosive", "battery", "legionella", "air quality"]
-        },
-        {
-          label: "Incident, Medical & Reporting",
-          keywords: ["incident", "near miss", "report", "reporting", "medical", "first aid", "cpr", "clinic", "injury", "emergency", "drill", "erp", "substance", "drug", "alcohol", "procore", "observation", "metrics"]
-        },
-        {
-          label: "Meetings, Audits, Training & Administration",
-          keywords: ["meeting", "toolbox", "audit", "inspection", "weekly", "committee", "record", "competency", "wellness", "ergonomic", "housekeeping", "sanitation", "welfare", "recognition", "staffing"]
-        },
-        {
-          label: "Live Spaces / Operational Areas",
-          keywords: ["live space", "operational", "operational zone", "oz", "cpi", "mop", "mcm", "facility manager", "operations", "data center"]
-        }
-      ];
-
-      function groupForRow(row) {
-        const explicit = String(row.dashboardGroup || "").trim();
-        if (explicit) {
-          return explicit;
-        }
-
-        const haystack = rowText(row);
-        const rule = groupRules.find((group) => group.keywords.some((keyword) => haystack.includes(keyword)));
-        return rule ? rule.label : "Other / Review";
-      }
-
-      function sortedRows(rows) {
-        return [...rows].sort((a, b) => (
-          priorityRank(a.priority) - priorityRank(b.priority)
-          || idNumber(a.id) - idNumber(b.id)
-          || String(a.topic || "").localeCompare(String(b.topic || ""))
-        ));
-      }
-
       function sourcePageNumber(sourceReference) {
-        const pdfMatch = String(sourceReference || "").match(/\bPDF\s*p(?:age)?\.?\s*(\d+)\b/i);
-        if (pdfMatch) {
-          return pdfMatch[1];
-        }
-
         const match = String(sourceReference || "").match(/\b(?:p{1,2}\.?|pages?)\s*(\d+)\b/i);
         return match ? match[1] : "";
       }
 
-      function sourceKey(value) {
-        return String(value || "")
-          .trim()
-          .toLowerCase()
-          .replace(/&/g, "and")
-          .replace(/[^a-z0-9]+/g, "");
-      }
-
-      function mappedSourcePdf(name) {
-        const exact = String(OWNER_SOURCE_PDF_URLS[name] || "").trim();
-        if (exact) {
-          return exact;
-        }
-
-        const key = sourceKey(name);
-        const matched = Object.entries(OWNER_SOURCE_PDF_URLS)
-          .find(([label]) => sourceKey(label) === key);
-        return matched ? String(matched[1] || "").trim() : "";
-      }
-
-      function pdfFileNameFromName(name) {
-        const cleanName = String(name || "")
-          .trim()
-          .replace(/&/g, "and")
-          .replace(/['’]/g, "")
-          .replace(/[^A-Za-z0-9]+/g, "_")
-          .replace(/^_+|_+$/g, "");
-        return cleanName ? `${cleanName}.pdf` : "";
-      }
-
-      function addPageToPdfLink(link, page) {
-        const cleanLink = String(link || "").trim();
-        if (!cleanLink || !page || !/\.pdf(?:$|#|\?)/i.test(cleanLink) || /#page=/i.test(cleanLink)) {
-          return cleanLink;
-        }
-
-        return encodeURI(cleanLink.split("#")[0]) + "#page=" + encodeURIComponent(page);
-      }
-
       function sourceLink(row) {
-        const reference = String(row.sourceReference || "").trim();
-        const page = sourcePageNumber(reference);
-        const direct = String(row.sourceUrl || row.sourcePdf || "").trim();
+        const direct = String(row.sourceUrl || "").trim();
         if (isSourceLink(direct)) {
-          return addPageToPdfLink(direct, page);
+          return direct;
         }
 
+        const reference = String(row.sourceReference || "").trim();
         if (isSourceLink(reference)) {
-          return addPageToPdfLink(reference, page);
+          return reference;
         }
 
-        const basePdf = String(mappedSourcePdf(row.owner) || pdfFileNameFromName(row.owner)).trim();
+        const basePdf = String(row.pdfFilename || OWNER_SOURCE_PDF_URLS[row.owner] || "").trim();
+        const page = sourcePageNumber(reference);
         if (isSourceLink(basePdf) && page) {
-          return addPageToPdfLink(basePdf, page);
+          return encodeURI(basePdf.split("#")[0]) + "#page=" + encodeURIComponent(page);
         }
 
         return "";
@@ -5587,9 +5078,7 @@ function computeTelemetryWindow(incNorm, subsAll, window){
         return `<span class="gc-source-reference">${escapeHtml(reference)}</span>`;
       }
 
-      const allGroupsValue = "__ALL_GROUPS__";
-
-      function filteredRows({ applyGroup = true } = {}) {
+      function filteredRows() {
         const term = els.search.value.trim().toLowerCase();
         const category = els.category.value;
         const priority = els.priority.value;
@@ -5611,23 +5100,15 @@ function computeTelemetryWindow(incNorm, subsAll, window){
           return (!term || haystack.includes(term))
             && (term || !selectedOwner || row.owner === selectedOwner)
             && (!category || row.category === category)
-            && (!priority || row.priority === priority)
-            && (
-              term
-              || !applyGroup
-              || selectedGroup === allGroupsValue
-              || (selectedGroup && groupForRow(row) === selectedGroup)
-            );
+            && (!priority || row.priority === priority);
         });
       }
 
       function activeFilterCount() {
-        const hasSearch = Boolean(els.search.value.trim());
         return [
           els.search.value.trim(),
           els.category.value,
-          els.priority.value,
-          !hasSearch && selectedGroup && selectedGroup !== allGroupsValue ? selectedGroup : ""
+          els.priority.value
         ].filter(Boolean).length;
       }
 
@@ -5645,107 +5126,29 @@ function computeTelemetryWindow(incNorm, subsAll, window){
         });
       }
 
-      function groupOrder(label) {
-        if (label === allGroupsValue) {
-          return -1;
-        }
-
-        const index = groupRules.findIndex((group) => group.label === label);
-        return index === -1 ? 999 : index;
-      }
-
-      function groupCounts(rows) {
-        const counts = new Map();
-        rows.forEach((row) => {
-          const group = groupForRow(row);
-          if (!counts.has(group)) {
-            counts.set(group, []);
-          }
-          counts.get(group).push(row);
-        });
-
-        return [...counts.entries()].sort((a, b) => groupOrder(a[0]) - groupOrder(b[0]) || a[0].localeCompare(b[0]));
-      }
-
-      function renderGroupButtons(baseRows, term) {
-        const shouldShow = !term && selectedOwner && baseRows.length > 0;
-        els.groupPanel.classList.toggle("hide", !shouldShow);
-
-        if (!shouldShow) {
-          els.groupIndex.innerHTML = "";
-          return [];
-        }
-
-        const groups = groupCounts(baseRows);
-        const allGroups = [[allGroupsValue, baseRows], ...groups];
-        const validGroups = new Set(allGroups.map(([label]) => label));
-        if (selectedGroup && !validGroups.has(selectedGroup)) {
-          selectedGroup = "";
-        }
-
-        els.groupIndex.innerHTML = allGroups.map(([label, groupRows]) => {
-          const isAll = label === allGroupsValue;
-          const critical = groupRows.filter((row) => normalizedPriority(row.priority) === "critical").length;
-          const high = groupRows.filter((row) => normalizedPriority(row.priority) === "high").length;
-          const meta = [
-            critical ? `${critical} Critical` : "",
-            high ? `${high} High` : ""
-          ].filter(Boolean).join(" / ") || "No Critical or High rows";
-
-          return `
-            <button class="gc-group-btn ${selectedGroup === label ? "active" : ""}" type="button" data-group="${escapeHtml(label)}">
-              <span class="gc-group-title">${escapeHtml(isAll ? "Show All Groups" : label)}</span>
-              <span class="gc-group-count">${groupRows.length} row${groupRows.length === 1 ? "" : "s"}</span>
-              <span class="gc-group-meta">${escapeHtml(isAll ? "Use only when you want the full card stack." : meta)}</span>
-            </button>
-          `;
-        }).join("");
-
-        els.groupIndex.querySelectorAll(".gc-group-btn").forEach((button) => {
-          button.addEventListener("click", () => {
-            selectedGroup = button.dataset.group;
-            render();
-            els.cards.scrollIntoView({ block: "start", behavior: "smooth" });
-          });
-        });
-
-        return groups;
-      }
-
       function render() {
         renderOwnerButtons();
+        const rows = filteredRows();
         const term = els.search.value.trim();
-        const baseRows = filteredRows({ applyGroup: false });
-        const groups = renderGroupButtons(baseRows, term);
-        const rows = term ? filteredRows({ applyGroup: false }) : selectedGroup ? filteredRows() : [];
-        const sortedCardRows = sortedRows(rows);
         const totalForOwner = countForOwner(selectedOwner);
-        const matchedOwners = uniqueSorted(baseRows.map((row) => row.owner));
+        const matchedOwners = uniqueSorted(rows.map((row) => row.owner));
 
-        renderSummary(term || selectedGroup ? sortedCardRows : baseRows);
-        els.empty.textContent = !term && selectedOwner && !selectedGroup && baseRows.length
-          ? "Select a requirement group above to show cards."
-          : "No owner requirements match the current filters.";
-        els.empty.classList.toggle("show", sortedCardRows.length === 0 && allRows.length > 0);
+        renderSummary(rows);
+        els.empty.classList.toggle("show", rows.length === 0 && allRows.length > 0);
 
         if (term) {
           els.activeName.textContent = "Search Results";
-          els.activeSummary.textContent = `${sortedCardRows.length} matching row${sortedCardRows.length === 1 ? "" : "s"} across ${matchedOwners.length} owner${matchedOwners.length === 1 ? "" : "s"} for "${term}".`;
+          els.activeSummary.textContent = `${rows.length} matching row${rows.length === 1 ? "" : "s"} across ${matchedOwners.length} owner${matchedOwners.length === 1 ? "" : "s"} for "${term}".`;
           els.activeBadge.textContent = `${matchedOwners.length} owner${matchedOwners.length === 1 ? "" : "s"}`;
-        } else if (selectedGroup) {
-          const groupName = selectedGroup === allGroupsValue ? "All Groups" : selectedGroup;
-          els.activeName.textContent = selectedOwner || "Select an Owner";
-          els.activeSummary.textContent = `${groupName}: ${sortedCardRows.length} visible card${sortedCardRows.length === 1 ? "" : "s"} out of ${totalForOwner} total row${totalForOwner === 1 ? "" : "s"} for ${selectedOwner}.`;
-          els.activeBadge.textContent = `${sortedCardRows.length} card${sortedCardRows.length === 1 ? "" : "s"}`;
         } else {
           els.activeName.textContent = selectedOwner || "Select an Owner";
           els.activeSummary.textContent = selectedOwner
-            ? `${totalForOwner} extra requirement row${totalForOwner === 1 ? "" : "s"} organized into ${groups.length} group${groups.length === 1 ? "" : "s"}. Select a group below to load cards.`
+            ? `${totalForOwner} extra requirement row${totalForOwner === 1 ? "" : "s"} in the source matrix.`
             : "The selected owner's extra requirements will appear below as review cards.";
-          els.activeBadge.textContent = `${groups.length} group${groups.length === 1 ? "" : "s"}`;
+          els.activeBadge.textContent = `${rows.length} card${rows.length === 1 ? "" : "s"}`;
         }
 
-        els.cards.innerHTML = sortedCardRows.map((row, index) => {
+        els.cards.innerHTML = rows.map((row, index) => {
           const priorityClass = normalizedPriority(row.priority) || "low";
           const priorityText = row.priority || "Unrated";
 
@@ -5757,7 +5160,6 @@ function computeTelemetryWindow(incNorm, subsAll, window){
               </div>
               <h2 class="gc-card-title">${escapeHtml(row.topic || "Requirement")}</h2>
               <div class="gc-card-meta">
-                ${groupForRow(row) ? `<span class="gc-chip">${escapeHtml(groupForRow(row))}</span>` : ""}
                 ${row.category ? `<span class="gc-chip">${escapeHtml(row.category)}</span>` : ""}
                 ${row.trigger ? `<span class="gc-chip">${escapeHtml(row.trigger)}</span>` : ""}
               </div>
@@ -5795,7 +5197,6 @@ function computeTelemetryWindow(incNorm, subsAll, window){
 
           const text = await response.text();
           allRows = rowsFromCsv(text);
-          OWNER_EXPORT_ROWS = allRows;
           buildFilters();
           buildOwnerIndex();
           render();
@@ -5815,7 +5216,6 @@ function computeTelemetryWindow(incNorm, subsAll, window){
         els.search.value = "";
         els.category.value = "";
         els.priority.value = "";
-        selectedGroup = "";
         render();
         els.search.focus();
       });
