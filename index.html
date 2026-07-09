@@ -1325,10 +1325,10 @@
 
     /* ---------- Dashboard Tabs ---------- */
     .dashboard-tabs{
-      width: min(1180px, calc(100% - 44px));
+      width: min(1680px, calc(100% - 44px));
       margin: 12px auto 26px;
       display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-columns: repeat(5, minmax(0, 1fr));
       gap: 12px;
       padding: 8px;
       border: 1px solid rgba(93,92,90,.72);
@@ -1407,13 +1407,19 @@
       line-height: 1.55;
     }
 
-    @media (max-width: 960px){
+    @media (max-width: 1180px){
+      .dashboard-tabs{
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 760px){
       .dashboard-tabs{
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
     }
 
-    @media (max-width: 680px){
+    @media (max-width: 560px){
       .dashboard-tabs{
         grid-template-columns: 1fr;
       }
@@ -4641,7 +4647,7 @@ function computeTelemetryWindow(incNorm, subsAll, window){
       // Same-folder CSV works immediately on GitHub Pages. Replace this with the
       // published Google Sheets CSV URL later without changing the rest of the module.
       const COOPER_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR8SxjBcpMRRNWaSO74ZmuI1vgrtKoj4Ktly45QpRHK1QLKFp492sLX79rfEGxLEXnq9CfvVklyw1MH/pub?gid=651566723&single=true&output=csv";
-      const COOPER_SOURCE_PDF = "Cooper_Steel_Field_Health_and_Safety_Manual_2025.pdf";
+      const COOPER_SOURCE_PDF = "Cooper_Steel_Field_Health_and_Safety_Manual_2025.pdf.pdf";
 
       const requiredHeaders = [
         ["Organization", "GC / Owner", "Company"],
@@ -4850,7 +4856,7 @@ function computeTelemetryWindow(incNorm, subsAll, window){
       function sourceLink(row) {
         const reference = String(row.sourceReference || "").trim();
         const page = sourcePageNumber(reference);
-        const direct = String(row.sourceUrl || row.sourcePdf || COOPER_SOURCE_PDF).trim();
+        const direct = String(row.sourceUrl || COOPER_SOURCE_PDF || row.sourcePdf || "").trim();
         if (isSourceLink(direct)) return addPageToPdfLink(direct, page);
         if (isSourceLink(reference)) return addPageToPdfLink(reference, page);
         return page ? addPageToPdfLink(COOPER_SOURCE_PDF, page) : "";
@@ -5041,8 +5047,10 @@ function computeTelemetryWindow(incNorm, subsAll, window){
         "Whiting-Turner": "Whiting-Turner_Trade_Partner_Safety_Manual_2026.pdf",
         "Conlan": "Conlan_EHS_Program_Safety_Manual.pdf",
         "Clayco": "Clayco_Safety_Health_Code_Book_2026.pdf",
-        "EE Reed": "EE_Reed_EHS_Manual_2026.pdf",
-        "Gray Construction": "Gray_Construction_Safety_Manual_2024.pdf"
+        "EE Reed": "EE_Reed _EHS_Manual_2026.pdf",
+        "Gray Construction": "Gray_Construction_Safety_Manual_2024.pdf",
+        "Gilbane Mortenson": "Gilbane_Mortenson_EHS_2026.pdf",
+        "Gilbane | Mortenson": "Gilbane_Mortenson_EHS_2026.pdf"
       };
 
       const requiredHeaders = [
@@ -5394,7 +5402,8 @@ function computeTelemetryWindow(incNorm, subsAll, window){
       function sourceLink(row) {
         const reference = String(row.sourceReference || "").trim();
         const page = sourcePageNumber(reference);
-        const direct = String(row.sourceUrl || row.sourcePdf || "").trim();
+        const mappedPdf = String(mappedSourcePdf(row.gc) || "").trim();
+        const direct = String(row.sourceUrl || mappedPdf || row.sourcePdf || "").trim();
         if (isSourceLink(direct)) {
           return addPageToPdfLink(direct, page);
         }
@@ -5403,7 +5412,7 @@ function computeTelemetryWindow(incNorm, subsAll, window){
           return addPageToPdfLink(reference, page);
         }
 
-        const basePdf = String(mappedSourcePdf(row.gc) || pdfFileNameFromName(row.gc)).trim();
+        const basePdf = String(mappedPdf || row.sourcePdf || pdfFileNameFromName(row.gc)).trim();
         if (isSourceLink(basePdf) && page) {
           return addPageToPdfLink(basePdf, page);
         }
@@ -5671,8 +5680,8 @@ function computeTelemetryWindow(incNorm, subsAll, window){
       const OWNER_SOURCE_PDF_URLS = {
         "Amazon": "Amazon_Global_Minimum_Requirements_2026_v3_0.pdf",
         "Stack": "Stack_EHS_Guidelines_2026_v7_3.pdf",
-        "AECOM Tishman": "AECOM_Tishman_SHE_Program_2025.pdf",
-        "AECOM Tishman Construction": "AECOM_Tishman_SHE_Program_2025.pdf"
+        "AECOM Tishman": "AECOM_Tishman_SHE_Program_2025.pdf.pdf",
+        "AECOM Tishman Construction": "AECOM_Tishman_SHE_Program_2025.pdf.pdf"
       };
 
       const requiredHeaders = [
@@ -6032,7 +6041,8 @@ function computeTelemetryWindow(incNorm, subsAll, window){
       function sourceLink(row) {
         const reference = String(row.sourceReference || "").trim();
         const page = sourcePageNumber(reference);
-        const direct = String(row.sourceUrl || row.sourcePdf || "").trim();
+        const mappedPdf = String(mappedSourcePdf(row.owner) || "").trim();
+        const direct = String(row.sourceUrl || mappedPdf || row.sourcePdf || "").trim();
         if (isSourceLink(direct)) {
           return addPageToPdfLink(direct, page);
         }
@@ -6041,7 +6051,7 @@ function computeTelemetryWindow(incNorm, subsAll, window){
           return addPageToPdfLink(reference, page);
         }
 
-        const basePdf = String(mappedSourcePdf(row.owner) || pdfFileNameFromName(row.owner)).trim();
+        const basePdf = String(mappedPdf || row.sourcePdf || pdfFileNameFromName(row.owner)).trim();
         if (isSourceLink(basePdf) && page) {
           return addPageToPdfLink(basePdf, page);
         }
