@@ -5403,7 +5403,7 @@ function computeTelemetryWindow(incNorm, subsAll, window){
         const reference = String(row.sourceReference || "").trim();
         const page = sourcePageNumber(reference);
         const mappedPdf = String(mappedSourcePdf(row.gc) || "").trim();
-        const direct = String(row.sourceUrl || mappedPdf || row.sourcePdf || "").trim();
+        const direct = String(mappedPdf || row.sourceUrl || row.sourcePdf || "").trim();
         if (isSourceLink(direct)) {
           return addPageToPdfLink(direct, page);
         }
@@ -5680,8 +5680,10 @@ function computeTelemetryWindow(incNorm, subsAll, window){
       const OWNER_SOURCE_PDF_URLS = {
         "Amazon": "Amazon_Global_Minimum_Requirements_2026_v3_0.pdf",
         "Stack": "Stack_EHS_Guidelines_2026_v7_3.pdf",
-        "AECOM Tishman": "AECOM_Tishman_SHE_Program_2025.pdf.pdf",
-        "AECOM Tishman Construction": "AECOM_Tishman_SHE_Program_2025.pdf.pdf"
+        "AECOM": "https://safety-metrics.github.io/OSH/AECOM_Tishman_SHE_Program_2025.pdf.pdf",
+        "AECOM Tishman": "https://safety-metrics.github.io/OSH/AECOM_Tishman_SHE_Program_2025.pdf.pdf",
+        "AECOM-Tishman": "https://safety-metrics.github.io/OSH/AECOM_Tishman_SHE_Program_2025.pdf.pdf",
+        "AECOM Tishman Construction": "https://safety-metrics.github.io/OSH/AECOM_Tishman_SHE_Program_2025.pdf.pdf"
       };
 
       const requiredHeaders = [
@@ -6014,8 +6016,18 @@ function computeTelemetryWindow(incNorm, subsAll, window){
         }
 
         const key = sourceKey(name);
+
+        // AECOM Tishman can appear under several owner-label variations in the sheet.
+        // Force the exact live GitHub Pages PDF path so stale PDF Filename cells cannot cause a 404.
+        if (key === "aecom" || (key.includes("aecom") && key.includes("tishman"))) {
+          return "https://safety-metrics.github.io/OSH/AECOM_Tishman_SHE_Program_2025.pdf.pdf";
+        }
+
         const matched = Object.entries(OWNER_SOURCE_PDF_URLS)
-          .find(([label]) => sourceKey(label) === key);
+          .find(([label]) => {
+            const labelKey = sourceKey(label);
+            return labelKey === key || key.includes(labelKey) || labelKey.includes(key);
+          });
         return matched ? String(matched[1] || "").trim() : "";
       }
 
